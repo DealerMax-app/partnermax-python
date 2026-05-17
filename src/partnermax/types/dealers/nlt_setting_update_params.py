@@ -19,8 +19,6 @@ class NltSettingUpdateParams(TypedDict, total=False):
     (low < medium < high).
     """
 
-    vat_treatment: Required[Literal["private", "business"]]
-
     currency: Literal["EUR"]
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

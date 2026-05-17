@@ -10,6 +10,11 @@ __all__ = ["NltSettings"]
 
 
 class NltSettings(BaseModel):
+    """Dealer-level NLT economics.
+
+    VAT treatment is NOT a dealer-level field — it is a property of the offer (see `NltOfferSummary.vat_treatment`).
+    """
+
     agency_markup_percent: float
     """Markup applied on top of the network base canon, in percent. Hard cap at 10%."""
 
@@ -25,6 +30,3 @@ class NltSettings(BaseModel):
     """
 
     effective_from: datetime
-
-    vat_treatment: Literal["private", "business"]
-    """private = display VAT-inclusive (×1.22). business = display VAT-exclusive."""

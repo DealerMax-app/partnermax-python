@@ -70,7 +70,6 @@ class TestNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -85,7 +84,6 @@ class TestNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
             currency="EUR",
             idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -102,7 +100,6 @@ class TestNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         )
 
         assert response.is_closed is True
@@ -121,7 +118,6 @@ class TestNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -143,7 +139,6 @@ class TestNltSettings:
                     "low_eur": 0,
                     "medium_eur": 3000,
                 },
-                vat_treatment="private",
             )
 
 
@@ -205,7 +200,6 @@ class TestAsyncNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -220,7 +214,6 @@ class TestAsyncNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
             currency="EUR",
             idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
@@ -237,7 +230,6 @@ class TestAsyncNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         )
 
         assert response.is_closed is True
@@ -256,7 +248,6 @@ class TestAsyncNltSettings:
                 "low_eur": 0,
                 "medium_eur": 3000,
             },
-            vat_treatment="private",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -278,5 +269,4 @@ class TestAsyncNltSettings:
                     "low_eur": 0,
                     "medium_eur": 3000,
                 },
-                vat_treatment="private",
             )

@@ -26,7 +26,10 @@ __all__ = ["KeysResource", "AsyncKeysResource"]
 
 
 class KeysResource(SyncAPIResource):
-    """Human session login (cookie JWT) and API key lifecycle management."""
+    """API key lifecycle management — issue, list, revoke.
+
+    The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+    """
 
     @cached_property
     def with_raw_response(self) -> KeysResourceWithRawResponse:
@@ -88,8 +91,10 @@ class KeysResource(SyncAPIResource):
 
         The key material is returned in
         plaintext in the response and is never retrievable again — store it securely on
-        first receipt. Can be called with a cookie session (from /v1/auth/login) or with
-        an existing API key that has `can_issue_keys` capability.
+        first receipt. Must be called with an existing API key that has the
+        `can_issue_keys` capability (the initial key issued by DealerMAX support has
+        this capability by default; rotated keys inherit it unless explicitly scoped
+        down).
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.
@@ -159,7 +164,10 @@ class KeysResource(SyncAPIResource):
 
 
 class AsyncKeysResource(AsyncAPIResource):
-    """Human session login (cookie JWT) and API key lifecycle management."""
+    """API key lifecycle management — issue, list, revoke.
+
+    The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+    """
 
     @cached_property
     def with_raw_response(self) -> AsyncKeysResourceWithRawResponse:
@@ -221,8 +229,10 @@ class AsyncKeysResource(AsyncAPIResource):
 
         The key material is returned in
         plaintext in the response and is never retrievable again — store it securely on
-        first receipt. Can be called with a cookie session (from /v1/auth/login) or with
-        an existing API key that has `can_issue_keys` capability.
+        first receipt. Must be called with an existing API key that has the
+        `can_issue_keys` capability (the initial key issued by DealerMAX support has
+        this capability by default; rotated keys inherit it unless explicitly scoped
+        down).
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.

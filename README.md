@@ -145,7 +145,6 @@ nlt_settings = client.dealers.nlt_settings.update(
         "low_eur": 0,
         "medium_eur": 3000,
     },
-    vat_treatment="private",
 )
 print(nlt_settings.down_payment_tiers)
 ```

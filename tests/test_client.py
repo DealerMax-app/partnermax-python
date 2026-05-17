@@ -40,7 +40,6 @@ from .utils import update_env
 T = TypeVar("T")
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 api_key = "My API Key"
-bearer_token = "My Bearer Token"
 
 
 def _get_params(client: BaseClient[Any, Any]) -> dict[str, str]:
@@ -141,10 +140,6 @@ class TestPartnermax:
         assert copied.api_key == "another My API Key"
         assert client.api_key == "My API Key"
 
-        copied = client.copy(bearer_token="another My Bearer Token")
-        assert copied.bearer_token == "another My Bearer Token"
-        assert client.bearer_token == "My Bearer Token"
-
     def test_copy_default_options(self, client: Partnermax) -> None:
         # options that have a default are overridden correctly
         copied = client.copy(max_retries=7)
@@ -163,11 +158,7 @@ class TestPartnermax:
 
     def test_copy_default_headers(self) -> None:
         client = Partnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         assert client.default_headers["X-Foo"] == "bar"
 
@@ -202,11 +193,7 @@ class TestPartnermax:
 
     def test_copy_default_query(self) -> None:
         client = Partnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_query={"foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"foo": "bar"}
         )
         assert _get_params(client)["foo"] == "bar"
 
@@ -332,11 +319,7 @@ class TestPartnermax:
 
     def test_client_timeout_option(self) -> None:
         client = Partnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            timeout=httpx.Timeout(0),
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
         )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -349,11 +332,7 @@ class TestPartnermax:
         # custom timeout given to the httpx client should be used
         with httpx.Client(timeout=None) as http_client:
             client = Partnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -365,11 +344,7 @@ class TestPartnermax:
         # no timeout given to the httpx client should not use the httpx default
         with httpx.Client() as http_client:
             client = Partnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -381,11 +356,7 @@ class TestPartnermax:
         # explicitly passing the default timeout currently results in it being ignored
         with httpx.Client(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
             client = Partnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -400,18 +371,13 @@ class TestPartnermax:
                 Partnermax(
                     base_url=base_url,
                     api_key=api_key,
-                    bearer_token=bearer_token,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
 
     def test_default_headers_option(self) -> None:
         test_client = Partnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         request = test_client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
@@ -420,7 +386,6 @@ class TestPartnermax:
         test_client2 = Partnermax(
             base_url=base_url,
             api_key=api_key,
-            bearer_token=bearer_token,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -435,19 +400,12 @@ class TestPartnermax:
         test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = Partnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        client = Partnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-Api-Key") == api_key
 
-        with update_env(
-            **{
-                "PARTNERMAX_API_KEY": Omit(),
-                "PARTNERMAX_BEARER_TOKEN": Omit(),
-            }
-        ):
-            client2 = Partnermax(base_url=base_url, api_key=None, bearer_token=None, _strict_response_validation=True)
+        with update_env(**{"PARTNERMAX_API_KEY": Omit()}):
+            client2 = Partnermax(base_url=base_url, api_key=None, _strict_response_validation=True)
 
         with pytest.raises(
             TypeError,
@@ -460,11 +418,7 @@ class TestPartnermax:
 
     def test_default_query_option(self) -> None:
         client = Partnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_query={"query_param": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"query_param": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
@@ -661,7 +615,6 @@ class TestPartnermax:
         with Partnermax(
             base_url=base_url,
             api_key=api_key,
-            bearer_token=bearer_token,
             _strict_response_validation=True,
             http_client=httpx.Client(transport=MockTransport(handler=mock_handler)),
         ) as client:
@@ -755,12 +708,7 @@ class TestPartnermax:
         assert response.foo == 2
 
     def test_base_url_setter(self) -> None:
-        client = Partnermax(
-            base_url="https://example.com/from_init",
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-        )
+        client = Partnermax(base_url="https://example.com/from_init", api_key=api_key, _strict_response_validation=True)
         assert client.base_url == "https://example.com/from_init/"
 
         client.base_url = "https://example.com/from_setter"  # type: ignore[assignment]
@@ -771,25 +719,16 @@ class TestPartnermax:
 
     def test_base_url_env(self) -> None:
         with update_env(PARTNERMAX_BASE_URL="http://localhost:5000/from/env"):
-            client = Partnermax(api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True)
+            client = Partnermax(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
         # explicit environment arg requires explicitness
         with update_env(PARTNERMAX_BASE_URL="http://localhost:5000/from/env"):
             with pytest.raises(ValueError, match=r"you must pass base_url=None"):
-                Partnermax(
-                    api_key=api_key,
-                    bearer_token=bearer_token,
-                    _strict_response_validation=True,
-                    environment="production",
-                )
+                Partnermax(api_key=api_key, _strict_response_validation=True, environment="production")
 
             client = Partnermax(
-                base_url=None,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                environment="production",
+                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
             )
             assert str(client.base_url).startswith("https://developers.dealermax.app")
 
@@ -799,15 +738,11 @@ class TestPartnermax:
         "client",
         [
             Partnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             Partnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -829,15 +764,11 @@ class TestPartnermax:
         "client",
         [
             Partnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             Partnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -859,15 +790,11 @@ class TestPartnermax:
         "client",
         [
             Partnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             Partnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -886,9 +813,7 @@ class TestPartnermax:
         client.close()
 
     def test_copied_client_does_not_close_http(self) -> None:
-        test_client = Partnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        test_client = Partnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -899,9 +824,7 @@ class TestPartnermax:
         assert not test_client.is_closed()
 
     def test_client_context_manager(self) -> None:
-        test_client = Partnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        test_client = Partnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -923,11 +846,7 @@ class TestPartnermax:
     def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
             Partnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                max_retries=cast(Any, None),
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None)
             )
 
     @pytest.mark.respx(base_url=base_url)
@@ -937,16 +856,12 @@ class TestPartnermax:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = Partnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        strict_client = Partnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = Partnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=False
-        )
+        non_strict_client = Partnermax(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -987,20 +902,20 @@ class TestPartnermax:
     @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: Partnermax) -> None:
-        respx_mock.post("/v1/auth/login").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/v1/dealers").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            client.auth.with_streaming_response.login(email="ops@partner-saas.com", password="redacted").__enter__()
+            client.dealers.with_streaming_response.list().__enter__()
 
         assert _get_open_connections(client) == 0
 
     @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: Partnermax) -> None:
-        respx_mock.post("/v1/auth/login").mock(return_value=httpx.Response(500))
+        respx_mock.get("/v1/dealers").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            client.auth.with_streaming_response.login(email="ops@partner-saas.com", password="redacted").__enter__()
+            client.dealers.with_streaming_response.list().__enter__()
         assert _get_open_connections(client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -1027,9 +942,9 @@ class TestPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = client.auth.with_raw_response.login(email="ops@partner-saas.com", password="redacted")
+        response = client.dealers.with_raw_response.list()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -1051,11 +966,9 @@ class TestPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = client.auth.with_raw_response.login(
-            email="ops@partner-saas.com", password="redacted", extra_headers={"x-stainless-retry-count": Omit()}
-        )
+        response = client.dealers.with_raw_response.list(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -1076,11 +989,9 @@ class TestPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = client.auth.with_raw_response.login(
-            email="ops@partner-saas.com", password="redacted", extra_headers={"x-stainless-retry-count": "42"}
-        )
+        response = client.dealers.with_raw_response.list(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
@@ -1169,10 +1080,6 @@ class TestAsyncPartnermax:
         assert copied.api_key == "another My API Key"
         assert async_client.api_key == "My API Key"
 
-        copied = async_client.copy(bearer_token="another My Bearer Token")
-        assert copied.bearer_token == "another My Bearer Token"
-        assert async_client.bearer_token == "My Bearer Token"
-
     def test_copy_default_options(self, async_client: AsyncPartnermax) -> None:
         # options that have a default are overridden correctly
         copied = async_client.copy(max_retries=7)
@@ -1191,11 +1098,7 @@ class TestAsyncPartnermax:
 
     async def test_copy_default_headers(self) -> None:
         client = AsyncPartnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         assert client.default_headers["X-Foo"] == "bar"
 
@@ -1230,11 +1133,7 @@ class TestAsyncPartnermax:
 
     async def test_copy_default_query(self) -> None:
         client = AsyncPartnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_query={"foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"foo": "bar"}
         )
         assert _get_params(client)["foo"] == "bar"
 
@@ -1362,11 +1261,7 @@ class TestAsyncPartnermax:
 
     async def test_client_timeout_option(self) -> None:
         client = AsyncPartnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            timeout=httpx.Timeout(0),
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
         )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1379,11 +1274,7 @@ class TestAsyncPartnermax:
         # custom timeout given to the httpx client should be used
         async with httpx.AsyncClient(timeout=None) as http_client:
             client = AsyncPartnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1395,11 +1286,7 @@ class TestAsyncPartnermax:
         # no timeout given to the httpx client should not use the httpx default
         async with httpx.AsyncClient() as http_client:
             client = AsyncPartnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1411,11 +1298,7 @@ class TestAsyncPartnermax:
         # explicitly passing the default timeout currently results in it being ignored
         async with httpx.AsyncClient(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
             client = AsyncPartnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                http_client=http_client,
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, http_client=http_client
             )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
@@ -1430,18 +1313,13 @@ class TestAsyncPartnermax:
                 AsyncPartnermax(
                     base_url=base_url,
                     api_key=api_key,
-                    bearer_token=bearer_token,
                     _strict_response_validation=True,
                     http_client=cast(Any, http_client),
                 )
 
     async def test_default_headers_option(self) -> None:
         test_client = AsyncPartnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_headers={"X-Foo": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
         )
         request = test_client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
@@ -1450,7 +1328,6 @@ class TestAsyncPartnermax:
         test_client2 = AsyncPartnermax(
             base_url=base_url,
             api_key=api_key,
-            bearer_token=bearer_token,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -1465,21 +1342,12 @@ class TestAsyncPartnermax:
         await test_client2.close()
 
     def test_validate_headers(self) -> None:
-        client = AsyncPartnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        client = AsyncPartnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("X-Api-Key") == api_key
 
-        with update_env(
-            **{
-                "PARTNERMAX_API_KEY": Omit(),
-                "PARTNERMAX_BEARER_TOKEN": Omit(),
-            }
-        ):
-            client2 = AsyncPartnermax(
-                base_url=base_url, api_key=None, bearer_token=None, _strict_response_validation=True
-            )
+        with update_env(**{"PARTNERMAX_API_KEY": Omit()}):
+            client2 = AsyncPartnermax(base_url=base_url, api_key=None, _strict_response_validation=True)
 
         with pytest.raises(
             TypeError,
@@ -1492,11 +1360,7 @@ class TestAsyncPartnermax:
 
     async def test_default_query_option(self) -> None:
         client = AsyncPartnermax(
-            base_url=base_url,
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
-            default_query={"query_param": "bar"},
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, default_query={"query_param": "bar"}
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
@@ -1693,7 +1557,6 @@ class TestAsyncPartnermax:
         async with AsyncPartnermax(
             base_url=base_url,
             api_key=api_key,
-            bearer_token=bearer_token,
             _strict_response_validation=True,
             http_client=httpx.AsyncClient(transport=MockTransport(handler=mock_handler)),
         ) as client:
@@ -1792,10 +1655,7 @@ class TestAsyncPartnermax:
 
     async def test_base_url_setter(self) -> None:
         client = AsyncPartnermax(
-            base_url="https://example.com/from_init",
-            api_key=api_key,
-            bearer_token=bearer_token,
-            _strict_response_validation=True,
+            base_url="https://example.com/from_init", api_key=api_key, _strict_response_validation=True
         )
         assert client.base_url == "https://example.com/from_init/"
 
@@ -1807,25 +1667,16 @@ class TestAsyncPartnermax:
 
     async def test_base_url_env(self) -> None:
         with update_env(PARTNERMAX_BASE_URL="http://localhost:5000/from/env"):
-            client = AsyncPartnermax(api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True)
+            client = AsyncPartnermax(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
         # explicit environment arg requires explicitness
         with update_env(PARTNERMAX_BASE_URL="http://localhost:5000/from/env"):
             with pytest.raises(ValueError, match=r"you must pass base_url=None"):
-                AsyncPartnermax(
-                    api_key=api_key,
-                    bearer_token=bearer_token,
-                    _strict_response_validation=True,
-                    environment="production",
-                )
+                AsyncPartnermax(api_key=api_key, _strict_response_validation=True, environment="production")
 
             client = AsyncPartnermax(
-                base_url=None,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                environment="production",
+                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
             )
             assert str(client.base_url).startswith("https://developers.dealermax.app")
 
@@ -1835,15 +1686,11 @@ class TestAsyncPartnermax:
         "client",
         [
             AsyncPartnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncPartnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1865,15 +1712,11 @@ class TestAsyncPartnermax:
         "client",
         [
             AsyncPartnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncPartnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1895,15 +1738,11 @@ class TestAsyncPartnermax:
         "client",
         [
             AsyncPartnermax(
-                base_url="http://localhost:5000/custom/path/",
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
+                base_url="http://localhost:5000/custom/path/", api_key=api_key, _strict_response_validation=True
             ),
             AsyncPartnermax(
                 base_url="http://localhost:5000/custom/path/",
                 api_key=api_key,
-                bearer_token=bearer_token,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1922,9 +1761,7 @@ class TestAsyncPartnermax:
         await client.close()
 
     async def test_copied_client_does_not_close_http(self) -> None:
-        test_client = AsyncPartnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        test_client = AsyncPartnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         assert not test_client.is_closed()
 
         copied = test_client.copy()
@@ -1936,9 +1773,7 @@ class TestAsyncPartnermax:
         assert not test_client.is_closed()
 
     async def test_client_context_manager(self) -> None:
-        test_client = AsyncPartnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        test_client = AsyncPartnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
         async with test_client as c2:
             assert c2 is test_client
             assert not c2.is_closed()
@@ -1962,11 +1797,7 @@ class TestAsyncPartnermax:
     async def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
             AsyncPartnermax(
-                base_url=base_url,
-                api_key=api_key,
-                bearer_token=bearer_token,
-                _strict_response_validation=True,
-                max_retries=cast(Any, None),
+                base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None)
             )
 
     @pytest.mark.respx(base_url=base_url)
@@ -1976,16 +1807,12 @@ class TestAsyncPartnermax:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = AsyncPartnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=True
-        )
+        strict_client = AsyncPartnermax(base_url=base_url, api_key=api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             await strict_client.get("/foo", cast_to=Model)
 
-        non_strict_client = AsyncPartnermax(
-            base_url=base_url, api_key=api_key, bearer_token=bearer_token, _strict_response_validation=False
-        )
+        non_strict_client = AsyncPartnermax(base_url=base_url, api_key=api_key, _strict_response_validation=False)
 
         response = await non_strict_client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -2028,12 +1855,10 @@ class TestAsyncPartnermax:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncPartnermax
     ) -> None:
-        respx_mock.post("/v1/auth/login").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/v1/dealers").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await async_client.auth.with_streaming_response.login(
-                email="ops@partner-saas.com", password="redacted"
-            ).__aenter__()
+            await async_client.dealers.with_streaming_response.list().__aenter__()
 
         assert _get_open_connections(async_client) == 0
 
@@ -2042,12 +1867,10 @@ class TestAsyncPartnermax:
     async def test_retrying_status_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncPartnermax
     ) -> None:
-        respx_mock.post("/v1/auth/login").mock(return_value=httpx.Response(500))
+        respx_mock.get("/v1/dealers").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await async_client.auth.with_streaming_response.login(
-                email="ops@partner-saas.com", password="redacted"
-            ).__aenter__()
+            await async_client.dealers.with_streaming_response.list().__aenter__()
         assert _get_open_connections(async_client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -2074,9 +1897,9 @@ class TestAsyncPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = await client.auth.with_raw_response.login(email="ops@partner-saas.com", password="redacted")
+        response = await client.dealers.with_raw_response.list()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -2098,11 +1921,9 @@ class TestAsyncPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = await client.auth.with_raw_response.login(
-            email="ops@partner-saas.com", password="redacted", extra_headers={"x-stainless-retry-count": Omit()}
-        )
+        response = await client.dealers.with_raw_response.list(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -2123,11 +1944,9 @@ class TestAsyncPartnermax:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v1/auth/login").mock(side_effect=retry_handler)
+        respx_mock.get("/v1/dealers").mock(side_effect=retry_handler)
 
-        response = await client.auth.with_raw_response.login(
-            email="ops@partner-saas.com", password="redacted", extra_headers={"x-stainless-retry-count": "42"}
-        )
+        response = await client.dealers.with_raw_response.list(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 

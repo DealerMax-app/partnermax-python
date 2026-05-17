@@ -1,15 +1,3 @@
-# Auth
-
-Types:
-
-```python
-from partnermax.types import AuthLoginResponse
-```
-
-Methods:
-
-- <code title="post /v1/auth/login">client.auth.<a href="./src/partnermax/resources/auth.py">login</a>(\*\*<a href="src/partnermax/types/auth_login_params.py">params</a>) -> <a href="./src/partnermax/types/auth_login_response.py">AuthLoginResponse</a></code>
-
 # Keys
 
 Types:

@@ -37,8 +37,7 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import auth, keys, dealers
-    from .resources.auth import AuthResource, AsyncAuthResource
+    from .resources import keys, dealers
     from .resources.keys import KeysResource, AsyncKeysResource
     from .resources.dealers.dealers import DealersResource, AsyncDealersResource
 
@@ -151,13 +150,6 @@ class Partnermax(SyncAPIClient):
             custom_query=default_query,
             _strict_response_validation=_strict_response_validation,
         )
-
-    @cached_property
-    def auth(self) -> AuthResource:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AuthResource
-
-        return AuthResource(self)
 
     @cached_property
     def keys(self) -> KeysResource:
@@ -410,13 +402,6 @@ class AsyncPartnermax(AsyncAPIClient):
         )
 
     @cached_property
-    def auth(self) -> AsyncAuthResource:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AsyncAuthResource
-
-        return AsyncAuthResource(self)
-
-    @cached_property
     def keys(self) -> AsyncKeysResource:
         """Human session login (cookie JWT) and API key lifecycle management."""
         from .resources.keys import AsyncKeysResource
@@ -581,13 +566,6 @@ class PartnermaxWithRawResponse:
         self._client = client
 
     @cached_property
-    def auth(self) -> auth.AuthResourceWithRawResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AuthResourceWithRawResponse
-
-        return AuthResourceWithRawResponse(self._client.auth)
-
-    @cached_property
     def keys(self) -> keys.KeysResourceWithRawResponse:
         """Human session login (cookie JWT) and API key lifecycle management."""
         from .resources.keys import KeysResourceWithRawResponse
@@ -607,13 +585,6 @@ class AsyncPartnermaxWithRawResponse:
 
     def __init__(self, client: AsyncPartnermax) -> None:
         self._client = client
-
-    @cached_property
-    def auth(self) -> auth.AsyncAuthResourceWithRawResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AsyncAuthResourceWithRawResponse
-
-        return AsyncAuthResourceWithRawResponse(self._client.auth)
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithRawResponse:
@@ -637,13 +608,6 @@ class PartnermaxWithStreamedResponse:
         self._client = client
 
     @cached_property
-    def auth(self) -> auth.AuthResourceWithStreamingResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AuthResourceWithStreamingResponse
-
-        return AuthResourceWithStreamingResponse(self._client.auth)
-
-    @cached_property
     def keys(self) -> keys.KeysResourceWithStreamingResponse:
         """Human session login (cookie JWT) and API key lifecycle management."""
         from .resources.keys import KeysResourceWithStreamingResponse
@@ -663,13 +627,6 @@ class AsyncPartnermaxWithStreamedResponse:
 
     def __init__(self, client: AsyncPartnermax) -> None:
         self._client = client
-
-    @cached_property
-    def auth(self) -> auth.AsyncAuthResourceWithStreamingResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
-        from .resources.auth import AsyncAuthResourceWithStreamingResponse
-
-        return AsyncAuthResourceWithStreamingResponse(self._client.auth)
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithStreamingResponse:

@@ -95,10 +95,10 @@ class OffersResource(SyncAPIResource):
         canone_max_eur: int | Omit = omit,
         cursor: str | Omit = omit,
         duration_months: Literal[24, 36, 48] | Omit = omit,
-        fuel_type: Literal["electric", "hybrid", "plugin_hybrid", "petrol", "diesel", "lpg", "methane"] | Omit = omit,
+        fuel_type: str | Omit = omit,
         km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000] | Omit = omit,
         limit: int | Omit = omit,
-        segment: Literal["A", "B", "C", "D", "E", "SUV", "VAN"] | Omit = omit,
+        segment: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -117,6 +117,12 @@ class OffersResource(SyncAPIResource):
           canone_max_eur: Upper bound on displayed monthly canon (EUR).
 
           cursor: Opaque pagination cursor.
+
+          fuel_type: Raw Italian label (case-insensitive ILIKE match). Examples: "Benzina", "Diesel",
+              "Ibrido benzina", "Ibrido diesel", "Elettrica", "GPL", "Metano".
+
+          segment: Raw Italian label (case-insensitive ILIKE substring match). Examples: "SUV
+              piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
 
           extra_headers: Send extra headers
 
@@ -224,10 +230,10 @@ class AsyncOffersResource(AsyncAPIResource):
         canone_max_eur: int | Omit = omit,
         cursor: str | Omit = omit,
         duration_months: Literal[24, 36, 48] | Omit = omit,
-        fuel_type: Literal["electric", "hybrid", "plugin_hybrid", "petrol", "diesel", "lpg", "methane"] | Omit = omit,
+        fuel_type: str | Omit = omit,
         km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000] | Omit = omit,
         limit: int | Omit = omit,
-        segment: Literal["A", "B", "C", "D", "E", "SUV", "VAN"] | Omit = omit,
+        segment: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -246,6 +252,12 @@ class AsyncOffersResource(AsyncAPIResource):
           canone_max_eur: Upper bound on displayed monthly canon (EUR).
 
           cursor: Opaque pagination cursor.
+
+          fuel_type: Raw Italian label (case-insensitive ILIKE match). Examples: "Benzina", "Diesel",
+              "Ibrido benzina", "Ibrido diesel", "Elettrica", "GPL", "Metano".
+
+          segment: Raw Italian label (case-insensitive ILIKE substring match). Examples: "SUV
+              piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
 
           extra_headers: Send extra headers
 

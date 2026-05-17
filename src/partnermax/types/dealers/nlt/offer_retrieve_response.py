@@ -8,71 +8,63 @@ from ...._models import BaseModel
 
 __all__ = [
     "OfferRetrieveResponse",
-    "AccessoriInclusi",
-    "AddonsDisponibili",
-    "AddonsDisponibiliAutoSostitutiva",
-    "AddonsDisponibiliPneumatici",
-    "AnticipoScenariEur",
-    "AnticipoScenariLabels",
+    "AvailableAddons",
+    "AvailableAddonsReplacementVehicle",
+    "AvailableAddonsTires",
+    "DownPaymentScenariosEur",
+    "DownPaymentScenariosLabels",
     "Gallery",
+    "IncludedAccessory",
+    "IncludedService",
     "NetworkOffer",
-    "Quotazioni",
-    "ServiziInclusi",
+    "Quotation",
     "Tag",
 ]
 
 
-class AccessoriInclusi(BaseModel):
-    codice: str
+class AvailableAddonsReplacementVehicle(BaseModel):
+    category_description: str
 
-    descrizione: str
-
-    prezzo_extra_eur: float
-
-
-class AddonsDisponibiliAutoSostitutiva(BaseModel):
-    categoria_default: str
+    default_category: str
     """Replacement vehicle category (B fixed)."""
 
-    categoria_descrizione: str
-
-    costo_mensile_eur: float
+    monthly_cost_eur: float
 
 
-class AddonsDisponibiliPneumatici(BaseModel):
-    costo_treno_eur: float
-    """Cost of one set of 4 tyres, EUR."""
-
-    diametro_in: int
+class AvailableAddonsTires(BaseModel):
+    diameter_in: int
     """Tyre diameter in inches."""
 
-    regola_cambio: str
+    replacement_rule: str
     """Replacement rule (e.g. one set every 30 000 km, rounded up)."""
 
-
-class AddonsDisponibili(BaseModel):
-    auto_sostitutiva: Optional[AddonsDisponibiliAutoSostitutiva] = None
-
-    pneumatici: Optional[AddonsDisponibiliPneumatici] = None
+    set_cost_eur: float
+    """Cost of one set of 4 tyres, EUR."""
 
 
-class AnticipoScenariEur(BaseModel):
-    anticipo_medio: int
+class AvailableAddons(BaseModel):
+    replacement_vehicle: Optional[AvailableAddonsReplacementVehicle] = None
+
+    tires: Optional[AvailableAddonsTires] = None
+
+
+class DownPaymentScenariosEur(BaseModel):
+    medium: int
     """12.5% down-payment scenario, whole EUR."""
 
-    anticipo_standard: int
+    standard: int
     """25% down-payment scenario, whole EUR (matches vetrina canon)."""
 
-    anticipo_zero: int
+    zero: int
     """Zero down-payment scenario, whole EUR."""
 
 
-class AnticipoScenariLabels(BaseModel):
-    anticipo_medio: str
+class DownPaymentScenariosLabels(BaseModel):
+    medium: str
 
-    anticipo_standard: str
+    standard: str
 
-    anticipo_zero: str
+    zero: str
 
 
 class Gallery(BaseModel):
@@ -81,12 +73,28 @@ class Gallery(BaseModel):
     url: str
 
 
-class NetworkOffer(BaseModel):
-    canone_mensile_min_eur: float
+class IncludedAccessory(BaseModel):
+    code: str
 
+    description: str
+
+    extra_price_eur: float
+
+
+class IncludedService(BaseModel):
+    name: str
+    """Service name (e.g. "Assicurazione RCA", "Manutenzione")."""
+
+    description: Optional[str] = None
+    """Short human description (e.g. "Responsabilità Civile Auto")."""
+
+
+class NetworkOffer(BaseModel):
     dealer_id: int
 
     dealer_name: str
+
+    min_monthly_canon_eur: float
 
     city: Optional[str] = None
 
@@ -103,25 +111,17 @@ class NetworkOffer(BaseModel):
     review_count: Optional[int] = None
 
 
-class Quotazioni(BaseModel):
-    canone_mensile_eur: float
-    """Displayed monthly canon for this (durata, km) cell.
+class Quotation(BaseModel):
+    duration_months: Literal[36, 48, 60]
+
+    km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000]
+
+    monthly_canon_eur: float
+    """Displayed monthly canon for this (duration, km) cell.
 
     Computed by `calcola_canone_vetrina` for the primary dealer of the partner
-    network; VAT-inclusive when `solo_privati=true`.
+    network; VAT-inclusive when `private_only=true`.
     """
-
-    durata_mesi: Literal[36, 48, 60]
-
-    km_inclusi_anno: Literal[10000, 15000, 20000, 25000, 30000, 40000]
-
-
-class ServiziInclusi(BaseModel):
-    name: str
-    """Service name (e.g. "Assicurazione RCA", "Manutenzione")."""
-
-    description: Optional[str] = None
-    """Short human description (e.g. "Responsabilità Civile Auto")."""
 
 
 class Tag(BaseModel):
@@ -137,78 +137,73 @@ class Tag(BaseModel):
 class OfferRetrieveResponse(BaseModel):
     """Full offer detail.
 
-    Shape mirrors apimax MCP `get_nlt_offer_details` (`apimax/app/api/mcp_server.py::_tool_get_nlt_offer_details`) bit-for-bit so partnermax SDK consumers stay aligned with the Custom GPT / MCP clients on the DealerMAX network.
+    Field names: American English snake_case (Stripe-style SDK contract). Values: raw Italian, apimax-aligned. Shape mirrors apimax MCP `get_nlt_offer_details` (`apimax/app/api/mcp_server.py::_tool_get_nlt_offer_details`).
     """
 
     found: bool
 
-    iva_inclusa: bool
-    """True when canon is VAT-inclusive (i.e. `solo_privati=true`)."""
-
     network_dealer_count: int
 
+    offer_id: str
+    """Numeric `nlt_offerte.id_offerta` as string.
+
+    Same value returned by the listing endpoint.
+    """
+
     slug: str
-    """Offer slug (stable identifier shared with apimax surfaces)."""
+    """
+    Offer slug (stable identifier shared with apimax surfaces and used in canonical
+    URLs).
+    """
 
     title: str
 
-    accessori_di_serie: Optional[List[str]] = None
-    """Standard equipment list (one entry per item).
+    vat_included: bool
+    """True when canon is VAT-inclusive (i.e. `private_only=true`)."""
 
-    Sourced from `mnet_dettagli.equipaggiamento` split on newlines/semicolons.
-    Currently empty on every live offer (upstream column unpopulated); will
-    auto-fill when the data flows in.
-    """
+    available_addons: Optional[AvailableAddons] = None
 
-    accessori_inclusi: Optional[List[AccessoriInclusi]] = None
-
-    addons_disponibili: Optional[AddonsDisponibili] = None
-
-    anticipo_scenari_eur: Optional[AnticipoScenariEur] = None
-
-    anticipo_scenari_labels: Optional[AnticipoScenariLabels] = None
-
-    canone_mensile_min_eur: Optional[float] = None
-    """
-    Lowest canon across the partner network for this offer (primary dealer's price).
-    """
+    brand: Optional[str] = None
 
     description_full: Optional[str] = None
     """AI-generated long-form description."""
 
     description_short: Optional[str] = None
 
-    dettagli_tecnici: Optional[Dict[str, object]] = None
-    """
-    Full Motornet technical sheet — apimax: `_get_dettagli_motornet`
-    (`nlt_resolver.py:752`). Every non-null `mnet_dettagli` column for this
-    `codice_motornet_uni` flattened into a plain dict (~30-40 keys typically
-    populated out of 90 columns). Native units preserved: cilindrata (cc), kw, hp,
-    coppia, accelerazione (s), velocita (km/h), lunghezza/larghezza/altezza/passo
-    (cm), peso (kg), bagagliaio (L, free-text), emissioni_co2 (g/km, free-text),
-    pneumatici_anteriori ("205/55 R17"), trazione, alimentazione, cambio, euro,
-    autonomia_media, capacita_nominale_batteria, etc. Keys are stable across offers;
-    values are int/float/bool/string (timestamps ISO-formatted).
-    """
+    down_payment_scenarios_eur: Optional[DownPaymentScenariosEur] = None
+
+    down_payment_scenarios_labels: Optional[DownPaymentScenariosLabels] = None
 
     fuel_type: Optional[str] = None
-    """Raw Italian label from `nlt_offerte.alimentazione` (e.g. "Benzina", "Ibrida")."""
+    """Raw Italian label from `nlt_offerte.alimentazione` (e.g.
+
+    "Benzina", "Ibrido diesel").
+    """
 
     gallery: Optional[List[Gallery]] = None
 
     image_url: Optional[str] = None
 
+    included_accessories: Optional[List[IncludedAccessory]] = None
+
+    included_services: Optional[List[IncludedService]] = None
+    """Services normally included in the canone.
+
+    apimax: `_get_services_included` (`nlt_resolver.py:719`) reads global
+    `nlt_services` is_active table.
+    """
+
     last_modified: Optional[datetime] = None
 
-    marca: Optional[str] = None
+    min_monthly_canon_eur: Optional[float] = None
+    """
+    Lowest canon across the partner network for this offer (primary dealer's price).
+    """
 
-    modello: Optional[str] = None
+    model: Optional[str] = None
 
     network_offers: Optional[List[NetworkOffer]] = None
     """All the partner's dealers that can fulfil this offer, sorted by canon ASC."""
-
-    prezzo_totale_eur: Optional[float] = None
-    """List price IVA-inclusive (vehicle + accessories + MSS)."""
 
     primary_dealer_city: Optional[str] = None
 
@@ -216,28 +211,48 @@ class OfferRetrieveResponse(BaseModel):
 
     primary_dealer_province: Optional[str] = None
 
-    quotazioni: Optional[List[Quotazioni]] = None
-
-    segmento: Optional[str] = None
-
-    servizi_inclusi: Optional[List[ServiziInclusi]] = None
-    """Services normally included in the canone.
-
-    apimax: `_get_services_included` (`nlt_resolver.py:719`) reads global
-    `nlt_services` is_active table — same 8 services across the network
-    (Assicurazione RCA / Kasco / Incendio-Furto, Manutenzione, Assistenza Stradale,
-    Bollo, Pneumatici, Veicolo in anticipo). Not per-offer.
-    """
-
-    solo_privati: Optional[bool] = None
+    private_only: Optional[bool] = None
     """Per-offer VAT scope: true → consumer-facing (B2C, VAT-inclusive).
 
-    false → business (B2B, VAT-exclusive).
+    false → business (B2B, VAT-exclusive). Sourced from `nlt_offerte.solo_privati`.
+    """
+
+    quotations: Optional[List[Quotation]] = None
+
+    segment: Optional[str] = None
+    """Raw Italian label from `nlt_offerte.segmento` (e.g.
+
+    "SUV piccoli", "Superiori").
+    """
+
+    standard_equipment: Optional[List[str]] = None
+    """Standard equipment list (one entry per item).
+
+    Sourced from `mnet_dettagli.equipaggiamento` split on newlines/semicolons.
+    Currently empty on every live offer (upstream column unpopulated); will
+    auto-fill when the data flows in.
     """
 
     tags: Optional[List[Tag]] = None
 
-    transmission: Optional[str] = None
-    """Raw Italian label from `nlt_offerte.cambio`."""
+    technical_details: Optional[Dict[str, object]] = None
+    """
+    Full Motornet technical sheet — apimax: `_get_dettagli_motornet`
+    (`nlt_resolver.py:752`). Every non-null `mnet_dettagli` column for this
+    `codice_motornet_uni` flattened into a plain dict (~30-40 keys typically
+    populated out of 90 columns). KEYS stay Italian because they are raw SQL column
+    names: cilindrata (cc), kw, hp, coppia, accelerazione (s), velocita (km/h),
+    lunghezza/larghezza/altezza/passo (cm), peso (kg), bagagliaio (L, free-text),
+    emissioni_co2 (g/km, free-text), pneumatici_anteriori ("205/55 R17"), trazione,
+    alimentazione, cambio, euro, autonomia_media, capacita_nominale_batteria, etc.
+    Native units preserved; values are int/float/bool/string (timestamps
+    ISO-formatted).
+    """
 
-    versione: Optional[str] = None
+    total_price_eur: Optional[float] = None
+    """List price IVA-inclusive (vehicle + accessories + MSS)."""
+
+    transmission: Optional[str] = None
+    """Raw Italian label from `nlt_offerte.cambio` (e.g. "Automatico sequenziale")."""
+
+    trim: Optional[str] = None

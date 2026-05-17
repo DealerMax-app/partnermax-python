@@ -19,10 +19,19 @@ class OfferListParams(TypedDict, total=False):
 
     duration_months: Literal[24, 36, 48]
 
-    fuel_type: Literal["electric", "hybrid", "plugin_hybrid", "petrol", "diesel", "lpg", "methane"]
+    fuel_type: str
+    """Raw Italian label (case-insensitive ILIKE match).
+
+    Examples: "Benzina", "Diesel", "Ibrido benzina", "Ibrido diesel", "Elettrica",
+    "GPL", "Metano".
+    """
 
     km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000]
 
     limit: int
 
-    segment: Literal["A", "B", "C", "D", "E", "SUV", "VAN"]
+    segment: str
+    """Raw Italian label (case-insensitive ILIKE substring match).
+
+    Examples: "SUV piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
+    """

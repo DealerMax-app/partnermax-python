@@ -15,9 +15,11 @@ class NltSettingUpdateParams(TypedDict, total=False):
     agency_markup_percent: Required[float]
 
     down_payment_tiers: Required[DownPaymentTiersParam]
-    """
-    Three down-payment scenarios shown to consumers, in strictly ascending order
-    (low < medium < high).
+    """Three down-payment scenarios (basso / medio / alto).
+
+    Each tier carries `{percent_of_list (0–100), fixed_eur (≥0)}`. No
+    strict-ascending check — the final EUR per tier is offer-dependent
+    (`listino_imponibile * pct + eur`).
     """
 
     image_mode: Required[Literal["branded", "scenario_locked", "scenario_seasonal"]]

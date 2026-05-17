@@ -39,7 +39,7 @@ class DealerDetail(DealerSummary):
     metadata: Optional[Dict[str, str]] = None
 
     nlt_settings: Optional[NltSettings] = None
-    """Dealer-level NLT economics.
+    """Dealer-level NLT economics + image rendering preferences.
 
     VAT treatment is NOT a dealer-level field — it is a property of the offer (see
     `NltOfferSummary.vat_treatment`).

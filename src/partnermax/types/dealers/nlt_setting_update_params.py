@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Literal, Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
@@ -19,6 +20,11 @@ class NltSettingUpdateParams(TypedDict, total=False):
     (low < medium < high).
     """
 
+    image_mode: Required[Literal["branded", "scenario_locked", "scenario_seasonal"]]
+
     currency: Literal["EUR"]
+
+    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]]
+    """Required when `image_mode='scenario_locked'`; must be null otherwise."""
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

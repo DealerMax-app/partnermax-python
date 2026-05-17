@@ -13,6 +13,7 @@ __all__ = [
     "AvailableAddonsTires",
     "DownPaymentScenariosEur",
     "DownPaymentScenariosLabels",
+    "Faq",
     "Gallery",
     "IncludedAccessory",
     "IncludedService",
@@ -65,6 +66,17 @@ class DownPaymentScenariosLabels(BaseModel):
     standard: str
 
     zero: str
+
+
+class Faq(BaseModel):
+    answer: str
+    """
+    Italian answer (no placeholders — values from the offer payload + Motornet
+    specs).
+    """
+
+    question: str
+    """Italian question."""
 
 
 class Gallery(BaseModel):
@@ -173,6 +185,14 @@ class OfferRetrieveResponse(BaseModel):
     down_payment_scenarios_eur: Optional[DownPaymentScenariosEur] = None
 
     down_payment_scenarios_labels: Optional[DownPaymentScenariosLabels] = None
+
+    faqs: Optional[List[Faq]] = None
+    """
+    Italian FAQ for this offer — apimax `build_offer_faqs`
+    (`seo_engine/nlt_faq_builder.py:63`), no cap. Derived from offer payload +
+    Motornet specs (dimensioni, bagagliaio, CO2, motore, posti/porte, prestazioni,
+    canone preset 48/15k, canone minimo, durate, IVA, anticipi).
+    """
 
     fuel_type: Optional[str] = None
     """Raw Italian label from `nlt_offerte.alimentazione` (e.g.

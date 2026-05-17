@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 from datetime import datetime
 from typing_extensions import Literal
 
@@ -17,6 +17,7 @@ __all__ = [
     "Gallery",
     "NetworkOffer",
     "Quotazioni",
+    "ServiziInclusi",
     "Tag",
 ]
 
@@ -115,6 +116,14 @@ class Quotazioni(BaseModel):
     km_inclusi_anno: Literal[10000, 15000, 20000, 25000, 30000, 40000]
 
 
+class ServiziInclusi(BaseModel):
+    name: str
+    """Service name (e.g. "Assicurazione RCA", "Manutenzione")."""
+
+    description: Optional[str] = None
+    """Short human description (e.g. "Responsabilità Civile Auto")."""
+
+
 class Tag(BaseModel):
     name: str
 
@@ -143,6 +152,14 @@ class OfferRetrieveResponse(BaseModel):
 
     title: str
 
+    accessori_di_serie: Optional[List[str]] = None
+    """Standard equipment list (one entry per item).
+
+    Sourced from `mnet_dettagli.equipaggiamento` split on newlines/semicolons.
+    Currently empty on every live offer (upstream column unpopulated); will
+    auto-fill when the data flows in.
+    """
+
     accessori_inclusi: Optional[List[AccessoriInclusi]] = None
 
     addons_disponibili: Optional[AddonsDisponibili] = None
@@ -160,6 +177,19 @@ class OfferRetrieveResponse(BaseModel):
     """AI-generated long-form description."""
 
     description_short: Optional[str] = None
+
+    dettagli_tecnici: Optional[Dict[str, object]] = None
+    """
+    Full Motornet technical sheet — apimax: `_get_dettagli_motornet`
+    (`nlt_resolver.py:752`). Every non-null `mnet_dettagli` column for this
+    `codice_motornet_uni` flattened into a plain dict (~30-40 keys typically
+    populated out of 90 columns). Native units preserved: cilindrata (cc), kw, hp,
+    coppia, accelerazione (s), velocita (km/h), lunghezza/larghezza/altezza/passo
+    (cm), peso (kg), bagagliaio (L, free-text), emissioni_co2 (g/km, free-text),
+    pneumatici_anteriori ("205/55 R17"), trazione, alimentazione, cambio, euro,
+    autonomia_media, capacita_nominale_batteria, etc. Keys are stable across offers;
+    values are int/float/bool/string (timestamps ISO-formatted).
+    """
 
     fuel_type: Optional[str] = None
     """Raw Italian label from `nlt_offerte.alimentazione` (e.g. "Benzina", "Ibrida")."""
@@ -189,6 +219,15 @@ class OfferRetrieveResponse(BaseModel):
     quotazioni: Optional[List[Quotazioni]] = None
 
     segmento: Optional[str] = None
+
+    servizi_inclusi: Optional[List[ServiziInclusi]] = None
+    """Services normally included in the canone.
+
+    apimax: `_get_services_included` (`nlt_resolver.py:719`) reads global
+    `nlt_services` is_active table — same 8 services across the network
+    (Assicurazione RCA / Kasco / Incendio-Furto, Manutenzione, Assistenza Stradale,
+    Bollo, Pneumatici, Veicolo in anticipo). Not per-offer.
+    """
 
     solo_privati: Optional[bool] = None
     """Per-offer VAT scope: true → consumer-facing (B2C, VAT-inclusive).

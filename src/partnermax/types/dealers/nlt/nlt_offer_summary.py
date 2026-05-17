@@ -33,6 +33,13 @@ class NltOfferSummary(BaseModel):
 
     segment: Literal["A", "B", "C", "D", "E", "SUV", "VAN"]
 
+    vat_treatment: Literal["private", "business"]
+    """VAT treatment of this offer (not the dealer).
+
+    `private` → `monthly_canon_from_eur` is VAT-inclusive (×1.22). `business` →
+    VAT-exclusive. Sourced from `nlt_offerte.solo_privati`.
+    """
+
     canonical_url: Optional[str] = None
     """Consumer-facing URL on the dealer's public site."""
 

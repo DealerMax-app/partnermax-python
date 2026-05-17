@@ -16,30 +16,32 @@ The REST API documentation can be found on [developers.dealermax.app](https://de
 ## Installation
 
 ```sh
-# install from the production repo
-pip install git+ssh://git@github.com/DealerMax-app/partnermax-python.git
+# install from PyPI
+pip install partnermax
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://www.stainless.com/docs/guides/publish), this will become: `pip install partnermax`
 
 ## Usage
 
 The full API of this library can be found in [api.md](api.md).
 
 ```python
+import os
 from partnermax import Partnermax
 
 client = Partnermax(
+    api_key=os.environ.get("PARTNERMAX_API_KEY"),  # This is the default and can be omitted
     # defaults to "production".
     environment="sandbox",
 )
 
-response = client.auth.login(
-    email="ops@partner-saas.com",
-    password="redacted",
+dealer_detail = client.dealers.create(
+    business_name="Rossi Automobili S.R.L.",
+    contact_email="info@rossi-auto.it",
+    postal_code="20121",
+    primary_domain="rossi-auto.it",
+    province_code="MI",
+    vat_number="IT01234567890",
 )
-print(response.partner_id)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -52,21 +54,26 @@ so that your API Key is not stored in source control.
 Simply import `AsyncPartnermax` instead of `Partnermax` and use `await` with each API call:
 
 ```python
+import os
 import asyncio
 from partnermax import AsyncPartnermax
 
 client = AsyncPartnermax(
+    api_key=os.environ.get("PARTNERMAX_API_KEY"),  # This is the default and can be omitted
     # defaults to "production".
     environment="sandbox",
 )
 
 
 async def main() -> None:
-    response = await client.auth.login(
-        email="ops@partner-saas.com",
-        password="redacted",
+    dealer_detail = await client.dealers.create(
+        business_name="Rossi Automobili S.R.L.",
+        contact_email="info@rossi-auto.it",
+        postal_code="20121",
+        primary_domain="rossi-auto.it",
+        province_code="MI",
+        vat_number="IT01234567890",
     )
-    print(response.partner_id)
 
 
 asyncio.run(main())
@@ -81,13 +88,14 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from the production repo
-pip install 'partnermax[aiohttp] @ git+ssh://git@github.com/DealerMax-app/partnermax-python.git'
+# install from PyPI
+pip install partnermax[aiohttp]
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
 
 ```python
+import os
 import asyncio
 from partnermax import DefaultAioHttpClient
 from partnermax import AsyncPartnermax
@@ -95,13 +103,17 @@ from partnermax import AsyncPartnermax
 
 async def main() -> None:
     async with AsyncPartnermax(
+        api_key=os.environ.get("PARTNERMAX_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        response = await client.auth.login(
-            email="ops@partner-saas.com",
-            password="redacted",
+        dealer_detail = await client.dealers.create(
+            business_name="Rossi Automobili S.R.L.",
+            contact_email="info@rossi-auto.it",
+            postal_code="20121",
+            primary_domain="rossi-auto.it",
+            province_code="MI",
+            vat_number="IT01234567890",
         )
-        print(response.partner_id)
 
 
 asyncio.run(main())
@@ -154,10 +166,7 @@ from partnermax import Partnermax
 client = Partnermax()
 
 try:
-    client.auth.login(
-        email="ops@partner-saas.com",
-        password="redacted",
-    )
+    client.dealers.list()
 except partnermax.APIConnectionError as e:
     print("The server could not be reached")
     print(e.__cause__)  # an underlying Exception, likely raised within httpx.
@@ -200,10 +209,7 @@ client = Partnermax(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).auth.login(
-    email="ops@partner-saas.com",
-    password="redacted",
-)
+client.with_options(max_retries=5).dealers.list()
 ```
 
 ### Timeouts
@@ -226,10 +232,7 @@ client = Partnermax(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).auth.login(
-    email="ops@partner-saas.com",
-    password="redacted",
-)
+client.with_options(timeout=5.0).dealers.list()
 ```
 
 On timeout, an `APITimeoutError` is thrown.
@@ -270,14 +273,11 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from partnermax import Partnermax
 
 client = Partnermax()
-response = client.auth.with_raw_response.login(
-    email="ops@partner-saas.com",
-    password="redacted",
-)
+response = client.dealers.with_raw_response.list()
 print(response.headers.get('X-My-Header'))
 
-auth = response.parse()  # get the object that `auth.login()` would have returned
-print(auth.partner_id)
+dealer = response.parse()  # get the object that `dealers.list()` would have returned
+print(dealer.data)
 ```
 
 These methods return an [`APIResponse`](https://github.com/DealerMax-app/partnermax-python/tree/main/src/partnermax/_response.py) object.
@@ -291,10 +291,7 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.auth.with_streaming_response.login(
-    email="ops@partner-saas.com",
-    password="redacted",
-) as response:
+with client.dealers.with_streaming_response.list() as response:
     print(response.headers.get("X-My-Header"))
 
     for line in response.iter_lines():

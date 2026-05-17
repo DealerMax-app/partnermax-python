@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 (2026-05-17)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** api update ([c6bbbc9](https://github.com/DealerMax-app/partnermax-python/commit/c6bbbc935dac5ffe3836ea5a1e0a05695e257564))
+
+
+### Chores
+
+* update SDK settings ([330cce0](https://github.com/DealerMax-app/partnermax-python/commit/330cce0d4b5c07c78814f22e0021e25aa9373bf6))
+* update SDK settings ([7f94790](https://github.com/DealerMax-app/partnermax-python/commit/7f94790da7d611485d22af9a3917411cdd84c9fb))
+
 ## 0.1.0 (2026-05-17)
 
 Full Changelog: [v0.0.2...v0.1.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.0.2...v0.1.0)

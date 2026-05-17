@@ -153,7 +153,10 @@ class Partnermax(SyncAPIClient):
 
     @cached_property
     def keys(self) -> KeysResource:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import KeysResource
 
         return KeysResource(self)
@@ -403,7 +406,10 @@ class AsyncPartnermax(AsyncAPIClient):
 
     @cached_property
     def keys(self) -> AsyncKeysResource:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import AsyncKeysResource
 
         return AsyncKeysResource(self)
@@ -567,7 +573,10 @@ class PartnermaxWithRawResponse:
 
     @cached_property
     def keys(self) -> keys.KeysResourceWithRawResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import KeysResourceWithRawResponse
 
         return KeysResourceWithRawResponse(self._client.keys)
@@ -588,7 +597,10 @@ class AsyncPartnermaxWithRawResponse:
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithRawResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import AsyncKeysResourceWithRawResponse
 
         return AsyncKeysResourceWithRawResponse(self._client.keys)
@@ -609,7 +621,10 @@ class PartnermaxWithStreamedResponse:
 
     @cached_property
     def keys(self) -> keys.KeysResourceWithStreamingResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import KeysResourceWithStreamingResponse
 
         return KeysResourceWithStreamingResponse(self._client.keys)
@@ -630,7 +645,10 @@ class AsyncPartnermaxWithStreamedResponse:
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithStreamingResponse:
-        """Human session login (cookie JWT) and API key lifecycle management."""
+        """API key lifecycle management — issue, list, revoke.
+
+        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        """
         from .resources.keys import AsyncKeysResourceWithStreamingResponse
 
         return AsyncKeysResourceWithStreamingResponse(self._client.keys)

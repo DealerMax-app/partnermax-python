@@ -85,7 +85,6 @@ class NltSettingsResource(SyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
-        vat_treatment: Literal["private", "business"],
         currency: Literal["EUR"] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -100,9 +99,17 @@ class NltSettingsResource(SyncAPIResource):
         / medium / high). Down-payment tiers MUST be in strictly ascending order.
         Changes propagate to the cross-network AI surfaces within five minutes.
 
-        The displayed canon for an offer is computed as:
-        `displayed_canon = base_canon × (1 + agency_markup_percent / 100) × adjustment_for_down_payment_tier × vat_multiplier`
-        where `vat_multiplier = 1.22` if `vat_treatment = "private"`, else `1.0`.
+        The displayed monthly canon for an offer is computed as:
+
+        ```
+        listino_imponibile = prezzo_listino / 1.22
+        provvigione = listino_imponibile × (agency_markup_percent / 100)
+        canon = base_canon + provvigione / durata - anticipo_eur / durata
+        if offer.vat_treatment == "private": canon *= 1.22
+        ```
+
+        VAT treatment is a property of each offer (`NltOfferSummary.vat_treatment`), not
+        of the dealer.
 
         Args:
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
@@ -125,7 +132,6 @@ class NltSettingsResource(SyncAPIResource):
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
-                    "vat_treatment": vat_treatment,
                     "currency": currency,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,
@@ -198,7 +204,6 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
-        vat_treatment: Literal["private", "business"],
         currency: Literal["EUR"] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -213,9 +218,17 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         / medium / high). Down-payment tiers MUST be in strictly ascending order.
         Changes propagate to the cross-network AI surfaces within five minutes.
 
-        The displayed canon for an offer is computed as:
-        `displayed_canon = base_canon × (1 + agency_markup_percent / 100) × adjustment_for_down_payment_tier × vat_multiplier`
-        where `vat_multiplier = 1.22` if `vat_treatment = "private"`, else `1.0`.
+        The displayed monthly canon for an offer is computed as:
+
+        ```
+        listino_imponibile = prezzo_listino / 1.22
+        provvigione = listino_imponibile × (agency_markup_percent / 100)
+        canon = base_canon + provvigione / durata - anticipo_eur / durata
+        if offer.vat_treatment == "private": canon *= 1.22
+        ```
+
+        VAT treatment is a property of each offer (`NltOfferSummary.vat_treatment`), not
+        of the dealer.
 
         Args:
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
@@ -238,7 +251,6 @@ class AsyncNltSettingsResource(AsyncAPIResource):
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
-                    "vat_treatment": vat_treatment,
                     "currency": currency,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,

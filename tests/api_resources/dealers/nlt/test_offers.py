@@ -86,10 +86,10 @@ class TestOffers:
             canone_max_eur=50,
             cursor="cursor",
             duration_months=24,
-            fuel_type="electric",
+            fuel_type="fuel_type",
             km_per_year=10000,
             limit=1,
-            segment="A",
+            segment="segment",
         )
         assert_matches_type(OfferListResponse, offer, path=["response"])
 
@@ -202,10 +202,10 @@ class TestAsyncOffers:
             canone_max_eur=50,
             cursor="cursor",
             duration_months=24,
-            fuel_type="electric",
+            fuel_type="fuel_type",
             km_per_year=10000,
             limit=1,
-            segment="A",
+            segment="segment",
         )
         assert_matches_type(OfferListResponse, offer, path=["response"])
 

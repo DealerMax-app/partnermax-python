@@ -16,12 +16,9 @@ The REST API documentation can be found on [developers.dealermax.app](https://de
 ## Installation
 
 ```sh
-# install from the production repo
-pip install git+ssh://git@github.com/DealerMax-app/partnermax-python.git
+# install from PyPI
+pip install partnermax
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://www.stainless.com/docs/guides/publish), this will become: `pip install partnermax`
 
 ## Usage
 
@@ -81,8 +78,8 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from the production repo
-pip install 'partnermax[aiohttp] @ git+ssh://git@github.com/DealerMax-app/partnermax-python.git'
+# install from PyPI
+pip install partnermax[aiohttp]
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:

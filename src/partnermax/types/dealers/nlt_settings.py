@@ -1,5 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
+from typing import Optional
 from datetime import datetime
 from typing_extensions import Literal
 
@@ -10,7 +11,7 @@ __all__ = ["NltSettings"]
 
 
 class NltSettings(BaseModel):
-    """Dealer-level NLT economics.
+    """Dealer-level NLT economics + image rendering preferences.
 
     VAT treatment is NOT a dealer-level field — it is a property of the offer (see `NltOfferSummary.vat_treatment`).
     """
@@ -30,3 +31,17 @@ class NltSettings(BaseModel):
     """
 
     effective_from: datetime
+
+    image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"]
+    """
+    How NLT offer cover images are rendered for this dealer (apimax:
+    `nlt_image_mode`). `branded` (default): per-dealer composite. `scenario_locked`:
+    single AI scenario fixed by the dealer. `scenario_seasonal`: AI scenario
+    auto-rotated by Italian season.
+    """
+
+    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] = None
+    """Only set when `image_mode='scenario_locked'`.
+
+    One of the four AI scenarios available on `mnet_modelli_ai_foto.scenario`.
+    """

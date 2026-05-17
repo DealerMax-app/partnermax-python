@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Literal
 
 import httpx
@@ -85,7 +86,9 @@ class NltSettingsResource(SyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
+        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"],
         currency: Literal["EUR"] | Omit = omit,
+        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -115,6 +118,8 @@ class NltSettingsResource(SyncAPIResource):
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
               (low < medium < high).
 
+          image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -132,7 +137,9 @@ class NltSettingsResource(SyncAPIResource):
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
+                    "image_mode": image_mode,
                     "currency": currency,
+                    "image_scenario_locked": image_scenario_locked,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,
             ),
@@ -204,7 +211,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
+        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"],
         currency: Literal["EUR"] | Omit = omit,
+        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -234,6 +243,8 @@ class AsyncNltSettingsResource(AsyncAPIResource):
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
               (low < medium < high).
 
+          image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -251,7 +262,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
+                    "image_mode": image_mode,
                     "currency": currency,
+                    "image_scenario_locked": image_scenario_locked,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,
             ),

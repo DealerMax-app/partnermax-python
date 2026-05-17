@@ -104,12 +104,12 @@ class NltSettingsResource(SyncAPIResource):
         ```
         listino_imponibile = prezzo_listino / 1.22
         provvigione = listino_imponibile × (agency_markup_percent / 100)
-        canon = base_canon + provvigione / durata - anticipo_eur / durata
-        if offer.vat_treatment == "private": canon *= 1.22
+        canon = base_canon + provvigione / duration_months - down_payment_eur / duration_months
+        if offer.private_only: canon *= 1.22
         ```
 
-        VAT treatment is a property of each offer (`NltOfferSummary.vat_treatment`), not
-        of the dealer.
+        VAT treatment is a property of each offer (`NltOfferDetail.private_only` /
+        `NltOfferSummary.vat_treatment`), not of the dealer.
 
         Args:
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
@@ -223,12 +223,12 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         ```
         listino_imponibile = prezzo_listino / 1.22
         provvigione = listino_imponibile × (agency_markup_percent / 100)
-        canon = base_canon + provvigione / durata - anticipo_eur / durata
-        if offer.vat_treatment == "private": canon *= 1.22
+        canon = base_canon + provvigione / duration_months - down_payment_eur / duration_months
+        if offer.private_only: canon *= 1.22
         ```
 
-        VAT treatment is a property of each offer (`NltOfferSummary.vat_treatment`), not
-        of the dealer.
+        VAT treatment is a property of each offer (`NltOfferDetail.private_only` /
+        `NltOfferSummary.vat_treatment`), not of the dealer.
 
         Args:
           down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order

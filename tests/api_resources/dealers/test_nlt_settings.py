@@ -66,9 +66,18 @@ class TestNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         )
@@ -81,9 +90,18 @@ class TestNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
             currency="EUR",
@@ -99,9 +117,18 @@ class TestNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         )
@@ -118,9 +145,18 @@ class TestNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         ) as response:
@@ -140,9 +176,18 @@ class TestNltSettings:
                 dealer_id="",
                 agency_markup_percent=3.5,
                 down_payment_tiers={
-                    "high_eur": 6000,
-                    "low_eur": 0,
-                    "medium_eur": 3000,
+                    "high": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 25,
+                    },
+                    "low": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 0,
+                    },
+                    "medium": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 12.5,
+                    },
                 },
                 image_mode="branded",
             )
@@ -202,9 +247,18 @@ class TestAsyncNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         )
@@ -217,9 +271,18 @@ class TestAsyncNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
             currency="EUR",
@@ -235,9 +298,18 @@ class TestAsyncNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         )
@@ -254,9 +326,18 @@ class TestAsyncNltSettings:
             dealer_id="dealer_id",
             agency_markup_percent=3.5,
             down_payment_tiers={
-                "high_eur": 6000,
-                "low_eur": 0,
-                "medium_eur": 3000,
+                "high": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 25,
+                },
+                "low": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 0,
+                },
+                "medium": {
+                    "fixed_eur": 0,
+                    "percent_of_list": 12.5,
+                },
             },
             image_mode="branded",
         ) as response:
@@ -276,9 +357,18 @@ class TestAsyncNltSettings:
                 dealer_id="",
                 agency_markup_percent=3.5,
                 down_payment_tiers={
-                    "high_eur": 6000,
-                    "low_eur": 0,
-                    "medium_eur": 3000,
+                    "high": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 25,
+                    },
+                    "low": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 0,
+                    },
+                    "medium": {
+                        "fixed_eur": 0,
+                        "percent_of_list": 12.5,
+                    },
                 },
                 image_mode="branded",
             )

@@ -99,15 +99,18 @@ class NltSettingsResource(SyncAPIResource):
     ) -> NltSettings:
         """
         Sets the dealer's agency markup percent (0–10) and three down-payment tiers (low
-        / medium / high). Down-payment tiers MUST be in strictly ascending order.
-        Changes propagate to the cross-network AI surfaces within five minutes.
+        / medium / high). Each tier carries `percent_of_list (0–100)` +
+        `fixed_eur (≥0)`; the final EUR per tier is offer-dependent
+        (`listino_imponibile * pct + eur`). Changes propagate to the cross-network AI
+        surfaces within five minutes.
 
         The displayed monthly canon for an offer is computed as:
 
         ```
         listino_imponibile = prezzo_listino / 1.22
         provvigione = listino_imponibile × (agency_markup_percent / 100)
-        canon = base_canon + provvigione / duration_months - down_payment_eur / duration_months
+        anticipo_tier_eur = listino_imponibile × (tier.percent_of_list / 100) + tier.fixed_eur
+        canon = base_canon + provvigione / duration_months − anticipo_tier_eur / duration_months
         if offer.private_only: canon *= 1.22
         ```
 
@@ -115,8 +118,9 @@ class NltSettingsResource(SyncAPIResource):
         `NltOfferSummary.vat_treatment`), not of the dealer.
 
         Args:
-          down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
-              (low < medium < high).
+          down_payment_tiers: Three down-payment scenarios (basso / medio / alto). Each tier carries
+              `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
+              final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
           image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
 
@@ -224,15 +228,18 @@ class AsyncNltSettingsResource(AsyncAPIResource):
     ) -> NltSettings:
         """
         Sets the dealer's agency markup percent (0–10) and three down-payment tiers (low
-        / medium / high). Down-payment tiers MUST be in strictly ascending order.
-        Changes propagate to the cross-network AI surfaces within five minutes.
+        / medium / high). Each tier carries `percent_of_list (0–100)` +
+        `fixed_eur (≥0)`; the final EUR per tier is offer-dependent
+        (`listino_imponibile * pct + eur`). Changes propagate to the cross-network AI
+        surfaces within five minutes.
 
         The displayed monthly canon for an offer is computed as:
 
         ```
         listino_imponibile = prezzo_listino / 1.22
         provvigione = listino_imponibile × (agency_markup_percent / 100)
-        canon = base_canon + provvigione / duration_months - down_payment_eur / duration_months
+        anticipo_tier_eur = listino_imponibile × (tier.percent_of_list / 100) + tier.fixed_eur
+        canon = base_canon + provvigione / duration_months − anticipo_tier_eur / duration_months
         if offer.private_only: canon *= 1.22
         ```
 
@@ -240,8 +247,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         `NltOfferSummary.vat_treatment`), not of the dealer.
 
         Args:
-          down_payment_tiers: Three down-payment scenarios shown to consumers, in strictly ascending order
-              (low < medium < high).
+          down_payment_tiers: Three down-payment scenarios (basso / medio / alto). Each tier carries
+              `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
+              final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
           image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
 

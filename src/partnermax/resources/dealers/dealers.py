@@ -18,14 +18,6 @@ from .nlt.nlt import (
 )
 from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
 from ..._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
-from .vehicles import (
-    VehiclesResource,
-    AsyncVehiclesResource,
-    VehiclesResourceWithRawResponse,
-    AsyncVehiclesResourceWithRawResponse,
-    VehiclesResourceWithStreamingResponse,
-    AsyncVehiclesResourceWithStreamingResponse,
-)
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -43,6 +35,14 @@ from .nlt_settings import (
     AsyncNltSettingsResourceWithStreamingResponse,
 )
 from ..._base_client import make_request_options
+from .vehicles.vehicles import (
+    VehiclesResource,
+    AsyncVehiclesResource,
+    VehiclesResourceWithRawResponse,
+    AsyncVehiclesResourceWithRawResponse,
+    VehiclesResourceWithStreamingResponse,
+    AsyncVehiclesResourceWithStreamingResponse,
+)
 from ...types.dealer_detail import DealerDetail
 from ...types.dealer_list_response import DealerListResponse
 

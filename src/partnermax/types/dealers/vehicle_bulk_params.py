@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Union, Iterable, Optional
-from datetime import date
+from typing import Iterable, Optional
 from typing_extensions import Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
@@ -39,13 +38,6 @@ class Vehicle(TypedDict, total=False):
 
     certified_km: Required[int]
     """Certified odometer reading at intake, in kilometres."""
-
-    cost_price_eur: Required[float]
-    """Cost basis to the dealer in EUR (partner/dealer internal).
-
-    Not surfaced on consumer-facing AI surfaces; used by dealer reporting and margin
-    analytics only.
-    """
 
     motornet_code: Required[str]
     """Motornet UNI code identifying the exact vehicle configuration.
@@ -84,8 +76,6 @@ class Vehicle(TypedDict, total=False):
 
     extended_warranty_months: Optional[int]
 
-    inspection_expiry_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
-
     is_for_sale: bool
     """Maps to `azlease_usatoauto.is_vendita_enabled`.
 
@@ -99,24 +89,11 @@ class Vehicle(TypedDict, total=False):
     surfaces. Maps to `azlease_usatoin.visibile`.
     """
 
-    last_service_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
-
-    last_service_km: Optional[int]
-
-    last_service_notes: Optional[str]
-
     notes: Optional[str]
     """Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style."""
 
-    previous_owner_count: Optional[int]
-
-    previous_ownership_transfer_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
-    """Date of the most recent ownership transfer, if known."""
-
     registration_month: Optional[int]
     """Month of registration (1–12)."""
-
-    road_tax_expiry_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
 
     vat_displayed: bool
     """

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 (2026-05-18)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **vehicles:** used-vehicle CRUD + bulk insert for v1.1.0 ([c817349](https://github.com/DealerMax-app/partnermax-python/commit/c817349ace294552a56e191f975a444a92b82548))
+* **vehicles:** used-vehicle CRUD + bulk insert for v1.1.0 ([611cb75](https://github.com/DealerMax-app/partnermax-python/commit/611cb752d4d71443a5f1c6c22d24394a87ffa295))
+
 ## 0.7.0 (2026-05-18)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.6.0...v0.7.0)

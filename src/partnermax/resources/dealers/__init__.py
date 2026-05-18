@@ -16,6 +16,14 @@ from .dealers import (
     DealersResourceWithStreamingResponse,
     AsyncDealersResourceWithStreamingResponse,
 )
+from .vehicles import (
+    VehiclesResource,
+    AsyncVehiclesResource,
+    VehiclesResourceWithRawResponse,
+    AsyncVehiclesResourceWithRawResponse,
+    VehiclesResourceWithStreamingResponse,
+    AsyncVehiclesResourceWithStreamingResponse,
+)
 from .nlt_settings import (
     NltSettingsResource,
     AsyncNltSettingsResource,
@@ -38,6 +46,12 @@ __all__ = [
     "AsyncNltResourceWithRawResponse",
     "NltResourceWithStreamingResponse",
     "AsyncNltResourceWithStreamingResponse",
+    "VehiclesResource",
+    "AsyncVehiclesResource",
+    "VehiclesResourceWithRawResponse",
+    "AsyncVehiclesResourceWithRawResponse",
+    "VehiclesResourceWithStreamingResponse",
+    "AsyncVehiclesResourceWithStreamingResponse",
     "DealersResource",
     "AsyncDealersResource",
     "DealersResourceWithRawResponse",

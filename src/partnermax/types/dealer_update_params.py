@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Optional
 from typing_extensions import Literal, Annotated, TypedDict
 
 from .._utils import PropertyInfo
@@ -11,22 +11,22 @@ __all__ = ["DealerUpdateParams"]
 
 
 class DealerUpdateParams(TypedDict, total=False):
-    business_name: str
+    address: Optional[str]
 
-    contact_email: str
+    business_name: Optional[str]
 
-    contact_phone: str
+    city: Optional[str]
 
-    metadata: Dict[str, str]
+    contact_email: Optional[str]
 
-    postal_code: str
+    contact_phone: Optional[str]
 
-    province_code: str
+    metadata: Optional[Dict[str, str]]
 
-    status: Literal["active", "inactive"]
-    """Toggle activation.
+    postal_code: Optional[str]
 
-    Inactive dealers are removed from AI surfaces within 5 minutes.
-    """
+    province_code: Optional[str]
+
+    status: Optional[Literal["active", "inactive"]]
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

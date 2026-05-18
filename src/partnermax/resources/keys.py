@@ -60,11 +60,11 @@ class KeysResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyListResponse:
-        """Returns metadata for all active keys belonging to the calling partner.
+        """
+        List metadata for keys owned by the calling partner.
 
-        Key
-        material is never returned — only the prefix (first 8 characters) for safe
-        logging and identification.
+        Returns both active and revoked keys — partners can audit revoked keys via the
+        `is_active` flag. Key material is never returned.
         """
         return self._get(
             "/v1/keys",
@@ -78,7 +78,7 @@ class KeysResource(SyncAPIResource):
         self,
         *,
         label: str,
-        expires_at: Union[str, datetime] | Omit = omit,
+        expires_at: Union[str, datetime, None] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -87,14 +87,14 @@ class KeysResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyIssueResponse:
-        """Creates a new API key for the calling partner.
+        """Issue a new API key.
 
-        The key material is returned in
-        plaintext in the response and is never retrievable again — store it securely on
-        first receipt. Must be called with an existing API key that has the
-        `can_issue_keys` capability (the initial key issued by DealerMAX support has
-        this capability by default; rotated keys inherit it unless explicitly scoped
-        down).
+        Plaintext returned exactly once.
+
+        Capability gate: caller's key must hold `can_issue_keys`. The bootstrap key
+        handed to a partner by DealerMAX support carries this capability; keys minted
+        here inherit the _same_ capabilities as the caller, so partners can never
+        accidentally widen their own scope.
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.
@@ -136,11 +136,9 @@ class KeysResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Immediately invalidates the specified key.
+        """Revoke a key.
 
-        Any in-flight requests using this key
-        will continue until completion; subsequent requests will receive 401
-        invalid_api_key. Revocation is logged in the audit trail.
+        Cannot revoke the key currently authenticating the request.
 
         Args:
           extra_headers: Send extra headers
@@ -198,11 +196,11 @@ class AsyncKeysResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyListResponse:
-        """Returns metadata for all active keys belonging to the calling partner.
+        """
+        List metadata for keys owned by the calling partner.
 
-        Key
-        material is never returned — only the prefix (first 8 characters) for safe
-        logging and identification.
+        Returns both active and revoked keys — partners can audit revoked keys via the
+        `is_active` flag. Key material is never returned.
         """
         return await self._get(
             "/v1/keys",
@@ -216,7 +214,7 @@ class AsyncKeysResource(AsyncAPIResource):
         self,
         *,
         label: str,
-        expires_at: Union[str, datetime] | Omit = omit,
+        expires_at: Union[str, datetime, None] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -225,14 +223,14 @@ class AsyncKeysResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyIssueResponse:
-        """Creates a new API key for the calling partner.
+        """Issue a new API key.
 
-        The key material is returned in
-        plaintext in the response and is never retrievable again — store it securely on
-        first receipt. Must be called with an existing API key that has the
-        `can_issue_keys` capability (the initial key issued by DealerMAX support has
-        this capability by default; rotated keys inherit it unless explicitly scoped
-        down).
+        Plaintext returned exactly once.
+
+        Capability gate: caller's key must hold `can_issue_keys`. The bootstrap key
+        handed to a partner by DealerMAX support carries this capability; keys minted
+        here inherit the _same_ capabilities as the caller, so partners can never
+        accidentally widen their own scope.
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.
@@ -274,11 +272,9 @@ class AsyncKeysResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Immediately invalidates the specified key.
+        """Revoke a key.
 
-        Any in-flight requests using this key
-        will continue until completion; subsequent requests will receive 401
-        invalid_api_key. Revocation is logged in the audit trail.
+        Cannot revoke the key currently authenticating the request.
 
         Args:
           extra_headers: Send extra headers

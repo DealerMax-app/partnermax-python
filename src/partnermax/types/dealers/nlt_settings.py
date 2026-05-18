@@ -11,39 +11,31 @@ __all__ = ["NltSettings"]
 
 
 class NltSettings(BaseModel):
-    """Dealer-level NLT economics + image rendering preferences.
+    """Response model for GET / PATCH /v1/dealers/{id}/nlt-settings.
 
-    VAT treatment is NOT a dealer-level field — it is a property of the offer (see `NltOfferSummary.vat_treatment`).
+    Note: there is no `vat_treatment` field — VAT is a property of the
+    offer (`nlt_offerte.solo_privati`), not of the dealer. The offer
+    detail returns the VAT treatment per row instead.
     """
 
     agency_markup_percent: float
-    """Markup applied on top of the network base canon, in percent. Hard cap at 10%."""
-
-    currency: Literal["EUR"]
-    """Only EUR supported in v1."""
 
     dealer_id: str
 
     down_payment_tiers: DownPaymentTiers
     """Three down-payment scenarios (basso / medio / alto).
 
-    Each tier carries `{percent_of_list (0–100), fixed_eur (≥0)}`. No
-    strict-ascending check — the final EUR per tier is offer-dependent
-    (`listino_imponibile * pct + eur`).
+    No strict-ascending validation: the final EUR amount depends on the offer's list
+    price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
+    tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
+    semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
+    positions as opaque slots ordered by intent.
     """
 
     effective_from: datetime
 
-    image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"]
-    """
-    How NLT offer cover images are rendered for this dealer (apimax:
-    `nlt_image_mode`). `branded` (default): per-dealer composite. `scenario_locked`:
-    single AI scenario fixed by the dealer. `scenario_seasonal`: AI scenario
-    auto-rotated by Italian season.
-    """
+    currency: Optional[Literal["EUR"]] = None
+
+    image_mode: Optional[Literal["branded", "scenario_locked", "scenario_seasonal"]] = None
 
     image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] = None
-    """Only set when `image_mode='scenario_locked'`.
-
-    One of the four AI scenarios available on `mnet_modelli_ai_foto.scenario`.
-    """

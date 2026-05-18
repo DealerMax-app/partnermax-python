@@ -9,6 +9,8 @@ __all__ = ["OfferListResponse"]
 
 
 class OfferListResponse(BaseModel):
+    """Cursor-paginated list of offer summaries."""
+
     data: List[NltOfferSummary]
 
     has_more: bool

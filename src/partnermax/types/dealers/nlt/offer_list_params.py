@@ -2,36 +2,25 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal, TypedDict
+from typing import Optional
+from typing_extensions import TypedDict
 
 __all__ = ["OfferListParams"]
 
 
 class OfferListParams(TypedDict, total=False):
-    brand: str
-    """Filter by brand name, case-insensitive (e.g., `Fiat`)."""
+    brand: Optional[str]
 
-    canone_max_eur: int
-    """Upper bound on displayed monthly canon (EUR)."""
+    canone_max_eur: Optional[int]
 
-    cursor: str
-    """Opaque pagination cursor."""
+    cursor: Optional[str]
 
-    duration_months: Literal[24, 36, 48]
+    duration_months: Optional[int]
 
-    fuel_type: str
-    """Raw Italian label (case-insensitive ILIKE match).
+    fuel_type: Optional[str]
 
-    Examples: "Benzina", "Diesel", "Ibrido benzina", "Ibrido diesel", "Elettrica",
-    "GPL", "Metano".
-    """
-
-    km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000]
+    km_per_year: Optional[int]
 
     limit: int
 
-    segment: str
-    """Raw Italian label (case-insensitive ILIKE substring match).
-
-    Examples: "SUV piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
-    """
+    segment: Optional[str]

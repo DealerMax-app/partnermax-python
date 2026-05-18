@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import Literal, Required, Annotated, TypedDict
+from typing_extensions import Literal, Required, TypedDict
 
-from ..._utils import PropertyInfo
 from .down_payment_tiers_param import DownPaymentTiersParam
 
 __all__ = ["NltSettingUpdateParams"]
@@ -17,16 +16,15 @@ class NltSettingUpdateParams(TypedDict, total=False):
     down_payment_tiers: Required[DownPaymentTiersParam]
     """Three down-payment scenarios (basso / medio / alto).
 
-    Each tier carries `{percent_of_list (0–100), fixed_eur (≥0)}`. No
-    strict-ascending check — the final EUR per tier is offer-dependent
-    (`listino_imponibile * pct + eur`).
+    No strict-ascending validation: the final EUR amount depends on the offer's list
+    price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
+    tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
+    semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
+    positions as opaque slots ordered by intent.
     """
-
-    image_mode: Required[Literal["branded", "scenario_locked", "scenario_seasonal"]]
 
     currency: Literal["EUR"]
 
-    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]]
-    """Required when `image_mode='scenario_locked'`; must be null otherwise."""
+    image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"]
 
-    idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]
+    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]]

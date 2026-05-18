@@ -10,6 +10,8 @@ __all__ = ["DealerSummary"]
 
 
 class DealerSummary(BaseModel):
+    """Compact dealer payload used by list endpoints."""
+
     business_name: str
 
     created_at: datetime

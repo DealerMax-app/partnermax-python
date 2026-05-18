@@ -19,9 +19,6 @@ __all__ = ["NltResource", "AsyncNltResource"]
 class NltResource(SyncAPIResource):
     @cached_property
     def offers(self) -> OffersResource:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return OffersResource(self._client)
 
     @cached_property
@@ -47,9 +44,6 @@ class NltResource(SyncAPIResource):
 class AsyncNltResource(AsyncAPIResource):
     @cached_property
     def offers(self) -> AsyncOffersResource:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return AsyncOffersResource(self._client)
 
     @cached_property
@@ -78,9 +72,6 @@ class NltResourceWithRawResponse:
 
     @cached_property
     def offers(self) -> OffersResourceWithRawResponse:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return OffersResourceWithRawResponse(self._nlt.offers)
 
 
@@ -90,9 +81,6 @@ class AsyncNltResourceWithRawResponse:
 
     @cached_property
     def offers(self) -> AsyncOffersResourceWithRawResponse:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return AsyncOffersResourceWithRawResponse(self._nlt.offers)
 
 
@@ -102,9 +90,6 @@ class NltResourceWithStreamingResponse:
 
     @cached_property
     def offers(self) -> OffersResourceWithStreamingResponse:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return OffersResourceWithStreamingResponse(self._nlt.offers)
 
 
@@ -114,7 +99,4 @@ class AsyncNltResourceWithStreamingResponse:
 
     @cached_property
     def offers(self) -> AsyncOffersResourceWithStreamingResponse:
-        """
-        Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-        """
         return AsyncOffersResourceWithStreamingResponse(self._nlt.offers)

@@ -64,11 +64,11 @@ class TestNltSettings:
     def test_method_update(self, client: Partnermax) -> None:
         nlt_setting = client.dealers.nlt_settings.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -76,10 +76,9 @@ class TestNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -88,11 +87,11 @@ class TestNltSettings:
     def test_method_update_with_all_params(self, client: Partnermax) -> None:
         nlt_setting = client.dealers.nlt_settings.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -100,13 +99,12 @@ class TestNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
             currency="EUR",
+            image_mode="branded",
             image_scenario_locked="mediterraneo",
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -115,11 +113,11 @@ class TestNltSettings:
     def test_raw_response_update(self, client: Partnermax) -> None:
         response = client.dealers.nlt_settings.with_raw_response.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -127,10 +125,9 @@ class TestNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         )
 
         assert response.is_closed is True
@@ -143,11 +140,11 @@ class TestNltSettings:
     def test_streaming_response_update(self, client: Partnermax) -> None:
         with client.dealers.nlt_settings.with_streaming_response.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -155,10 +152,9 @@ class TestNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -174,11 +170,11 @@ class TestNltSettings:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
             client.dealers.nlt_settings.with_raw_response.update(
                 dealer_id="",
-                agency_markup_percent=3.5,
+                agency_markup_percent=0,
                 down_payment_tiers={
                     "high": {
                         "fixed_eur": 0,
-                        "percent_of_list": 25,
+                        "percent_of_list": 0,
                     },
                     "low": {
                         "fixed_eur": 0,
@@ -186,10 +182,9 @@ class TestNltSettings:
                     },
                     "medium": {
                         "fixed_eur": 0,
-                        "percent_of_list": 12.5,
+                        "percent_of_list": 0,
                     },
                 },
-                image_mode="branded",
             )
 
 
@@ -245,11 +240,11 @@ class TestAsyncNltSettings:
     async def test_method_update(self, async_client: AsyncPartnermax) -> None:
         nlt_setting = await async_client.dealers.nlt_settings.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -257,10 +252,9 @@ class TestAsyncNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -269,11 +263,11 @@ class TestAsyncNltSettings:
     async def test_method_update_with_all_params(self, async_client: AsyncPartnermax) -> None:
         nlt_setting = await async_client.dealers.nlt_settings.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -281,13 +275,12 @@ class TestAsyncNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
             currency="EUR",
+            image_mode="branded",
             image_scenario_locked="mediterraneo",
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -296,11 +289,11 @@ class TestAsyncNltSettings:
     async def test_raw_response_update(self, async_client: AsyncPartnermax) -> None:
         response = await async_client.dealers.nlt_settings.with_raw_response.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -308,10 +301,9 @@ class TestAsyncNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         )
 
         assert response.is_closed is True
@@ -324,11 +316,11 @@ class TestAsyncNltSettings:
     async def test_streaming_response_update(self, async_client: AsyncPartnermax) -> None:
         async with async_client.dealers.nlt_settings.with_streaming_response.update(
             dealer_id="dealer_id",
-            agency_markup_percent=3.5,
+            agency_markup_percent=0,
             down_payment_tiers={
                 "high": {
                     "fixed_eur": 0,
-                    "percent_of_list": 25,
+                    "percent_of_list": 0,
                 },
                 "low": {
                     "fixed_eur": 0,
@@ -336,10 +328,9 @@ class TestAsyncNltSettings:
                 },
                 "medium": {
                     "fixed_eur": 0,
-                    "percent_of_list": 12.5,
+                    "percent_of_list": 0,
                 },
             },
-            image_mode="branded",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -355,11 +346,11 @@ class TestAsyncNltSettings:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
             await async_client.dealers.nlt_settings.with_raw_response.update(
                 dealer_id="",
-                agency_markup_percent=3.5,
+                agency_markup_percent=0,
                 down_payment_tiers={
                     "high": {
                         "fixed_eur": 0,
-                        "percent_of_list": 25,
+                        "percent_of_list": 0,
                     },
                     "low": {
                         "fixed_eur": 0,
@@ -367,8 +358,7 @@ class TestAsyncNltSettings:
                     },
                     "medium": {
                         "fixed_eur": 0,
-                        "percent_of_list": 12.5,
+                        "percent_of_list": 0,
                     },
                 },
-                image_mode="branded",
             )

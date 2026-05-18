@@ -15,7 +15,7 @@ class KeyIssueParams(TypedDict, total=False):
     label: Required[str]
     """Human-readable identifier for this key, used for safe logging."""
 
-    expires_at: Annotated[Union[str, datetime], PropertyInfo(format="iso8601")]
+    expires_at: Annotated[Union[str, datetime, None], PropertyInfo(format="iso8601")]
     """Optional expiry timestamp. Null = never expires until revoked."""
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

@@ -8,7 +8,7 @@ from typing_extensions import Literal
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
+from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -26,8 +26,6 @@ __all__ = ["NltSettingsResource", "AsyncNltSettingsResource"]
 
 
 class NltSettingsResource(SyncAPIResource):
-    """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
-
     @cached_property
     def with_raw_response(self) -> NltSettingsResourceWithRawResponse:
         """
@@ -59,7 +57,7 @@ class NltSettingsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Get current NLT economics for a dealer
+        Return current NLT economics for the dealer.
 
         Args:
           extra_headers: Send extra headers
@@ -86,10 +84,9 @@ class NltSettingsResource(SyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
-        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"],
         currency: Literal["EUR"] | Omit = omit,
+        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"] | Omit = omit,
         image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
-        idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -98,31 +95,40 @@ class NltSettingsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Sets the dealer's agency markup percent (0–10) and three down-payment tiers (low
-        / medium / high). Each tier carries `percent_of_list (0–100)` +
-        `fixed_eur (≥0)`; the final EUR per tier is offer-dependent
-        (`listino_imponibile * pct + eur`). Changes propagate to the cross-network AI
-        surfaces within five minutes.
+        Set markup percent (0-10) and three down-payment tiers (strictly ascending).
 
-        The displayed monthly canon for an offer is computed as:
+        Validation:
 
-        ```
-        listino_imponibile = prezzo_listino / 1.22
-        provvigione = listino_imponibile × (agency_markup_percent / 100)
-        anticipo_tier_eur = listino_imponibile × (tier.percent_of_list / 100) + tier.fixed_eur
-        canon = base_canon + provvigione / duration_months − anticipo_tier_eur / duration_months
-        if offer.private_only: canon *= 1.22
-        ```
+        - `agency_markup_percent` ∈ [0, 10] (Pydantic).
+        - `down_payment_tiers.{low,medium,high}` each
+          `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
+          final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
-        VAT treatment is a property of each offer (`NltOfferDetail.private_only` /
-        `NltOfferSummary.vat_treatment`), not of the dealer.
+        Persistence:
+
+        - `agency_markup_percent` → `dealer_public.nlt_agency_percent` (rounded to int;
+          live column is `Integer NOT NULL DEFAULT 2`).
+        - `down_payment_tiers` → `dealer_public.nlt_anticipi_config` JSONB, stored in
+          apimax shape `[{"pct": <0..1>, "eur": <int>}, ...]`. The partner-facing
+          `percent_of_list` (0–100) is divided by 100 to keep the column byte-compatible
+          with the DealerMAX UI calculator that reads the same JSONB.
+
+        There is NO `vat_treatment` field: VAT is per-offer (`nlt_offerte.solo_privati`)
+        in the canonical DataMax pricing model, not per-dealer. The offer detail
+        endpoint surfaces it per row instead.
+
+        The Idempotency middleware handles `Idempotency-Key` replay outside this
+        handler; we just need to make the write itself idempotent at the row level (a
+        re-applied identical PATCH is a no-op by construction).
 
         Args:
-          down_payment_tiers: Three down-payment scenarios (basso / medio / alto). Each tier carries
-              `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
-              final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
+          down_payment_tiers: Three down-payment scenarios (basso / medio / alto).
 
-          image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
+              No strict-ascending validation: the final EUR amount depends on the offer's list
+              price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
+              tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
+              semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
+              positions as opaque slots ordered by intent.
 
           extra_headers: Send extra headers
 
@@ -134,15 +140,14 @@ class NltSettingsResource(SyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return self._patch(
             path_template("/v1/dealers/{dealer_id}/nlt-settings", dealer_id=dealer_id),
             body=maybe_transform(
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
-                    "image_mode": image_mode,
                     "currency": currency,
+                    "image_mode": image_mode,
                     "image_scenario_locked": image_scenario_locked,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,
@@ -155,8 +160,6 @@ class NltSettingsResource(SyncAPIResource):
 
 
 class AsyncNltSettingsResource(AsyncAPIResource):
-    """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
-
     @cached_property
     def with_raw_response(self) -> AsyncNltSettingsResourceWithRawResponse:
         """
@@ -188,7 +191,7 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Get current NLT economics for a dealer
+        Return current NLT economics for the dealer.
 
         Args:
           extra_headers: Send extra headers
@@ -215,10 +218,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         *,
         agency_markup_percent: float,
         down_payment_tiers: DownPaymentTiersParam,
-        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"],
         currency: Literal["EUR"] | Omit = omit,
+        image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"] | Omit = omit,
         image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
-        idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -227,31 +229,40 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Sets the dealer's agency markup percent (0–10) and three down-payment tiers (low
-        / medium / high). Each tier carries `percent_of_list (0–100)` +
-        `fixed_eur (≥0)`; the final EUR per tier is offer-dependent
-        (`listino_imponibile * pct + eur`). Changes propagate to the cross-network AI
-        surfaces within five minutes.
+        Set markup percent (0-10) and three down-payment tiers (strictly ascending).
 
-        The displayed monthly canon for an offer is computed as:
+        Validation:
 
-        ```
-        listino_imponibile = prezzo_listino / 1.22
-        provvigione = listino_imponibile × (agency_markup_percent / 100)
-        anticipo_tier_eur = listino_imponibile × (tier.percent_of_list / 100) + tier.fixed_eur
-        canon = base_canon + provvigione / duration_months − anticipo_tier_eur / duration_months
-        if offer.private_only: canon *= 1.22
-        ```
+        - `agency_markup_percent` ∈ [0, 10] (Pydantic).
+        - `down_payment_tiers.{low,medium,high}` each
+          `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
+          final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
-        VAT treatment is a property of each offer (`NltOfferDetail.private_only` /
-        `NltOfferSummary.vat_treatment`), not of the dealer.
+        Persistence:
+
+        - `agency_markup_percent` → `dealer_public.nlt_agency_percent` (rounded to int;
+          live column is `Integer NOT NULL DEFAULT 2`).
+        - `down_payment_tiers` → `dealer_public.nlt_anticipi_config` JSONB, stored in
+          apimax shape `[{"pct": <0..1>, "eur": <int>}, ...]`. The partner-facing
+          `percent_of_list` (0–100) is divided by 100 to keep the column byte-compatible
+          with the DealerMAX UI calculator that reads the same JSONB.
+
+        There is NO `vat_treatment` field: VAT is per-offer (`nlt_offerte.solo_privati`)
+        in the canonical DataMax pricing model, not per-dealer. The offer detail
+        endpoint surfaces it per row instead.
+
+        The Idempotency middleware handles `Idempotency-Key` replay outside this
+        handler; we just need to make the write itself idempotent at the row level (a
+        re-applied identical PATCH is a no-op by construction).
 
         Args:
-          down_payment_tiers: Three down-payment scenarios (basso / medio / alto). Each tier carries
-              `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
-              final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
+          down_payment_tiers: Three down-payment scenarios (basso / medio / alto).
 
-          image_scenario_locked: Required when `image_mode='scenario_locked'`; must be null otherwise.
+              No strict-ascending validation: the final EUR amount depends on the offer's list
+              price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
+              tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
+              semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
+              positions as opaque slots ordered by intent.
 
           extra_headers: Send extra headers
 
@@ -263,15 +274,14 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return await self._patch(
             path_template("/v1/dealers/{dealer_id}/nlt-settings", dealer_id=dealer_id),
             body=await async_maybe_transform(
                 {
                     "agency_markup_percent": agency_markup_percent,
                     "down_payment_tiers": down_payment_tiers,
-                    "image_mode": image_mode,
                     "currency": currency,
+                    "image_mode": image_mode,
                     "image_scenario_locked": image_scenario_locked,
                 },
                 nlt_setting_update_params.NltSettingUpdateParams,

@@ -9,9 +9,10 @@ __all__ = ["DealerListResponse"]
 
 
 class DealerListResponse(BaseModel):
+    """Response envelope for ``GET /v1/dealers``."""
+
     data: List[DealerSummary]
 
     has_more: bool
 
     next_cursor: Optional[str] = None
-    """Pass as `cursor` to retrieve next page; null when no more pages."""

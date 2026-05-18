@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
+from typing import Optional
 from typing_extensions import Literal, TypedDict
 
 __all__ = ["DealerListParams"]
 
 
 class DealerListParams(TypedDict, total=False):
-    cursor: str
-    """Opaque pagination cursor from a previous response's `next_cursor`."""
+    cursor: Optional[str]
 
     limit: int
-    """Maximum number of items to return."""
 
     status: Literal["active", "inactive", "all"]
-    """Filter by dealer status."""

@@ -9,7 +9,11 @@ __all__ = ["KeyListResponse", "Data"]
 
 
 class Data(BaseModel):
+    """Metadata-only representation of an API key. Safe to return on list calls."""
+
     created_at: datetime
+
+    expires_at: Optional[datetime] = None
 
     is_active: bool
 
@@ -19,10 +23,10 @@ class Data(BaseModel):
 
     label: str
 
-    expires_at: Optional[datetime] = None
-
     last_used_at: Optional[datetime] = None
 
 
 class KeyListResponse(BaseModel):
+    """Response envelope for ``GET /v1/keys``."""
+
     data: List[Data]

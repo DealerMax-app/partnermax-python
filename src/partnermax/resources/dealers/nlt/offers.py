@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal
+from typing import Optional
 
 import httpx
 
@@ -25,10 +25,6 @@ __all__ = ["OffersResource", "AsyncOffersResource"]
 
 
 class OffersResource(SyncAPIResource):
-    """
-    Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-    """
-
     @cached_property
     def with_raw_response(self) -> OffersResourceWithRawResponse:
         """
@@ -60,11 +56,10 @@ class OffersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> OfferRetrieveResponse:
-        """
-        Returns the full detail of one NLT offer including the 18-quotation matrix (3
-        durations × 6 km/year tiers) with prices computed for each of the dealer's three
-        down-payment tiers — 54 displayed price points total — plus included services,
-        optional accessories, image gallery, and the dealer business card.
+        """Full offer detail.
+
+        Payload shape mirrors apimax MCP `get_nlt_offer_details`
+        bit-for-bit (mcp_server.py:1546-1606).
 
         Args:
           extra_headers: Send extra headers
@@ -91,14 +86,14 @@ class OffersResource(SyncAPIResource):
         self,
         dealer_id: str,
         *,
-        brand: str | Omit = omit,
-        canone_max_eur: int | Omit = omit,
-        cursor: str | Omit = omit,
-        duration_months: Literal[24, 36, 48] | Omit = omit,
-        fuel_type: str | Omit = omit,
-        km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000] | Omit = omit,
+        brand: Optional[str] | Omit = omit,
+        canone_max_eur: Optional[int] | Omit = omit,
+        cursor: Optional[str] | Omit = omit,
+        duration_months: Optional[int] | Omit = omit,
+        fuel_type: Optional[str] | Omit = omit,
+        km_per_year: Optional[int] | Omit = omit,
         limit: int | Omit = omit,
-        segment: str | Omit = omit,
+        segment: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -106,24 +101,22 @@ class OffersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> OfferListResponse:
-        """
-        Returns a cursor-paginated list of NLT offers available to the specified dealer,
-        with monthly canon already repriced using the dealer's markup and down-payment
-        tiers.
+        """Listing of NLT offers with monthly canon repriced for this dealer.
+
+        Strategy:
+
+        1.
+
+        Resolve + ACL the dealer.
+        2. Pull at most `limit + 1` offers from the catalog after the cursor. The extra
+           row lets us know if there's a next page without a second COUNT(\\**) query.
+        3. Apply text/enum filters server-side via SQL where possible (brand, segment,
+           fuel) and the numeric `canone_max_eur` filter in Python after the pricing
+           pass (the DB has no "displayed canon" column; we synthesize it per dealer).
+        4. For each surviving offer, price the (duration, km) cells the caller filtered
+           to (if specified) or all 18, pick the cheapest cell as the headline.
 
         Args:
-          brand: Filter by brand name, case-insensitive (e.g., `Fiat`).
-
-          canone_max_eur: Upper bound on displayed monthly canon (EUR).
-
-          cursor: Opaque pagination cursor.
-
-          fuel_type: Raw Italian label (case-insensitive ILIKE match). Examples: "Benzina", "Diesel",
-              "Ibrido benzina", "Ibrido diesel", "Elettrica", "GPL", "Metano".
-
-          segment: Raw Italian label (case-insensitive ILIKE substring match). Examples: "SUV
-              piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -160,10 +153,6 @@ class OffersResource(SyncAPIResource):
 
 
 class AsyncOffersResource(AsyncAPIResource):
-    """
-    Dealer-aware reads of the shared NLT catalog — pricing reflects the dealer's markup and down-payment tiers.
-    """
-
     @cached_property
     def with_raw_response(self) -> AsyncOffersResourceWithRawResponse:
         """
@@ -195,11 +184,10 @@ class AsyncOffersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> OfferRetrieveResponse:
-        """
-        Returns the full detail of one NLT offer including the 18-quotation matrix (3
-        durations × 6 km/year tiers) with prices computed for each of the dealer's three
-        down-payment tiers — 54 displayed price points total — plus included services,
-        optional accessories, image gallery, and the dealer business card.
+        """Full offer detail.
+
+        Payload shape mirrors apimax MCP `get_nlt_offer_details`
+        bit-for-bit (mcp_server.py:1546-1606).
 
         Args:
           extra_headers: Send extra headers
@@ -226,14 +214,14 @@ class AsyncOffersResource(AsyncAPIResource):
         self,
         dealer_id: str,
         *,
-        brand: str | Omit = omit,
-        canone_max_eur: int | Omit = omit,
-        cursor: str | Omit = omit,
-        duration_months: Literal[24, 36, 48] | Omit = omit,
-        fuel_type: str | Omit = omit,
-        km_per_year: Literal[10000, 15000, 20000, 25000, 30000, 40000] | Omit = omit,
+        brand: Optional[str] | Omit = omit,
+        canone_max_eur: Optional[int] | Omit = omit,
+        cursor: Optional[str] | Omit = omit,
+        duration_months: Optional[int] | Omit = omit,
+        fuel_type: Optional[str] | Omit = omit,
+        km_per_year: Optional[int] | Omit = omit,
         limit: int | Omit = omit,
-        segment: str | Omit = omit,
+        segment: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -241,24 +229,22 @@ class AsyncOffersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> OfferListResponse:
-        """
-        Returns a cursor-paginated list of NLT offers available to the specified dealer,
-        with monthly canon already repriced using the dealer's markup and down-payment
-        tiers.
+        """Listing of NLT offers with monthly canon repriced for this dealer.
+
+        Strategy:
+
+        1.
+
+        Resolve + ACL the dealer.
+        2. Pull at most `limit + 1` offers from the catalog after the cursor. The extra
+           row lets us know if there's a next page without a second COUNT(\\**) query.
+        3. Apply text/enum filters server-side via SQL where possible (brand, segment,
+           fuel) and the numeric `canone_max_eur` filter in Python after the pricing
+           pass (the DB has no "displayed canon" column; we synthesize it per dealer).
+        4. For each surviving offer, price the (duration, km) cells the caller filtered
+           to (if specified) or all 18, pick the cheapest cell as the headline.
 
         Args:
-          brand: Filter by brand name, case-insensitive (e.g., `Fiat`).
-
-          canone_max_eur: Upper bound on displayed monthly canon (EUR).
-
-          cursor: Opaque pagination cursor.
-
-          fuel_type: Raw Italian label (case-insensitive ILIKE match). Examples: "Benzina", "Diesel",
-              "Ibrido benzina", "Ibrido diesel", "Elettrica", "GPL", "Metano".
-
-          segment: Raw Italian label (case-insensitive ILIKE substring match). Examples: "SUV
-              piccoli", "SUV medi", "Superiori", "Medie", "Utilitarie".
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

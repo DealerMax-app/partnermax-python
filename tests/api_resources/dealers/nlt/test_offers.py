@@ -85,9 +85,9 @@ class TestOffers:
             brand="brand",
             canone_max_eur=50,
             cursor="cursor",
-            duration_months=24,
+            duration_months=0,
             fuel_type="fuel_type",
-            km_per_year=10000,
+            km_per_year=0,
             limit=1,
             segment="segment",
         )
@@ -201,9 +201,9 @@ class TestAsyncOffers:
             brand="brand",
             canone_max_eur=50,
             cursor="cursor",
-            duration_months=24,
+            duration_months=0,
             fuel_type="fuel_type",
-            km_per_year=10000,
+            km_per_year=0,
             limit=1,
             segment="segment",
         )

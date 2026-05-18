@@ -55,3 +55,26 @@ Methods:
 
 - <code title="get /v1/dealers/{dealer_id}/nlt/offers/{offer_id}">client.dealers.nlt.offers.<a href="./src/partnermax/resources/dealers/nlt/offers.py">retrieve</a>(offer_id, \*, dealer_id) -> <a href="./src/partnermax/types/dealers/nlt/offer_retrieve_response.py">OfferRetrieveResponse</a></code>
 - <code title="get /v1/dealers/{dealer_id}/nlt/offers">client.dealers.nlt.offers.<a href="./src/partnermax/resources/dealers/nlt/offers.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/nlt/offer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/nlt/offer_list_response.py">OfferListResponse</a></code>
+
+## Vehicles
+
+Types:
+
+```python
+from partnermax.types.dealers import (
+    BulkCreateVehiclesResponse,
+    BulkRowOutcome,
+    VehicleDetail,
+    VehicleList,
+    VehicleSummary,
+)
+```
+
+Methods:
+
+- <code title="post /v1/dealers/{dealer_id}/vehicles">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">create</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_create_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
+- <code title="get /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">retrieve</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_retrieve_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
+- <code title="patch /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">update</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
+- <code title="get /v1/dealers/{dealer_id}/vehicles">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_list.py">VehicleList</a></code>
+- <code title="delete /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">delete</a>(vehicle_id, \*, dealer_id) -> None</code>
+- <code title="post /v1/dealers/{dealer_id}/vehicles/bulk">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles.py">bulk</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_bulk_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/bulk_create_vehicles_response.py">BulkCreateVehiclesResponse</a></code>

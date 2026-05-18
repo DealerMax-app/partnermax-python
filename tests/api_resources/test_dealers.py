@@ -24,12 +24,15 @@ class TestDealers:
     @parametrize
     def test_method_create(self, client: Partnermax) -> None:
         dealer = client.dealers.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
@@ -37,16 +40,18 @@ class TestDealers:
     @parametrize
     def test_method_create_with_all_params(self, client: Partnermax) -> None:
         dealer = client.dealers.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
             activate=True,
-            contact_phone="+390212345678",
-            metadata={"partner_internal_id": "DLR-9182"},
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            metadata={"foo": "string"},
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
@@ -54,12 +59,15 @@ class TestDealers:
     @parametrize
     def test_raw_response_create(self, client: Partnermax) -> None:
         response = client.dealers.with_raw_response.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         )
 
         assert response.is_closed is True
@@ -71,12 +79,15 @@ class TestDealers:
     @parametrize
     def test_streaming_response_create(self, client: Partnermax) -> None:
         with client.dealers.with_streaming_response.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -141,14 +152,16 @@ class TestDealers:
     def test_method_update_with_all_params(self, client: Partnermax) -> None:
         dealer = client.dealers.update(
             dealer_id="dealer_id",
-            business_name="business_name",
+            address="xx",
+            business_name="xx",
+            city="xx",
             contact_email="dev@stainless.com",
-            contact_phone="contact_phone",
+            contact_phone="xxxxx",
             metadata={"foo": "string"},
             postal_code="21029",
             province_code="SE",
             status="active",
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
@@ -276,12 +289,15 @@ class TestAsyncDealers:
     @parametrize
     async def test_method_create(self, async_client: AsyncPartnermax) -> None:
         dealer = await async_client.dealers.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
@@ -289,16 +305,18 @@ class TestAsyncDealers:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncPartnermax) -> None:
         dealer = await async_client.dealers.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
             activate=True,
-            contact_phone="+390212345678",
-            metadata={"partner_internal_id": "DLR-9182"},
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            metadata={"foo": "string"},
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
@@ -306,12 +324,15 @@ class TestAsyncDealers:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncPartnermax) -> None:
         response = await async_client.dealers.with_raw_response.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         )
 
         assert response.is_closed is True
@@ -323,12 +344,15 @@ class TestAsyncDealers:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncPartnermax) -> None:
         async with async_client.dealers.with_streaming_response.create(
-            business_name="Rossi Automobili S.R.L.",
-            contact_email="info@rossi-auto.it",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            postal_code="21029",
+            primary_domain="29-0.mi-57.16u-2d91-aha.o-l7c19m0.z.9zhin-8ja2-7.447----86.6.61--5-6.2.3-i2al.r.name",
+            province_code="SE",
+            vat_number="IT21029798095",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -393,14 +417,16 @@ class TestAsyncDealers:
     async def test_method_update_with_all_params(self, async_client: AsyncPartnermax) -> None:
         dealer = await async_client.dealers.update(
             dealer_id="dealer_id",
-            business_name="business_name",
+            address="xx",
+            business_name="xx",
+            city="xx",
             contact_email="dev@stainless.com",
-            contact_phone="contact_phone",
+            contact_phone="xxxxx",
             metadata={"foo": "string"},
             postal_code="21029",
             province_code="SE",
             status="active",
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 

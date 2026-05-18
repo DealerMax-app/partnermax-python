@@ -50,7 +50,7 @@ class TestKeys:
     @parametrize
     def test_method_issue(self, client: Partnermax) -> None:
         key = client.keys.issue(
-            label="production-backend-2026",
+            label="x",
         )
         assert_matches_type(KeyIssueResponse, key, path=["response"])
 
@@ -58,9 +58,9 @@ class TestKeys:
     @parametrize
     def test_method_issue_with_all_params(self, client: Partnermax) -> None:
         key = client.keys.issue(
-            label="production-backend-2026",
+            label="x",
             expires_at=parse_datetime("2019-12-27T18:11:19.117Z"),
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(KeyIssueResponse, key, path=["response"])
 
@@ -68,7 +68,7 @@ class TestKeys:
     @parametrize
     def test_raw_response_issue(self, client: Partnermax) -> None:
         response = client.keys.with_raw_response.issue(
-            label="production-backend-2026",
+            label="x",
         )
 
         assert response.is_closed is True
@@ -80,7 +80,7 @@ class TestKeys:
     @parametrize
     def test_streaming_response_issue(self, client: Partnermax) -> None:
         with client.keys.with_streaming_response.issue(
-            label="production-backend-2026",
+            label="x",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -170,7 +170,7 @@ class TestAsyncKeys:
     @parametrize
     async def test_method_issue(self, async_client: AsyncPartnermax) -> None:
         key = await async_client.keys.issue(
-            label="production-backend-2026",
+            label="x",
         )
         assert_matches_type(KeyIssueResponse, key, path=["response"])
 
@@ -178,9 +178,9 @@ class TestAsyncKeys:
     @parametrize
     async def test_method_issue_with_all_params(self, async_client: AsyncPartnermax) -> None:
         key = await async_client.keys.issue(
-            label="production-backend-2026",
+            label="x",
             expires_at=parse_datetime("2019-12-27T18:11:19.117Z"),
-            idempotency_key="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(KeyIssueResponse, key, path=["response"])
 
@@ -188,7 +188,7 @@ class TestAsyncKeys:
     @parametrize
     async def test_raw_response_issue(self, async_client: AsyncPartnermax) -> None:
         response = await async_client.keys.with_raw_response.issue(
-            label="production-backend-2026",
+            label="x",
         )
 
         assert response.is_closed is True
@@ -200,7 +200,7 @@ class TestAsyncKeys:
     @parametrize
     async def test_streaming_response_issue(self, async_client: AsyncPartnermax) -> None:
         async with async_client.keys.with_streaming_response.issue(
-            label="production-backend-2026",
+            label="x",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"

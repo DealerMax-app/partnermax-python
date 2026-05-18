@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Optional
 from typing_extensions import Literal
 
 import httpx
@@ -18,6 +18,14 @@ from .nlt.nlt import (
 )
 from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
 from ..._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
+from .vehicles import (
+    VehiclesResource,
+    AsyncVehiclesResource,
+    VehiclesResourceWithRawResponse,
+    AsyncVehiclesResourceWithRawResponse,
+    VehiclesResourceWithStreamingResponse,
+    AsyncVehiclesResourceWithStreamingResponse,
+)
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -46,12 +54,19 @@ class DealersResource(SyncAPIResource):
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResource:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return NltSettingsResource(self._client)
 
     @cached_property
     def nlt(self) -> NltResource:
         return NltResource(self._client)
+
+    @cached_property
+    def vehicles(self) -> VehiclesResource:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return VehiclesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> DealersResourceWithRawResponse:
@@ -75,14 +90,16 @@ class DealersResource(SyncAPIResource):
     def create(
         self,
         *,
+        address: str,
         business_name: str,
+        city: str,
         contact_email: str,
+        contact_phone: str,
         postal_code: str,
         primary_domain: str,
         province_code: str,
         vat_number: str,
         activate: bool | Omit = omit,
-        contact_phone: str | Omit = omit,
         metadata: Dict[str, str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -92,32 +109,10 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """Creates a new dealer as a child of the calling partner account.
-
-        The dealer is
-        indexed in the cross-network AI-citation surfaces (MCP, Custom GPT, NLWeb,
-        llms.txt) within five minutes. The partner is responsible for ensuring the
-        business has consented to this provisioning and that the data provided is
-        accurate.
-
-        Idempotent on `Idempotency-Key` for 24 hours.
+        """
+        Provision a new dealer as child of the calling partner.
 
         Args:
-          postal_code: Italian 5-digit postal code.
-
-          primary_domain: Root domain of the dealer's public website.
-
-          province_code: Italian two-letter province code, e.g., `MI`, `RM`, `TO`.
-
-          vat_number: Italian VAT number, 11 digits prefixed with `IT`.
-
-          activate: If false, dealer is created in inactive state and does not appear in AI surfaces
-              until activated.
-
-          contact_phone: E.164 format recommended.
-
-          metadata: Free-form partner-supplied key-value pairs, max 16 keys, values max 500 chars.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -131,14 +126,16 @@ class DealersResource(SyncAPIResource):
             "/v1/dealers",
             body=maybe_transform(
                 {
+                    "address": address,
                     "business_name": business_name,
+                    "city": city,
                     "contact_email": contact_email,
+                    "contact_phone": contact_phone,
                     "postal_code": postal_code,
                     "primary_domain": primary_domain,
                     "province_code": province_code,
                     "vat_number": vat_number,
                     "activate": activate,
-                    "contact_phone": contact_phone,
                     "metadata": metadata,
                 },
                 dealer_create_params.DealerCreateParams,
@@ -160,8 +157,9 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """
-        Get a dealer's full detail
+        """Fetch a dealer's full detail.
+
+        ACL-protected.
 
         Args:
           extra_headers: Send extra headers
@@ -186,13 +184,15 @@ class DealersResource(SyncAPIResource):
         self,
         dealer_id: str,
         *,
-        business_name: str | Omit = omit,
-        contact_email: str | Omit = omit,
-        contact_phone: str | Omit = omit,
-        metadata: Dict[str, str] | Omit = omit,
-        postal_code: str | Omit = omit,
-        province_code: str | Omit = omit,
-        status: Literal["active", "inactive"] | Omit = omit,
+        address: Optional[str] | Omit = omit,
+        business_name: Optional[str] | Omit = omit,
+        city: Optional[str] | Omit = omit,
+        contact_email: Optional[str] | Omit = omit,
+        contact_phone: Optional[str] | Omit = omit,
+        metadata: Optional[Dict[str, str]] | Omit = omit,
+        postal_code: Optional[str] | Omit = omit,
+        province_code: Optional[str] | Omit = omit,
+        status: Optional[Literal["active", "inactive"]] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -201,16 +201,11 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """Partial update of dealer fields.
+        """Update or toggle status.
 
-        Only provided fields are modified. Setting
-        `status: "inactive"` removes the dealer from the cross-network AI-citation
-        surfaces within five minutes. Reactivation: send `status: "active"`.
+        Inactive dealers drop from AI surfaces within 5 min.
 
         Args:
-          status: Toggle activation. Inactive dealers are removed from AI surfaces within 5
-              minutes.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -226,7 +221,9 @@ class DealersResource(SyncAPIResource):
             path_template("/v1/dealers/{dealer_id}", dealer_id=dealer_id),
             body=maybe_transform(
                 {
+                    "address": address,
                     "business_name": business_name,
+                    "city": city,
                     "contact_email": contact_email,
                     "contact_phone": contact_phone,
                     "metadata": metadata,
@@ -245,7 +242,7 @@ class DealersResource(SyncAPIResource):
     def list(
         self,
         *,
-        cursor: str | Omit = omit,
+        cursor: Optional[str] | Omit = omit,
         limit: int | Omit = omit,
         status: Literal["active", "inactive", "all"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -255,17 +252,11 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerListResponse:
-        """
-        Returns a cursor-paginated list of dealers belonging to the calling partner.
-        Default ordering: most recently created first.
+        """List dealers owned by the calling partner.
+
+        Cursor-paginated.
 
         Args:
-          cursor: Opaque pagination cursor from a previous response's `next_cursor`.
-
-          limit: Maximum number of items to return.
-
-          status: Filter by dealer status.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -304,12 +295,9 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Marks the dealer as deleted while preserving the audit trail.
+        """Soft-delete.
 
-        Unlike
-        deactivation (`PATCH status=inactive`), a deleted dealer cannot be reactivated
-        by the partner — re-creation requires DealerMAX support. Use deactivation for
-        reversible suspensions.
+        Audit trail retained; reactivation requires DealerMAX support.
 
         Args:
           extra_headers: Send extra headers
@@ -337,12 +325,19 @@ class AsyncDealersResource(AsyncAPIResource):
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResource:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return AsyncNltSettingsResource(self._client)
 
     @cached_property
     def nlt(self) -> AsyncNltResource:
         return AsyncNltResource(self._client)
+
+    @cached_property
+    def vehicles(self) -> AsyncVehiclesResource:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncVehiclesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncDealersResourceWithRawResponse:
@@ -366,14 +361,16 @@ class AsyncDealersResource(AsyncAPIResource):
     async def create(
         self,
         *,
+        address: str,
         business_name: str,
+        city: str,
         contact_email: str,
+        contact_phone: str,
         postal_code: str,
         primary_domain: str,
         province_code: str,
         vat_number: str,
         activate: bool | Omit = omit,
-        contact_phone: str | Omit = omit,
         metadata: Dict[str, str] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -383,32 +380,10 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """Creates a new dealer as a child of the calling partner account.
-
-        The dealer is
-        indexed in the cross-network AI-citation surfaces (MCP, Custom GPT, NLWeb,
-        llms.txt) within five minutes. The partner is responsible for ensuring the
-        business has consented to this provisioning and that the data provided is
-        accurate.
-
-        Idempotent on `Idempotency-Key` for 24 hours.
+        """
+        Provision a new dealer as child of the calling partner.
 
         Args:
-          postal_code: Italian 5-digit postal code.
-
-          primary_domain: Root domain of the dealer's public website.
-
-          province_code: Italian two-letter province code, e.g., `MI`, `RM`, `TO`.
-
-          vat_number: Italian VAT number, 11 digits prefixed with `IT`.
-
-          activate: If false, dealer is created in inactive state and does not appear in AI surfaces
-              until activated.
-
-          contact_phone: E.164 format recommended.
-
-          metadata: Free-form partner-supplied key-value pairs, max 16 keys, values max 500 chars.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -422,14 +397,16 @@ class AsyncDealersResource(AsyncAPIResource):
             "/v1/dealers",
             body=await async_maybe_transform(
                 {
+                    "address": address,
                     "business_name": business_name,
+                    "city": city,
                     "contact_email": contact_email,
+                    "contact_phone": contact_phone,
                     "postal_code": postal_code,
                     "primary_domain": primary_domain,
                     "province_code": province_code,
                     "vat_number": vat_number,
                     "activate": activate,
-                    "contact_phone": contact_phone,
                     "metadata": metadata,
                 },
                 dealer_create_params.DealerCreateParams,
@@ -451,8 +428,9 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """
-        Get a dealer's full detail
+        """Fetch a dealer's full detail.
+
+        ACL-protected.
 
         Args:
           extra_headers: Send extra headers
@@ -477,13 +455,15 @@ class AsyncDealersResource(AsyncAPIResource):
         self,
         dealer_id: str,
         *,
-        business_name: str | Omit = omit,
-        contact_email: str | Omit = omit,
-        contact_phone: str | Omit = omit,
-        metadata: Dict[str, str] | Omit = omit,
-        postal_code: str | Omit = omit,
-        province_code: str | Omit = omit,
-        status: Literal["active", "inactive"] | Omit = omit,
+        address: Optional[str] | Omit = omit,
+        business_name: Optional[str] | Omit = omit,
+        city: Optional[str] | Omit = omit,
+        contact_email: Optional[str] | Omit = omit,
+        contact_phone: Optional[str] | Omit = omit,
+        metadata: Optional[Dict[str, str]] | Omit = omit,
+        postal_code: Optional[str] | Omit = omit,
+        province_code: Optional[str] | Omit = omit,
+        status: Optional[Literal["active", "inactive"]] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -492,16 +472,11 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerDetail:
-        """Partial update of dealer fields.
+        """Update or toggle status.
 
-        Only provided fields are modified. Setting
-        `status: "inactive"` removes the dealer from the cross-network AI-citation
-        surfaces within five minutes. Reactivation: send `status: "active"`.
+        Inactive dealers drop from AI surfaces within 5 min.
 
         Args:
-          status: Toggle activation. Inactive dealers are removed from AI surfaces within 5
-              minutes.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -517,7 +492,9 @@ class AsyncDealersResource(AsyncAPIResource):
             path_template("/v1/dealers/{dealer_id}", dealer_id=dealer_id),
             body=await async_maybe_transform(
                 {
+                    "address": address,
                     "business_name": business_name,
+                    "city": city,
                     "contact_email": contact_email,
                     "contact_phone": contact_phone,
                     "metadata": metadata,
@@ -536,7 +513,7 @@ class AsyncDealersResource(AsyncAPIResource):
     async def list(
         self,
         *,
-        cursor: str | Omit = omit,
+        cursor: Optional[str] | Omit = omit,
         limit: int | Omit = omit,
         status: Literal["active", "inactive", "all"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -546,17 +523,11 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> DealerListResponse:
-        """
-        Returns a cursor-paginated list of dealers belonging to the calling partner.
-        Default ordering: most recently created first.
+        """List dealers owned by the calling partner.
+
+        Cursor-paginated.
 
         Args:
-          cursor: Opaque pagination cursor from a previous response's `next_cursor`.
-
-          limit: Maximum number of items to return.
-
-          status: Filter by dealer status.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -595,12 +566,9 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> None:
-        """Marks the dealer as deleted while preserving the audit trail.
+        """Soft-delete.
 
-        Unlike
-        deactivation (`PATCH status=inactive`), a deleted dealer cannot be reactivated
-        by the partner — re-creation requires DealerMAX support. Use deactivation for
-        reversible suspensions.
+        Audit trail retained; reactivation requires DealerMAX support.
 
         Args:
           extra_headers: Send extra headers
@@ -645,12 +613,19 @@ class DealersResourceWithRawResponse:
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResourceWithRawResponse:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return NltSettingsResourceWithRawResponse(self._dealers.nlt_settings)
 
     @cached_property
     def nlt(self) -> NltResourceWithRawResponse:
         return NltResourceWithRawResponse(self._dealers.nlt)
+
+    @cached_property
+    def vehicles(self) -> VehiclesResourceWithRawResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return VehiclesResourceWithRawResponse(self._dealers.vehicles)
 
 
 class AsyncDealersResourceWithRawResponse:
@@ -675,12 +650,19 @@ class AsyncDealersResourceWithRawResponse:
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResourceWithRawResponse:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return AsyncNltSettingsResourceWithRawResponse(self._dealers.nlt_settings)
 
     @cached_property
     def nlt(self) -> AsyncNltResourceWithRawResponse:
         return AsyncNltResourceWithRawResponse(self._dealers.nlt)
+
+    @cached_property
+    def vehicles(self) -> AsyncVehiclesResourceWithRawResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncVehiclesResourceWithRawResponse(self._dealers.vehicles)
 
 
 class DealersResourceWithStreamingResponse:
@@ -705,12 +687,19 @@ class DealersResourceWithStreamingResponse:
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResourceWithStreamingResponse:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return NltSettingsResourceWithStreamingResponse(self._dealers.nlt_settings)
 
     @cached_property
     def nlt(self) -> NltResourceWithStreamingResponse:
         return NltResourceWithStreamingResponse(self._dealers.nlt)
+
+    @cached_property
+    def vehicles(self) -> VehiclesResourceWithStreamingResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return VehiclesResourceWithStreamingResponse(self._dealers.vehicles)
 
 
 class AsyncDealersResourceWithStreamingResponse:
@@ -735,9 +724,16 @@ class AsyncDealersResourceWithStreamingResponse:
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResourceWithStreamingResponse:
-        """Per-dealer NLT economics: agency markup percent and three down-payment tiers."""
         return AsyncNltSettingsResourceWithStreamingResponse(self._dealers.nlt_settings)
 
     @cached_property
     def nlt(self) -> AsyncNltResourceWithStreamingResponse:
         return AsyncNltResourceWithStreamingResponse(self._dealers.nlt)
+
+    @cached_property
+    def vehicles(self) -> AsyncVehiclesResourceWithStreamingResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncVehiclesResourceWithStreamingResponse(self._dealers.vehicles)

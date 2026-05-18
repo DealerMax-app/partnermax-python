@@ -35,13 +35,17 @@ client = Partnermax(
 )
 
 dealer_detail = client.dealers.create(
+    address="xx",
     business_name="Rossi Automobili S.R.L.",
+    city="xx",
     contact_email="info@rossi-auto.it",
+    contact_phone="xxxxx",
     postal_code="20121",
     primary_domain="rossi-auto.it",
     province_code="MI",
     vat_number="IT01234567890",
 )
+print(dealer_detail.dealer_id)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -67,13 +71,17 @@ client = AsyncPartnermax(
 
 async def main() -> None:
     dealer_detail = await client.dealers.create(
+        address="xx",
         business_name="Rossi Automobili S.R.L.",
+        city="xx",
         contact_email="info@rossi-auto.it",
+        contact_phone="xxxxx",
         postal_code="20121",
         primary_domain="rossi-auto.it",
         province_code="MI",
         vat_number="IT01234567890",
     )
+    print(dealer_detail.dealer_id)
 
 
 asyncio.run(main())
@@ -107,13 +115,17 @@ async def main() -> None:
         http_client=DefaultAioHttpClient(),
     ) as client:
         dealer_detail = await client.dealers.create(
+            address="xx",
             business_name="Rossi Automobili S.R.L.",
+            city="xx",
             contact_email="info@rossi-auto.it",
+            contact_phone="xxxxx",
             postal_code="20121",
             primary_domain="rossi-auto.it",
             province_code="MI",
             vat_number="IT01234567890",
         )
+        print(dealer_detail.dealer_id)
 
 
 asyncio.run(main())
@@ -139,11 +151,11 @@ client = Partnermax()
 
 nlt_settings = client.dealers.nlt_settings.update(
     dealer_id="dealer_id",
-    agency_markup_percent=3.5,
+    agency_markup_percent=0,
     down_payment_tiers={
         "high": {
             "fixed_eur": 0,
-            "percent_of_list": 25,
+            "percent_of_list": 0,
         },
         "low": {
             "fixed_eur": 0,
@@ -151,10 +163,9 @@ nlt_settings = client.dealers.nlt_settings.update(
         },
         "medium": {
             "fixed_eur": 0,
-            "percent_of_list": 12.5,
+            "percent_of_list": 0,
         },
     },
-    image_mode="branded",
 )
 print(nlt_settings.down_payment_tiers)
 ```

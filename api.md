@@ -62,6 +62,7 @@ Types:
 
 ```python
 from partnermax.types.dealers import (
+    AIContent,
     BulkCreateVehiclesResponse,
     BulkRowOutcome,
     VehicleDetail,

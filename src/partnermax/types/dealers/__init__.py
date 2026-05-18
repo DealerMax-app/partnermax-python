@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from .ai_content import AIContent as AIContent
 from .nlt_settings import NltSettings as NltSettings
 from .vehicle_list import VehicleList as VehicleList
 from .vehicle_detail import VehicleDetail as VehicleDetail

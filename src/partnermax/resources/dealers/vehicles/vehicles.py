@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Union, Iterable, Optional
-from datetime import date
+from typing import Iterable, Optional
 
 import httpx
 
@@ -78,7 +77,6 @@ class VehiclesResource(SyncAPIResource):
         dealer_id: str,
         *,
         certified_km: int,
-        cost_price_eur: float,
         motornet_code: str,
         plate: str,
         registration_year: int,
@@ -88,17 +86,10 @@ class VehiclesResource(SyncAPIResource):
         description: str | Omit = omit,
         extended_warranty_enabled: bool | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        inspection_expiry_date: Union[str, date, None] | Omit = omit,
         is_for_sale: bool | Omit = omit,
         is_visible: bool | Omit = omit,
-        last_service_date: Union[str, date, None] | Omit = omit,
-        last_service_km: Optional[int] | Omit = omit,
-        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
-        previous_owner_count: Optional[int] | Omit = omit,
-        previous_ownership_transfer_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
-        road_tax_expiry_date: Union[str, date, None] | Omit = omit,
         vat_displayed: bool | Omit = omit,
         vehicle_damaged: bool | Omit = omit,
         vin: Optional[str] | Omit = omit,
@@ -124,9 +115,6 @@ class VehiclesResource(SyncAPIResource):
         Args:
           certified_km: Certified odometer reading at intake, in kilometres.
 
-          cost_price_eur: Cost basis to the dealer in EUR (partner/dealer internal). Not surfaced on
-              consumer-facing AI surfaces; used by dealer reporting and margin analytics only.
-
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in
               `mnet_dettagli_usato` at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. The partner is expected to source this from
@@ -151,8 +139,6 @@ class VehiclesResource(SyncAPIResource):
 
           notes: Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style.
 
-          previous_ownership_transfer_date: Date of the most recent ownership transfer, if known.
-
           registration_month: Month of registration (1–12).
 
           vat_displayed: If true the public price is displayed VAT-exposed (B2B); otherwise VAT-inclusive
@@ -176,7 +162,6 @@ class VehiclesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "certified_km": certified_km,
-                    "cost_price_eur": cost_price_eur,
                     "motornet_code": motornet_code,
                     "plate": plate,
                     "registration_year": registration_year,
@@ -186,17 +171,10 @@ class VehiclesResource(SyncAPIResource):
                     "description": description,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "inspection_expiry_date": inspection_expiry_date,
                     "is_for_sale": is_for_sale,
                     "is_visible": is_visible,
-                    "last_service_date": last_service_date,
-                    "last_service_km": last_service_km,
-                    "last_service_notes": last_service_notes,
                     "notes": notes,
-                    "previous_owner_count": previous_owner_count,
-                    "previous_ownership_transfer_date": previous_ownership_transfer_date,
                     "registration_month": registration_month,
-                    "road_tax_expiry_date": road_tax_expiry_date,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
                     "vin": vin,
@@ -264,21 +242,13 @@ class VehiclesResource(SyncAPIResource):
         alloy_wheel_size: Optional[int] | Omit = omit,
         certified_km: Optional[int] | Omit = omit,
         color: Optional[str] | Omit = omit,
-        cost_price_eur: Optional[float] | Omit = omit,
         description: Optional[str] | Omit = omit,
         extended_warranty_enabled: Optional[bool] | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        inspection_expiry_date: Union[str, date, None] | Omit = omit,
         is_for_sale: Optional[bool] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
-        last_service_date: Union[str, date, None] | Omit = omit,
-        last_service_km: Optional[int] | Omit = omit,
-        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
-        previous_owner_count: Optional[int] | Omit = omit,
-        previous_ownership_transfer_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
-        road_tax_expiry_date: Union[str, date, None] | Omit = omit,
         sale_price_eur: Optional[float] | Omit = omit,
         vat_displayed: Optional[bool] | Omit = omit,
         vehicle_damaged: Optional[bool] | Omit = omit,
@@ -318,21 +288,13 @@ class VehiclesResource(SyncAPIResource):
                     "alloy_wheel_size": alloy_wheel_size,
                     "certified_km": certified_km,
                     "color": color,
-                    "cost_price_eur": cost_price_eur,
                     "description": description,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "inspection_expiry_date": inspection_expiry_date,
                     "is_for_sale": is_for_sale,
                     "is_visible": is_visible,
-                    "last_service_date": last_service_date,
-                    "last_service_km": last_service_km,
-                    "last_service_notes": last_service_notes,
                     "notes": notes,
-                    "previous_owner_count": previous_owner_count,
-                    "previous_ownership_transfer_date": previous_ownership_transfer_date,
                     "registration_month": registration_month,
-                    "road_tax_expiry_date": road_tax_expiry_date,
                     "sale_price_eur": sale_price_eur,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
@@ -562,7 +524,6 @@ class AsyncVehiclesResource(AsyncAPIResource):
         dealer_id: str,
         *,
         certified_km: int,
-        cost_price_eur: float,
         motornet_code: str,
         plate: str,
         registration_year: int,
@@ -572,17 +533,10 @@ class AsyncVehiclesResource(AsyncAPIResource):
         description: str | Omit = omit,
         extended_warranty_enabled: bool | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        inspection_expiry_date: Union[str, date, None] | Omit = omit,
         is_for_sale: bool | Omit = omit,
         is_visible: bool | Omit = omit,
-        last_service_date: Union[str, date, None] | Omit = omit,
-        last_service_km: Optional[int] | Omit = omit,
-        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
-        previous_owner_count: Optional[int] | Omit = omit,
-        previous_ownership_transfer_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
-        road_tax_expiry_date: Union[str, date, None] | Omit = omit,
         vat_displayed: bool | Omit = omit,
         vehicle_damaged: bool | Omit = omit,
         vin: Optional[str] | Omit = omit,
@@ -608,9 +562,6 @@ class AsyncVehiclesResource(AsyncAPIResource):
         Args:
           certified_km: Certified odometer reading at intake, in kilometres.
 
-          cost_price_eur: Cost basis to the dealer in EUR (partner/dealer internal). Not surfaced on
-              consumer-facing AI surfaces; used by dealer reporting and margin analytics only.
-
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in
               `mnet_dettagli_usato` at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. The partner is expected to source this from
@@ -635,8 +586,6 @@ class AsyncVehiclesResource(AsyncAPIResource):
 
           notes: Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style.
 
-          previous_ownership_transfer_date: Date of the most recent ownership transfer, if known.
-
           registration_month: Month of registration (1–12).
 
           vat_displayed: If true the public price is displayed VAT-exposed (B2B); otherwise VAT-inclusive
@@ -660,7 +609,6 @@ class AsyncVehiclesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "certified_km": certified_km,
-                    "cost_price_eur": cost_price_eur,
                     "motornet_code": motornet_code,
                     "plate": plate,
                     "registration_year": registration_year,
@@ -670,17 +618,10 @@ class AsyncVehiclesResource(AsyncAPIResource):
                     "description": description,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "inspection_expiry_date": inspection_expiry_date,
                     "is_for_sale": is_for_sale,
                     "is_visible": is_visible,
-                    "last_service_date": last_service_date,
-                    "last_service_km": last_service_km,
-                    "last_service_notes": last_service_notes,
                     "notes": notes,
-                    "previous_owner_count": previous_owner_count,
-                    "previous_ownership_transfer_date": previous_ownership_transfer_date,
                     "registration_month": registration_month,
-                    "road_tax_expiry_date": road_tax_expiry_date,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
                     "vin": vin,
@@ -748,21 +689,13 @@ class AsyncVehiclesResource(AsyncAPIResource):
         alloy_wheel_size: Optional[int] | Omit = omit,
         certified_km: Optional[int] | Omit = omit,
         color: Optional[str] | Omit = omit,
-        cost_price_eur: Optional[float] | Omit = omit,
         description: Optional[str] | Omit = omit,
         extended_warranty_enabled: Optional[bool] | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        inspection_expiry_date: Union[str, date, None] | Omit = omit,
         is_for_sale: Optional[bool] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
-        last_service_date: Union[str, date, None] | Omit = omit,
-        last_service_km: Optional[int] | Omit = omit,
-        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
-        previous_owner_count: Optional[int] | Omit = omit,
-        previous_ownership_transfer_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
-        road_tax_expiry_date: Union[str, date, None] | Omit = omit,
         sale_price_eur: Optional[float] | Omit = omit,
         vat_displayed: Optional[bool] | Omit = omit,
         vehicle_damaged: Optional[bool] | Omit = omit,
@@ -802,21 +735,13 @@ class AsyncVehiclesResource(AsyncAPIResource):
                     "alloy_wheel_size": alloy_wheel_size,
                     "certified_km": certified_km,
                     "color": color,
-                    "cost_price_eur": cost_price_eur,
                     "description": description,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "inspection_expiry_date": inspection_expiry_date,
                     "is_for_sale": is_for_sale,
                     "is_visible": is_visible,
-                    "last_service_date": last_service_date,
-                    "last_service_km": last_service_km,
-                    "last_service_notes": last_service_notes,
                     "notes": notes,
-                    "previous_owner_count": previous_owner_count,
-                    "previous_ownership_transfer_date": previous_ownership_transfer_date,
                     "registration_month": registration_month,
-                    "road_tax_expiry_date": road_tax_expiry_date,
                     "sale_price_eur": sale_price_eur,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,

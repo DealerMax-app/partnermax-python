@@ -9,7 +9,6 @@ import pytest
 
 from partnermax import Partnermax, AsyncPartnermax
 from tests.utils import assert_matches_type
-from partnermax._utils import parse_date
 from partnermax.types.dealers import (
     VehicleList,
     VehicleDetail,
@@ -28,7 +27,6 @@ class TestVehicles:
         vehicle = client.dealers.vehicles.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -42,7 +40,6 @@ class TestVehicles:
         vehicle = client.dealers.vehicles.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -52,17 +49,10 @@ class TestVehicles:
             description="description",
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            inspection_expiry_date=parse_date("2019-12-27"),
             is_for_sale=True,
             is_visible=True,
-            last_service_date=parse_date("2019-12-27"),
-            last_service_km=0,
-            last_service_notes="last_service_notes",
             notes="notes",
-            previous_owner_count=0,
-            previous_ownership_transfer_date=parse_date("2019-12-27"),
             registration_month=1,
-            road_tax_expiry_date=parse_date("2019-12-27"),
             vat_displayed=True,
             vehicle_damaged=True,
             vin="PTNLCJPPNYGP316PJ",
@@ -76,7 +66,6 @@ class TestVehicles:
         response = client.dealers.vehicles.with_raw_response.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -94,7 +83,6 @@ class TestVehicles:
         with client.dealers.vehicles.with_streaming_response.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -115,7 +103,6 @@ class TestVehicles:
             client.dealers.vehicles.with_raw_response.create(
                 dealer_id="",
                 certified_km=0,
-                cost_price_eur=100,
                 motornet_code="xxxx",
                 plate="26F1KLZN",
                 registration_year=1960,
@@ -202,21 +189,13 @@ class TestVehicles:
             alloy_wheel_size=13,
             certified_km=0,
             color="color",
-            cost_price_eur=100,
             description="description",
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            inspection_expiry_date=parse_date("2019-12-27"),
             is_for_sale=True,
             is_visible=True,
-            last_service_date=parse_date("2019-12-27"),
-            last_service_km=0,
-            last_service_notes="last_service_notes",
             notes="notes",
-            previous_owner_count=0,
-            previous_ownership_transfer_date=parse_date("2019-12-27"),
             registration_month=1,
-            road_tax_expiry_date=parse_date("2019-12-27"),
             sale_price_eur=100,
             vat_displayed=True,
             vehicle_damaged=True,
@@ -382,7 +361,6 @@ class TestVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -400,7 +378,6 @@ class TestVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -410,17 +387,10 @@ class TestVehicles:
                     "description": "description",
                     "extended_warranty_enabled": True,
                     "extended_warranty_months": 1,
-                    "inspection_expiry_date": parse_date("2019-12-27"),
                     "is_for_sale": True,
                     "is_visible": True,
-                    "last_service_date": parse_date("2019-12-27"),
-                    "last_service_km": 0,
-                    "last_service_notes": "last_service_notes",
                     "notes": "notes",
-                    "previous_owner_count": 0,
-                    "previous_ownership_transfer_date": parse_date("2019-12-27"),
                     "registration_month": 1,
-                    "road_tax_expiry_date": parse_date("2019-12-27"),
                     "vat_displayed": True,
                     "vehicle_damaged": True,
                     "vin": "PTNLCJPPNYGP316PJ",
@@ -438,7 +408,6 @@ class TestVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -460,7 +429,6 @@ class TestVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -485,7 +453,6 @@ class TestVehicles:
                 vehicles=[
                     {
                         "certified_km": 0,
-                        "cost_price_eur": 100,
                         "motornet_code": "xxxx",
                         "plate": "26F1KLZN",
                         "registration_year": 1960,
@@ -506,7 +473,6 @@ class TestAsyncVehicles:
         vehicle = await async_client.dealers.vehicles.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -520,7 +486,6 @@ class TestAsyncVehicles:
         vehicle = await async_client.dealers.vehicles.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -530,17 +495,10 @@ class TestAsyncVehicles:
             description="description",
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            inspection_expiry_date=parse_date("2019-12-27"),
             is_for_sale=True,
             is_visible=True,
-            last_service_date=parse_date("2019-12-27"),
-            last_service_km=0,
-            last_service_notes="last_service_notes",
             notes="notes",
-            previous_owner_count=0,
-            previous_ownership_transfer_date=parse_date("2019-12-27"),
             registration_month=1,
-            road_tax_expiry_date=parse_date("2019-12-27"),
             vat_displayed=True,
             vehicle_damaged=True,
             vin="PTNLCJPPNYGP316PJ",
@@ -554,7 +512,6 @@ class TestAsyncVehicles:
         response = await async_client.dealers.vehicles.with_raw_response.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -572,7 +529,6 @@ class TestAsyncVehicles:
         async with async_client.dealers.vehicles.with_streaming_response.create(
             dealer_id="dealer_id",
             certified_km=0,
-            cost_price_eur=100,
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
@@ -593,7 +549,6 @@ class TestAsyncVehicles:
             await async_client.dealers.vehicles.with_raw_response.create(
                 dealer_id="",
                 certified_km=0,
-                cost_price_eur=100,
                 motornet_code="xxxx",
                 plate="26F1KLZN",
                 registration_year=1960,
@@ -680,21 +635,13 @@ class TestAsyncVehicles:
             alloy_wheel_size=13,
             certified_km=0,
             color="color",
-            cost_price_eur=100,
             description="description",
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            inspection_expiry_date=parse_date("2019-12-27"),
             is_for_sale=True,
             is_visible=True,
-            last_service_date=parse_date("2019-12-27"),
-            last_service_km=0,
-            last_service_notes="last_service_notes",
             notes="notes",
-            previous_owner_count=0,
-            previous_ownership_transfer_date=parse_date("2019-12-27"),
             registration_month=1,
-            road_tax_expiry_date=parse_date("2019-12-27"),
             sale_price_eur=100,
             vat_displayed=True,
             vehicle_damaged=True,
@@ -860,7 +807,6 @@ class TestAsyncVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -878,7 +824,6 @@ class TestAsyncVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -888,17 +833,10 @@ class TestAsyncVehicles:
                     "description": "description",
                     "extended_warranty_enabled": True,
                     "extended_warranty_months": 1,
-                    "inspection_expiry_date": parse_date("2019-12-27"),
                     "is_for_sale": True,
                     "is_visible": True,
-                    "last_service_date": parse_date("2019-12-27"),
-                    "last_service_km": 0,
-                    "last_service_notes": "last_service_notes",
                     "notes": "notes",
-                    "previous_owner_count": 0,
-                    "previous_ownership_transfer_date": parse_date("2019-12-27"),
                     "registration_month": 1,
-                    "road_tax_expiry_date": parse_date("2019-12-27"),
                     "vat_displayed": True,
                     "vehicle_damaged": True,
                     "vin": "PTNLCJPPNYGP316PJ",
@@ -916,7 +854,6 @@ class TestAsyncVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -938,7 +875,6 @@ class TestAsyncVehicles:
             vehicles=[
                 {
                     "certified_km": 0,
-                    "cost_price_eur": 100,
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
@@ -963,7 +899,6 @@ class TestAsyncVehicles:
                 vehicles=[
                     {
                         "certified_km": 0,
-                        "cost_price_eur": 100,
                         "motornet_code": "xxxx",
                         "plate": "26F1KLZN",
                         "registration_year": 1960,

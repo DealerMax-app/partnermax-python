@@ -7,27 +7,35 @@ from datetime import date
 
 import httpx
 
-from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
-from ..._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
-from ..._compat import cached_property
-from ..._resource import SyncAPIResource, AsyncAPIResource
-from ..._response import (
+from .images import (
+    ImagesResource,
+    AsyncImagesResource,
+    ImagesResourceWithRawResponse,
+    AsyncImagesResourceWithRawResponse,
+    ImagesResourceWithStreamingResponse,
+    AsyncImagesResourceWithStreamingResponse,
+)
+from ...._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
+from ...._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
+from ...._compat import cached_property
+from ...._resource import SyncAPIResource, AsyncAPIResource
+from ...._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ..._base_client import make_request_options
-from ...types.dealers import (
+from ...._base_client import make_request_options
+from ....types.dealers import (
     vehicle_bulk_params,
     vehicle_list_params,
     vehicle_create_params,
     vehicle_update_params,
     vehicle_retrieve_params,
 )
-from ...types.dealers.vehicle_list import VehicleList
-from ...types.dealers.vehicle_detail import VehicleDetail
-from ...types.dealers.bulk_create_vehicles_response import BulkCreateVehiclesResponse
+from ....types.dealers.vehicle_list import VehicleList
+from ....types.dealers.vehicle_detail import VehicleDetail
+from ....types.dealers.bulk_create_vehicles_response import BulkCreateVehiclesResponse
 
 __all__ = ["VehiclesResource", "AsyncVehiclesResource"]
 
@@ -37,6 +45,14 @@ class VehiclesResource(SyncAPIResource):
 
     The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
     """
+
+    @cached_property
+    def images(self) -> ImagesResource:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return ImagesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> VehiclesResourceWithRawResponse:
@@ -513,6 +529,14 @@ class AsyncVehiclesResource(AsyncAPIResource):
 
     The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
     """
+
+    @cached_property
+    def images(self) -> AsyncImagesResource:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncImagesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncVehiclesResourceWithRawResponse:
@@ -1007,6 +1031,14 @@ class VehiclesResourceWithRawResponse:
             vehicles.bulk,
         )
 
+    @cached_property
+    def images(self) -> ImagesResourceWithRawResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return ImagesResourceWithRawResponse(self._vehicles.images)
+
 
 class AsyncVehiclesResourceWithRawResponse:
     def __init__(self, vehicles: AsyncVehiclesResource) -> None:
@@ -1030,6 +1062,14 @@ class AsyncVehiclesResourceWithRawResponse:
         self.bulk = async_to_raw_response_wrapper(
             vehicles.bulk,
         )
+
+    @cached_property
+    def images(self) -> AsyncImagesResourceWithRawResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncImagesResourceWithRawResponse(self._vehicles.images)
 
 
 class VehiclesResourceWithStreamingResponse:
@@ -1055,6 +1095,14 @@ class VehiclesResourceWithStreamingResponse:
             vehicles.bulk,
         )
 
+    @cached_property
+    def images(self) -> ImagesResourceWithStreamingResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return ImagesResourceWithStreamingResponse(self._vehicles.images)
+
 
 class AsyncVehiclesResourceWithStreamingResponse:
     def __init__(self, vehicles: AsyncVehiclesResource) -> None:
@@ -1078,3 +1126,11 @@ class AsyncVehiclesResourceWithStreamingResponse:
         self.bulk = async_to_streamed_response_wrapper(
             vehicles.bulk,
         )
+
+    @cached_property
+    def images(self) -> AsyncImagesResourceWithStreamingResponse:
+        """Used-vehicle stock management for partner-owned dealers.
+
+        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncImagesResourceWithStreamingResponse(self._vehicles.images)

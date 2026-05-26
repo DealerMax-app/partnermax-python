@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.10.1 (2026-05-26)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/DealerMax-app/partnermax-python/compare/v0.10.0...v0.10.1)
+
+### Bug Fixes
+
+* point sandbox environment to the single API host ([#12](https://github.com/DealerMax-app/partnermax-python/issues/12)) ([bc92bbc](https://github.com/DealerMax-app/partnermax-python/commit/bc92bbce40724e1995f99bb012e576da2dba5004))
+
+
+### Chores
+
+* update SDK settings ([1766e04](https://github.com/DealerMax-app/partnermax-python/commit/1766e04a048b37797c51bd1c242ba9974295f991))
+
 ## 0.10.0 (2026-05-18)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.9.0...v0.10.0)

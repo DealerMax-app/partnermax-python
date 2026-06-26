@@ -38,4 +38,4 @@ class NltSettings(BaseModel):
 
     image_mode: Optional[Literal["branded", "scenario_locked", "scenario_seasonal"]] = None
 
-    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] = None
+    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom", "building"]] = None

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import Literal, Required, TypedDict
+from typing_extensions import Literal, Required, Annotated, TypedDict
 
+from ..._utils import PropertyInfo
 from .down_payment_tiers_param import DownPaymentTiersParam
 
 __all__ = ["NltSettingUpdateParams"]
@@ -27,4 +28,6 @@ class NltSettingUpdateParams(TypedDict, total=False):
 
     image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"]
 
-    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]]
+    image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom", "building"]]
+
+    idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

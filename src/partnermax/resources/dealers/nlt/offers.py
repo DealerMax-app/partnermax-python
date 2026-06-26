@@ -94,6 +94,7 @@ class OffersResource(SyncAPIResource):
         km_per_year: Optional[int] | Omit = omit,
         limit: int | Omit = omit,
         segment: Optional[str] | Omit = omit,
+        vehicle_type: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -117,6 +118,10 @@ class OffersResource(SyncAPIResource):
            to (if specified) or all 18, pick the cheapest cell as the headline.
 
         Args:
+          vehicle_type: Macro discriminator: 'auto' (passenger vehicles) or 'vcom' (light commercial ≤35
+              q.li: vans, panel trucks, multispace, pickups, minibuses). Omit to return the
+              mixed catalog.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -144,6 +149,7 @@ class OffersResource(SyncAPIResource):
                         "km_per_year": km_per_year,
                         "limit": limit,
                         "segment": segment,
+                        "vehicle_type": vehicle_type,
                     },
                     offer_list_params.OfferListParams,
                 ),
@@ -222,6 +228,7 @@ class AsyncOffersResource(AsyncAPIResource):
         km_per_year: Optional[int] | Omit = omit,
         limit: int | Omit = omit,
         segment: Optional[str] | Omit = omit,
+        vehicle_type: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -245,6 +252,10 @@ class AsyncOffersResource(AsyncAPIResource):
            to (if specified) or all 18, pick the cheapest cell as the headline.
 
         Args:
+          vehicle_type: Macro discriminator: 'auto' (passenger vehicles) or 'vcom' (light commercial ≤35
+              q.li: vans, panel trucks, multispace, pickups, minibuses). Omit to return the
+              mixed catalog.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -272,6 +283,7 @@ class AsyncOffersResource(AsyncAPIResource):
                         "km_per_year": km_per_year,
                         "limit": limit,
                         "segment": segment,
+                        "vehicle_type": vehicle_type,
                     },
                     offer_list_params.OfferListParams,
                 ),

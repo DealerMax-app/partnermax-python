@@ -47,3 +47,5 @@ class NltOfferSummary(BaseModel):
     segment: Optional[str] = None
 
     trim: Optional[str] = None
+
+    vehicle_type: Optional[Literal["auto", "vcom"]] = None

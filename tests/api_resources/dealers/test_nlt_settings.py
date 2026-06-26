@@ -105,6 +105,7 @@ class TestNltSettings:
             currency="EUR",
             image_mode="branded",
             image_scenario_locked="mediterraneo",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 
@@ -281,6 +282,7 @@ class TestAsyncNltSettings:
             currency="EUR",
             image_mode="branded",
             image_scenario_locked="mediterraneo",
+            idempotency_key="Idempotency-Key",
         )
         assert_matches_type(NltSettings, nlt_setting, path=["response"])
 

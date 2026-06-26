@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.0 (2026-06-26)
+
+Full Changelog: [v0.10.1...v0.11.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.10.1...v0.11.0)
+
+### Features
+
+* expose vehicle_type discriminator and refresh schemas (API 1.5.1) ([ac2cbda](https://github.com/DealerMax-app/partnermax-python/commit/ac2cbda732136ab752d4b69a1bfc33260d6cfc66))
+
+
+### Bug Fixes
+
+* **auth:** prioritize first auth header ([aa6e52c](https://github.com/DealerMax-app/partnermax-python/commit/aa6e52c3456fc19eef1eea5297ab05f8657f612d))
+
 ## 0.10.1 (2026-05-26)
 
 Full Changelog: [v0.10.0...v0.10.1](https://github.com/DealerMax-app/partnermax-python/compare/v0.10.0...v0.10.1)

@@ -90,6 +90,7 @@ class TestOffers:
             km_per_year=0,
             limit=1,
             segment="segment",
+            vehicle_type="vcom",
         )
         assert_matches_type(OfferListResponse, offer, path=["response"])
 
@@ -206,6 +207,7 @@ class TestAsyncOffers:
             km_per_year=0,
             limit=1,
             segment="segment",
+            vehicle_type="vcom",
         )
         assert_matches_type(OfferListResponse, offer, path=["response"])
 

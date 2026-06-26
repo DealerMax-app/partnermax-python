@@ -2,6 +2,7 @@
 
 from typing import Dict, List, Optional
 from datetime import datetime
+from typing_extensions import Literal
 
 from ...._models import BaseModel
 
@@ -286,6 +287,8 @@ class OfferRetrieveResponse(BaseModel):
 
     quotations: Optional[List[Quotation]] = None
 
+    schema_org: Optional[Dict[str, object]] = None
+
     segment: Optional[str] = None
 
     standard_equipment: Optional[List[str]] = None
@@ -299,3 +302,5 @@ class OfferRetrieveResponse(BaseModel):
     transmission: Optional[str] = None
 
     trim: Optional[str] = None
+
+    vehicle_type: Optional[Literal["auto", "vcom"]] = None

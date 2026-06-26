@@ -8,7 +8,7 @@ from typing_extensions import Literal
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ..._utils import path_template, maybe_transform, async_maybe_transform
+from ..._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -86,7 +86,9 @@ class NltSettingsResource(SyncAPIResource):
         down_payment_tiers: DownPaymentTiersParam,
         currency: Literal["EUR"] | Omit = omit,
         image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"] | Omit = omit,
-        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
+        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom", "building"]]
+        | Omit = omit,
+        idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -117,9 +119,8 @@ class NltSettingsResource(SyncAPIResource):
         in the canonical DataMax pricing model, not per-dealer. The offer detail
         endpoint surfaces it per row instead.
 
-        The Idempotency middleware handles `Idempotency-Key` replay outside this
-        handler; we just need to make the write itself idempotent at the row level (a
-        re-applied identical PATCH is a no-op by construction).
+        `Idempotency-Key` replay uses the shared endpoint helper; a re-applied identical
+        PATCH is also a row-level no-op by construction.
 
         Args:
           down_payment_tiers: Three down-payment scenarios (basso / medio / alto).
@@ -140,6 +141,7 @@ class NltSettingsResource(SyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return self._patch(
             path_template("/v1/dealers/{dealer_id}/nlt-settings", dealer_id=dealer_id),
             body=maybe_transform(
@@ -220,7 +222,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         down_payment_tiers: DownPaymentTiersParam,
         currency: Literal["EUR"] | Omit = omit,
         image_mode: Literal["branded", "scenario_locked", "scenario_seasonal"] | Omit = omit,
-        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom"]] | Omit = omit,
+        image_scenario_locked: Optional[Literal["mediterraneo", "cortina", "milano", "showroom", "building"]]
+        | Omit = omit,
+        idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -251,9 +255,8 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         in the canonical DataMax pricing model, not per-dealer. The offer detail
         endpoint surfaces it per row instead.
 
-        The Idempotency middleware handles `Idempotency-Key` replay outside this
-        handler; we just need to make the write itself idempotent at the row level (a
-        re-applied identical PATCH is a no-op by construction).
+        `Idempotency-Key` replay uses the shared endpoint helper; a re-applied identical
+        PATCH is also a row-level no-op by construction.
 
         Args:
           down_payment_tiers: Three down-payment scenarios (basso / medio / alto).
@@ -274,6 +277,7 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return await self._patch(
             path_template("/v1/dealers/{dealer_id}/nlt-settings", dealer_id=dealer_id),
             body=await async_maybe_transform(

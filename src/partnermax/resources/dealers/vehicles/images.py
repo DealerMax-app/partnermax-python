@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Mapping, cast
-
 import httpx
 
-from ...._files import deepcopy_with_paths
-from ...._types import Body, Query, Headers, NoneType, NotGiven, FileTypes, not_given
-from ...._utils import extract_files, path_template, maybe_transform, async_maybe_transform
+from ...._types import Body, Query, Headers, NoneType, NotGiven, not_given
+from ...._utils import path_template, maybe_transform, async_maybe_transform
 from ...._compat import cached_property
 from ...._resource import SyncAPIResource, AsyncAPIResource
 from ...._response import (
@@ -55,7 +52,7 @@ class ImagesResource(SyncAPIResource):
         vehicle_id: str,
         *,
         dealer_id: str,
-        file: FileTypes,
+        file: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -94,8 +91,6 @@ class ImagesResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
         if not vehicle_id:
             raise ValueError(f"Expected a non-empty value for `vehicle_id` but received {vehicle_id!r}")
-        body = deepcopy_with_paths({"file": file}, [["file"]])
-        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
         # It should be noted that the actual Content-Type header that will be
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
@@ -104,8 +99,7 @@ class ImagesResource(SyncAPIResource):
             path_template(
                 "/v1/dealers/{dealer_id}/vehicles/{vehicle_id}/images", dealer_id=dealer_id, vehicle_id=vehicle_id
             ),
-            body=maybe_transform(body, image_create_params.ImageCreateParams),
-            files=files,
+            body=maybe_transform({"file": file}, image_create_params.ImageCreateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -239,7 +233,7 @@ class AsyncImagesResource(AsyncAPIResource):
         vehicle_id: str,
         *,
         dealer_id: str,
-        file: FileTypes,
+        file: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -278,8 +272,6 @@ class AsyncImagesResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
         if not vehicle_id:
             raise ValueError(f"Expected a non-empty value for `vehicle_id` but received {vehicle_id!r}")
-        body = deepcopy_with_paths({"file": file}, [["file"]])
-        files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
         # It should be noted that the actual Content-Type header that will be
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
@@ -288,8 +280,7 @@ class AsyncImagesResource(AsyncAPIResource):
             path_template(
                 "/v1/dealers/{dealer_id}/vehicles/{vehicle_id}/images", dealer_id=dealer_id, vehicle_id=vehicle_id
             ),
-            body=await async_maybe_transform(body, image_create_params.ImageCreateParams),
-            files=files,
+            body=await async_maybe_transform({"file": file}, image_create_params.ImageCreateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

@@ -24,3 +24,10 @@ class OfferListParams(TypedDict, total=False):
     limit: int
 
     segment: Optional[str]
+
+    vehicle_type: Optional[str]
+    """
+    Macro discriminator: 'auto' (passenger vehicles) or 'vcom' (light commercial ≤35
+    q.li: vans, panel trucks, multispace, pickups, minibuses). Omit to return the
+    mixed catalog.
+    """

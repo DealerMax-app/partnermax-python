@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import typing_extensions
 from typing import Dict, Optional
 from typing_extensions import Literal
 
@@ -89,7 +88,6 @@ class DealersResource(SyncAPIResource):
         """
         return DealersResourceWithStreamingResponse(self)
 
-    @typing_extensions.deprecated("deprecated")
     def retrieve(
         self,
         dealer_id: str,
@@ -124,7 +122,6 @@ class DealersResource(SyncAPIResource):
             cast_to=DealerDetail,
         )
 
-    @typing_extensions.deprecated("deprecated")
     def update(
         self,
         dealer_id: str,
@@ -184,7 +181,6 @@ class DealersResource(SyncAPIResource):
             cast_to=DealerDetail,
         )
 
-    @typing_extensions.deprecated("deprecated")
     def list(
         self,
         *,
@@ -231,7 +227,6 @@ class DealersResource(SyncAPIResource):
             model=DealerSummary,
         )
 
-    @typing_extensions.deprecated("deprecated")
     def delete(
         self,
         dealer_id: str,
@@ -306,7 +301,6 @@ class AsyncDealersResource(AsyncAPIResource):
         """
         return AsyncDealersResourceWithStreamingResponse(self)
 
-    @typing_extensions.deprecated("deprecated")
     async def retrieve(
         self,
         dealer_id: str,
@@ -341,7 +335,6 @@ class AsyncDealersResource(AsyncAPIResource):
             cast_to=DealerDetail,
         )
 
-    @typing_extensions.deprecated("deprecated")
     async def update(
         self,
         dealer_id: str,
@@ -401,7 +394,6 @@ class AsyncDealersResource(AsyncAPIResource):
             cast_to=DealerDetail,
         )
 
-    @typing_extensions.deprecated("deprecated")
     def list(
         self,
         *,
@@ -448,7 +440,6 @@ class AsyncDealersResource(AsyncAPIResource):
             model=DealerSummary,
         )
 
-    @typing_extensions.deprecated("deprecated")
     async def delete(
         self,
         dealer_id: str,
@@ -489,25 +480,17 @@ class DealersResourceWithRawResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            to_raw_response_wrapper(
-                dealers.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = to_raw_response_wrapper(
+            dealers.retrieve,
         )
-        self.update = (  # pyright: ignore[reportDeprecated]
-            to_raw_response_wrapper(
-                dealers.update,  # pyright: ignore[reportDeprecated],
-            )
+        self.update = to_raw_response_wrapper(
+            dealers.update,
         )
-        self.list = (  # pyright: ignore[reportDeprecated]
-            to_raw_response_wrapper(
-                dealers.list,  # pyright: ignore[reportDeprecated],
-            )
+        self.list = to_raw_response_wrapper(
+            dealers.list,
         )
-        self.delete = (  # pyright: ignore[reportDeprecated]
-            to_raw_response_wrapper(
-                dealers.delete,  # pyright: ignore[reportDeprecated],
-            )
+        self.delete = to_raw_response_wrapper(
+            dealers.delete,
         )
 
     @cached_property
@@ -531,25 +514,17 @@ class AsyncDealersResourceWithRawResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            async_to_raw_response_wrapper(
-                dealers.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = async_to_raw_response_wrapper(
+            dealers.retrieve,
         )
-        self.update = (  # pyright: ignore[reportDeprecated]
-            async_to_raw_response_wrapper(
-                dealers.update,  # pyright: ignore[reportDeprecated],
-            )
+        self.update = async_to_raw_response_wrapper(
+            dealers.update,
         )
-        self.list = (  # pyright: ignore[reportDeprecated]
-            async_to_raw_response_wrapper(
-                dealers.list,  # pyright: ignore[reportDeprecated],
-            )
+        self.list = async_to_raw_response_wrapper(
+            dealers.list,
         )
-        self.delete = (  # pyright: ignore[reportDeprecated]
-            async_to_raw_response_wrapper(
-                dealers.delete,  # pyright: ignore[reportDeprecated],
-            )
+        self.delete = async_to_raw_response_wrapper(
+            dealers.delete,
         )
 
     @cached_property
@@ -573,25 +548,17 @@ class DealersResourceWithStreamingResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            to_streamed_response_wrapper(
-                dealers.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = to_streamed_response_wrapper(
+            dealers.retrieve,
         )
-        self.update = (  # pyright: ignore[reportDeprecated]
-            to_streamed_response_wrapper(
-                dealers.update,  # pyright: ignore[reportDeprecated],
-            )
+        self.update = to_streamed_response_wrapper(
+            dealers.update,
         )
-        self.list = (  # pyright: ignore[reportDeprecated]
-            to_streamed_response_wrapper(
-                dealers.list,  # pyright: ignore[reportDeprecated],
-            )
+        self.list = to_streamed_response_wrapper(
+            dealers.list,
         )
-        self.delete = (  # pyright: ignore[reportDeprecated]
-            to_streamed_response_wrapper(
-                dealers.delete,  # pyright: ignore[reportDeprecated],
-            )
+        self.delete = to_streamed_response_wrapper(
+            dealers.delete,
         )
 
     @cached_property
@@ -615,25 +582,17 @@ class AsyncDealersResourceWithStreamingResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
-        self.retrieve = (  # pyright: ignore[reportDeprecated]
-            async_to_streamed_response_wrapper(
-                dealers.retrieve,  # pyright: ignore[reportDeprecated],
-            )
+        self.retrieve = async_to_streamed_response_wrapper(
+            dealers.retrieve,
         )
-        self.update = (  # pyright: ignore[reportDeprecated]
-            async_to_streamed_response_wrapper(
-                dealers.update,  # pyright: ignore[reportDeprecated],
-            )
+        self.update = async_to_streamed_response_wrapper(
+            dealers.update,
         )
-        self.list = (  # pyright: ignore[reportDeprecated]
-            async_to_streamed_response_wrapper(
-                dealers.list,  # pyright: ignore[reportDeprecated],
-            )
+        self.list = async_to_streamed_response_wrapper(
+            dealers.list,
         )
-        self.delete = (  # pyright: ignore[reportDeprecated]
-            async_to_streamed_response_wrapper(
-                dealers.delete,  # pyright: ignore[reportDeprecated],
-            )
+        self.delete = async_to_streamed_response_wrapper(
+            dealers.delete,
         )
 
     @cached_property

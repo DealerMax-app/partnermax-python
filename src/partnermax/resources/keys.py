@@ -26,9 +26,9 @@ __all__ = ["KeysResource", "AsyncKeysResource"]
 
 
 class KeysResource(SyncAPIResource):
-    """API key lifecycle management — issue, list, revoke.
+    """API key lifecycle management.
 
-    The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+    PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
     """
 
     @cached_property
@@ -87,14 +87,14 @@ class KeysResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyIssueResponse:
-        """Issue a new API key.
+        """
+        Rotate the partner API key during a DealerMAX support flow.
 
-        Plaintext returned exactly once.
-
-        Capability gate: caller's key must hold `can_issue_keys`. The bootstrap key
-        handed to a partner by DealerMAX support carries this capability; keys minted
-        here inherit the _same_ capabilities as the caller, so partners can never
-        accidentally widen their own scope.
+        Plaintext is returned exactly once. The key authenticating this request is
+        deactivated in the same transaction that inserts the replacement, preserving
+        PartnerMAX v1's one-active-key invariant. Callers must not use this endpoint for
+        per-deployment, CI, or engineer credentials. Capability gate: caller's key must
+        hold `can_issue_keys`.
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.
@@ -162,9 +162,9 @@ class KeysResource(SyncAPIResource):
 
 
 class AsyncKeysResource(AsyncAPIResource):
-    """API key lifecycle management — issue, list, revoke.
+    """API key lifecycle management.
 
-    The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+    PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
     """
 
     @cached_property
@@ -223,14 +223,14 @@ class AsyncKeysResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> KeyIssueResponse:
-        """Issue a new API key.
+        """
+        Rotate the partner API key during a DealerMAX support flow.
 
-        Plaintext returned exactly once.
-
-        Capability gate: caller's key must hold `can_issue_keys`. The bootstrap key
-        handed to a partner by DealerMAX support carries this capability; keys minted
-        here inherit the _same_ capabilities as the caller, so partners can never
-        accidentally widen their own scope.
+        Plaintext is returned exactly once. The key authenticating this request is
+        deactivated in the same transaction that inserts the replacement, preserving
+        PartnerMAX v1's one-active-key invariant. Callers must not use this endpoint for
+        per-deployment, CI, or engineer credentials. Capability gate: caller's key must
+        hold `can_issue_keys`.
 
         Args:
           label: Human-readable identifier for this key, used for safe logging.

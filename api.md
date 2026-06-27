@@ -17,15 +17,14 @@ Methods:
 Types:
 
 ```python
-from partnermax.types import DealerDetail, DealerSummary, DealerListResponse
+from partnermax.types import DealerDetail, DealerSummary
 ```
 
 Methods:
 
-- <code title="post /v1/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">create</a>(\*\*<a href="src/partnermax/types/dealer_create_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
 - <code title="get /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">retrieve</a>(dealer_id) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
 - <code title="patch /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">update</a>(dealer_id, \*\*<a href="src/partnermax/types/dealer_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
-- <code title="get /v1/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">list</a>(\*\*<a href="src/partnermax/types/dealer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_list_response.py">DealerListResponse</a></code>
+- <code title="get /v1/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">list</a>(\*\*<a href="src/partnermax/types/dealer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_summary.py">SyncCursorPage[DealerSummary]</a></code>
 - <code title="delete /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">delete</a>(dealer_id) -> None</code>
 
 ## NltSettings
@@ -48,13 +47,13 @@ Methods:
 Types:
 
 ```python
-from partnermax.types.dealers.nlt import NltOfferSummary, OfferRetrieveResponse, OfferListResponse
+from partnermax.types.dealers.nlt import NltOfferSummary, OfferRetrieveResponse
 ```
 
 Methods:
 
 - <code title="get /v1/dealers/{dealer_id}/nlt/offers/{offer_id}">client.dealers.nlt.offers.<a href="./src/partnermax/resources/dealers/nlt/offers.py">retrieve</a>(offer_id, \*, dealer_id) -> <a href="./src/partnermax/types/dealers/nlt/offer_retrieve_response.py">OfferRetrieveResponse</a></code>
-- <code title="get /v1/dealers/{dealer_id}/nlt/offers">client.dealers.nlt.offers.<a href="./src/partnermax/resources/dealers/nlt/offers.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/nlt/offer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/nlt/offer_list_response.py">OfferListResponse</a></code>
+- <code title="get /v1/dealers/{dealer_id}/nlt/offers">client.dealers.nlt.offers.<a href="./src/partnermax/resources/dealers/nlt/offers.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/nlt/offer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/nlt/nlt_offer_summary.py">SyncCursorPage[NltOfferSummary]</a></code>
 
 ## Vehicles
 
@@ -76,7 +75,7 @@ Methods:
 - <code title="post /v1/dealers/{dealer_id}/vehicles">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">create</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_create_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
 - <code title="get /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">retrieve</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_retrieve_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
 - <code title="patch /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">update</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_detail.py">VehicleDetail</a></code>
-- <code title="get /v1/dealers/{dealer_id}/vehicles">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_list.py">VehicleList</a></code>
+- <code title="get /v1/dealers/{dealer_id}/vehicles">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">list</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicle_summary.py">SyncCursorPage[VehicleSummary]</a></code>
 - <code title="delete /v1/dealers/{dealer_id}/vehicles/{vehicle_id}">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">delete</a>(vehicle_id, \*, dealer_id) -> None</code>
 - <code title="post /v1/dealers/{dealer_id}/vehicles/bulk">client.dealers.vehicles.<a href="./src/partnermax/resources/dealers/vehicles/vehicles.py">bulk</a>(dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicle_bulk_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/bulk_create_vehicles_response.py">BulkCreateVehiclesResponse</a></code>
 

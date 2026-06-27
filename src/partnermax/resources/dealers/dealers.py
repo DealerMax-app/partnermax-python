@@ -7,7 +7,7 @@ from typing_extensions import Literal
 
 import httpx
 
-from ...types import dealer_list_params, dealer_create_params, dealer_update_params
+from ...types import dealer_list_params, dealer_update_params
 from .nlt.nlt import (
     NltResource,
     AsyncNltResource,
@@ -26,6 +26,7 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ...pagination import SyncCursorPage, AsyncCursorPage
 from .nlt_settings import (
     NltSettingsResource,
     AsyncNltSettingsResource,
@@ -34,7 +35,7 @@ from .nlt_settings import (
     NltSettingsResourceWithStreamingResponse,
     AsyncNltSettingsResourceWithStreamingResponse,
 )
-from ..._base_client import make_request_options
+from ..._base_client import AsyncPaginator, make_request_options
 from .vehicles.vehicles import (
     VehiclesResource,
     AsyncVehiclesResource,
@@ -44,7 +45,7 @@ from .vehicles.vehicles import (
     AsyncVehiclesResourceWithStreamingResponse,
 )
 from ...types.dealer_detail import DealerDetail
-from ...types.dealer_list_response import DealerListResponse
+from ...types.dealer_summary import DealerSummary
 
 __all__ = ["DealersResource", "AsyncDealersResource"]
 
@@ -86,65 +87,6 @@ class DealersResource(SyncAPIResource):
         For more information, see https://www.github.com/DealerMax-app/partnermax-python#with_streaming_response
         """
         return DealersResourceWithStreamingResponse(self)
-
-    def create(
-        self,
-        *,
-        address: str,
-        business_name: str,
-        city: str,
-        contact_email: str,
-        contact_phone: str,
-        postal_code: str,
-        primary_domain: str,
-        province_code: str,
-        vat_number: str,
-        activate: bool | Omit = omit,
-        metadata: Dict[str, str] | Omit = omit,
-        idempotency_key: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DealerDetail:
-        """
-        Provision a new dealer as child of the calling partner.
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
-        return self._post(
-            "/v1/dealers",
-            body=maybe_transform(
-                {
-                    "address": address,
-                    "business_name": business_name,
-                    "city": city,
-                    "contact_email": contact_email,
-                    "contact_phone": contact_phone,
-                    "postal_code": postal_code,
-                    "primary_domain": primary_domain,
-                    "province_code": province_code,
-                    "vat_number": vat_number,
-                    "activate": activate,
-                    "metadata": metadata,
-                },
-                dealer_create_params.DealerCreateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=DealerDetail,
-        )
 
     def retrieve(
         self,
@@ -251,7 +193,7 @@ class DealersResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DealerListResponse:
+    ) -> SyncCursorPage[DealerSummary]:
         """List dealers owned by the calling partner.
 
         Cursor-paginated.
@@ -265,8 +207,9 @@ class DealersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return self._get(
+        return self._get_api_list(
             "/v1/dealers",
+            page=SyncCursorPage[DealerSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -281,7 +224,7 @@ class DealersResource(SyncAPIResource):
                     dealer_list_params.DealerListParams,
                 ),
             ),
-            cast_to=DealerListResponse,
+            model=DealerSummary,
         )
 
     def delete(
@@ -357,65 +300,6 @@ class AsyncDealersResource(AsyncAPIResource):
         For more information, see https://www.github.com/DealerMax-app/partnermax-python#with_streaming_response
         """
         return AsyncDealersResourceWithStreamingResponse(self)
-
-    async def create(
-        self,
-        *,
-        address: str,
-        business_name: str,
-        city: str,
-        contact_email: str,
-        contact_phone: str,
-        postal_code: str,
-        primary_domain: str,
-        province_code: str,
-        vat_number: str,
-        activate: bool | Omit = omit,
-        metadata: Dict[str, str] | Omit = omit,
-        idempotency_key: str | Omit = omit,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DealerDetail:
-        """
-        Provision a new dealer as child of the calling partner.
-
-        Args:
-          extra_headers: Send extra headers
-
-          extra_query: Add additional query parameters to the request
-
-          extra_body: Add additional JSON properties to the request
-
-          timeout: Override the client-level default timeout for this request, in seconds
-        """
-        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
-        return await self._post(
-            "/v1/dealers",
-            body=await async_maybe_transform(
-                {
-                    "address": address,
-                    "business_name": business_name,
-                    "city": city,
-                    "contact_email": contact_email,
-                    "contact_phone": contact_phone,
-                    "postal_code": postal_code,
-                    "primary_domain": primary_domain,
-                    "province_code": province_code,
-                    "vat_number": vat_number,
-                    "activate": activate,
-                    "metadata": metadata,
-                },
-                dealer_create_params.DealerCreateParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=DealerDetail,
-        )
 
     async def retrieve(
         self,
@@ -510,7 +394,7 @@ class AsyncDealersResource(AsyncAPIResource):
             cast_to=DealerDetail,
         )
 
-    async def list(
+    def list(
         self,
         *,
         cursor: Optional[str] | Omit = omit,
@@ -522,7 +406,7 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> DealerListResponse:
+    ) -> AsyncPaginator[DealerSummary, AsyncCursorPage[DealerSummary]]:
         """List dealers owned by the calling partner.
 
         Cursor-paginated.
@@ -536,14 +420,15 @@ class AsyncDealersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        return await self._get(
+        return self._get_api_list(
             "/v1/dealers",
+            page=AsyncCursorPage[DealerSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
+                query=maybe_transform(
                     {
                         "cursor": cursor,
                         "limit": limit,
@@ -552,7 +437,7 @@ class AsyncDealersResource(AsyncAPIResource):
                     dealer_list_params.DealerListParams,
                 ),
             ),
-            cast_to=DealerListResponse,
+            model=DealerSummary,
         )
 
     async def delete(
@@ -595,9 +480,6 @@ class DealersResourceWithRawResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
-        self.create = to_raw_response_wrapper(
-            dealers.create,
-        )
         self.retrieve = to_raw_response_wrapper(
             dealers.retrieve,
         )
@@ -632,9 +514,6 @@ class AsyncDealersResourceWithRawResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
-        self.create = async_to_raw_response_wrapper(
-            dealers.create,
-        )
         self.retrieve = async_to_raw_response_wrapper(
             dealers.retrieve,
         )
@@ -669,9 +548,6 @@ class DealersResourceWithStreamingResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
-        self.create = to_streamed_response_wrapper(
-            dealers.create,
-        )
         self.retrieve = to_streamed_response_wrapper(
             dealers.retrieve,
         )
@@ -706,9 +582,6 @@ class AsyncDealersResourceWithStreamingResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
-        self.create = async_to_streamed_response_wrapper(
-            dealers.create,
-        )
         self.retrieve = async_to_streamed_response_wrapper(
             dealers.retrieve,
         )

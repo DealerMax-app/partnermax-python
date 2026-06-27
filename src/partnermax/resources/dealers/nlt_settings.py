@@ -97,7 +97,7 @@ class NltSettingsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Set markup percent (0-10) and three down-payment tiers (strictly ascending).
+        Set markup percent (0-10), three down-payment tiers, and image mode.
 
         Validation:
 
@@ -106,18 +106,9 @@ class NltSettingsResource(SyncAPIResource):
           `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
           final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
-        Persistence:
-
-        - `agency_markup_percent` → `dealer_public.nlt_agency_percent` (rounded to int;
-          live column is `Integer NOT NULL DEFAULT 2`).
-        - `down_payment_tiers` → `dealer_public.nlt_anticipi_config` JSONB, stored in
-          apimax shape `[{"pct": <0..1>, "eur": <int>}, ...]`. The partner-facing
-          `percent_of_list` (0–100) is divided by 100 to keep the column byte-compatible
-          with the DealerMAX UI calculator that reads the same JSONB.
-
-        There is NO `vat_treatment` field: VAT is per-offer (`nlt_offerte.solo_privati`)
-        in the canonical DataMax pricing model, not per-dealer. The offer detail
-        endpoint surfaces it per row instead.
+        The stored economics are immediately used by DealerMAX's dealer-aware NLT
+        calculator. There is NO `vat_treatment` field: VAT is per-offer, not per-dealer.
+        The offer detail endpoint surfaces it per row instead.
 
         `Idempotency-Key` replay uses the shared endpoint helper; a re-applied identical
         PATCH is also a row-level no-op by construction.
@@ -128,8 +119,8 @@ class NltSettingsResource(SyncAPIResource):
               No strict-ascending validation: the final EUR amount depends on the offer's list
               price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
               tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
-              semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
-              positions as opaque slots ordered by intent.
+              semantics (low/medium/high) are advisory — DealerMAX UI treats the 3 positions
+              as opaque slots ordered by intent.
 
           extra_headers: Send extra headers
 
@@ -233,7 +224,7 @@ class AsyncNltSettingsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> NltSettings:
         """
-        Set markup percent (0-10) and three down-payment tiers (strictly ascending).
+        Set markup percent (0-10), three down-payment tiers, and image mode.
 
         Validation:
 
@@ -242,18 +233,9 @@ class AsyncNltSettingsResource(AsyncAPIResource):
           `{percent_of_list (0–100), fixed_eur (≥0)}`. No strict-ascending check — the
           final EUR per tier is offer-dependent (`listino_imponibile * pct + eur`).
 
-        Persistence:
-
-        - `agency_markup_percent` → `dealer_public.nlt_agency_percent` (rounded to int;
-          live column is `Integer NOT NULL DEFAULT 2`).
-        - `down_payment_tiers` → `dealer_public.nlt_anticipi_config` JSONB, stored in
-          apimax shape `[{"pct": <0..1>, "eur": <int>}, ...]`. The partner-facing
-          `percent_of_list` (0–100) is divided by 100 to keep the column byte-compatible
-          with the DealerMAX UI calculator that reads the same JSONB.
-
-        There is NO `vat_treatment` field: VAT is per-offer (`nlt_offerte.solo_privati`)
-        in the canonical DataMax pricing model, not per-dealer. The offer detail
-        endpoint surfaces it per row instead.
+        The stored economics are immediately used by DealerMAX's dealer-aware NLT
+        calculator. There is NO `vat_treatment` field: VAT is per-offer, not per-dealer.
+        The offer detail endpoint surfaces it per row instead.
 
         `Idempotency-Key` replay uses the shared endpoint helper; a re-applied identical
         PATCH is also a row-level no-op by construction.
@@ -264,8 +246,8 @@ class AsyncNltSettingsResource(AsyncAPIResource):
               No strict-ascending validation: the final EUR amount depends on the offer's list
               price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
               tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
-              semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
-              positions as opaque slots ordered by intent.
+              semantics (low/medium/high) are advisory — DealerMAX UI treats the 3 positions
+              as opaque slots ordered by intent.
 
           extra_headers: Send extra headers
 

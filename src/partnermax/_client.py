@@ -153,9 +153,9 @@ class Partnermax(SyncAPIClient):
 
     @cached_property
     def keys(self) -> KeysResource:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import KeysResource
 
@@ -410,9 +410,9 @@ class AsyncPartnermax(AsyncAPIClient):
 
     @cached_property
     def keys(self) -> AsyncKeysResource:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import AsyncKeysResource
 
@@ -581,9 +581,9 @@ class PartnermaxWithRawResponse:
 
     @cached_property
     def keys(self) -> keys.KeysResourceWithRawResponse:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import KeysResourceWithRawResponse
 
@@ -605,9 +605,9 @@ class AsyncPartnermaxWithRawResponse:
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithRawResponse:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import AsyncKeysResourceWithRawResponse
 
@@ -629,9 +629,9 @@ class PartnermaxWithStreamedResponse:
 
     @cached_property
     def keys(self) -> keys.KeysResourceWithStreamingResponse:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import KeysResourceWithStreamingResponse
 
@@ -653,9 +653,9 @@ class AsyncPartnermaxWithStreamedResponse:
 
     @cached_property
     def keys(self) -> keys.AsyncKeysResourceWithStreamingResponse:
-        """API key lifecycle management — issue, list, revoke.
+        """API key lifecycle management.
 
-        The partner authenticates every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`; the server identifies the partner from the key and scopes all reads/writes to dealers owned by that partner.
+        PartnerMAX v1 allows one active API key per partner/environment; partners authenticate every request with `X-Api-Key` (preferred) or `Authorization: Bearer <key>`, and replacement is handled through DealerMAX support.
         """
         from .resources.keys import AsyncKeysResourceWithStreamingResponse
 

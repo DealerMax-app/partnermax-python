@@ -34,18 +34,11 @@ client = Partnermax(
     environment="sandbox",
 )
 
-dealer_detail = client.dealers.create(
-    address="xx",
-    business_name="Rossi Automobili S.R.L.",
-    city="xx",
-    contact_email="info@rossi-auto.it",
-    contact_phone="xxxxx",
-    postal_code="20121",
-    primary_domain="rossi-auto.it",
-    province_code="MI",
-    vat_number="IT01234567890",
+page = client.dealers.list(
+    limit=10,
+    status="active",
 )
-print(dealer_detail.dealer_id)
+print(page.data)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -70,18 +63,11 @@ client = AsyncPartnermax(
 
 
 async def main() -> None:
-    dealer_detail = await client.dealers.create(
-        address="xx",
-        business_name="Rossi Automobili S.R.L.",
-        city="xx",
-        contact_email="info@rossi-auto.it",
-        contact_phone="xxxxx",
-        postal_code="20121",
-        primary_domain="rossi-auto.it",
-        province_code="MI",
-        vat_number="IT01234567890",
+    page = await client.dealers.list(
+        limit=10,
+        status="active",
     )
-    print(dealer_detail.dealer_id)
+    print(page.data)
 
 
 asyncio.run(main())
@@ -114,18 +100,11 @@ async def main() -> None:
         api_key=os.environ.get("PARTNERMAX_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        dealer_detail = await client.dealers.create(
-            address="xx",
-            business_name="Rossi Automobili S.R.L.",
-            city="xx",
-            contact_email="info@rossi-auto.it",
-            contact_phone="xxxxx",
-            postal_code="20121",
-            primary_domain="rossi-auto.it",
-            province_code="MI",
-            vat_number="IT01234567890",
+        page = await client.dealers.list(
+            limit=10,
+            status="active",
         )
-        print(dealer_detail.dealer_id)
+        print(page.data)
 
 
 asyncio.run(main())
@@ -139,6 +118,81 @@ Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typ
 - Converting to a dictionary, `model.to_dict()`
 
 Typed requests and responses provide autocomplete and documentation within your editor. If you would like to see type errors in VS Code to help catch bugs earlier, set `python.analysis.typeCheckingMode` to `basic`.
+
+## Pagination
+
+List methods in the Partnermax API are paginated.
+
+This library provides auto-paginating iterators with each list response, so you do not have to request successive pages manually:
+
+```python
+from partnermax import Partnermax
+
+client = Partnermax()
+
+all_dealers = []
+# Automatically fetches more pages as needed.
+for dealer in client.dealers.list(
+    limit=10,
+    status="active",
+):
+    # Do something with dealer here
+    all_dealers.append(dealer)
+print(all_dealers)
+```
+
+Or, asynchronously:
+
+```python
+import asyncio
+from partnermax import AsyncPartnermax
+
+client = AsyncPartnermax()
+
+
+async def main() -> None:
+    all_dealers = []
+    # Iterate through items across all pages, issuing requests as needed.
+    async for dealer in client.dealers.list(
+        limit=10,
+        status="active",
+    ):
+        all_dealers.append(dealer)
+    print(all_dealers)
+
+
+asyncio.run(main())
+```
+
+Alternatively, you can use the `.has_next_page()`, `.next_page_info()`, or `.get_next_page()` methods for more granular control working with pages:
+
+```python
+first_page = await client.dealers.list(
+    limit=10,
+    status="active",
+)
+if first_page.has_next_page():
+    print(f"will fetch next page using these details: {first_page.next_page_info()}")
+    next_page = await first_page.get_next_page()
+    print(f"number of items we just fetched: {len(next_page.data)}")
+
+# Remove `await` for non-async usage.
+```
+
+Or just work directly with the returned data:
+
+```python
+first_page = await client.dealers.list(
+    limit=10,
+    status="active",
+)
+
+print(f"next page cursor: {first_page.next_cursor}")  # => "next page cursor: ..."
+for dealer in first_page.data:
+    print(dealer.dealer_id)
+
+# Remove `await` for non-async usage.
+```
 
 ## Nested params
 
@@ -297,7 +351,7 @@ response = client.dealers.with_raw_response.list()
 print(response.headers.get('X-My-Header'))
 
 dealer = response.parse()  # get the object that `dealers.list()` would have returned
-print(dealer.data)
+print(dealer.dealer_id)
 ```
 
 These methods return an [`APIResponse`](https://github.com/DealerMax-app/partnermax-python/tree/main/src/partnermax/_response.py) object.

@@ -122,8 +122,9 @@ class ImagesResource(SyncAPIResource):
         List every photo attached to a vehicle, ordered by `position`.
 
         No pagination — a vehicle is capped at 20 photos so the full list always fits in
-        a single response. `position=1` is the cover; use `DELETE` and re-`POST` to
-        re-order.
+        a single response. `position=1` is the cover. There is no single-image
+        retrieve/update route in v1: retrieve through this list and replace/re-order by
+        deleting and re-posting the affected images.
 
         Args:
           extra_headers: Send extra headers
@@ -303,8 +304,9 @@ class AsyncImagesResource(AsyncAPIResource):
         List every photo attached to a vehicle, ordered by `position`.
 
         No pagination — a vehicle is capped at 20 photos so the full list always fits in
-        a single response. `position=1` is the cover; use `DELETE` and re-`POST` to
-        re-order.
+        a single response. `position=1` is the cover. There is no single-image
+        retrieve/update route in v1: retrieve through this list and replace/re-order by
+        deleting and re-posting the affected images.
 
         Args:
           extra_headers: Send extra headers

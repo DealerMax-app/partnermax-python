@@ -14,8 +14,8 @@ class NltSettings(BaseModel):
     """Response model for GET / PATCH /v1/dealers/{id}/nlt-settings.
 
     Note: there is no `vat_treatment` field — VAT is a property of the
-    offer (`nlt_offerte.solo_privati`), not of the dealer. The offer
-    detail returns the VAT treatment per row instead.
+    offer, not of the dealer. The offer detail returns the VAT treatment
+    per row instead.
     """
 
     agency_markup_percent: float
@@ -28,8 +28,8 @@ class NltSettings(BaseModel):
     No strict-ascending validation: the final EUR amount depends on the offer's list
     price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
     tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
-    semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
-    positions as opaque slots ordered by intent.
+    semantics (low/medium/high) are advisory — DealerMAX UI treats the 3 positions
+    as opaque slots ordered by intent.
     """
 
     effective_from: datetime

@@ -11,11 +11,11 @@ __all__ = ["NltOfferSummary"]
 class NltOfferSummary(BaseModel):
     """Single row in the offers list. Pricing is dealer-aware.
 
-    Field names: American English snake_case. Values: Italian raw,
-    apimax-aligned (`fuel_type: "Benzina"`, `segment: "SUV piccoli"`).
-    No enum normalization — apimax labels are surfaced verbatim, exactly
-    as the detail endpoint does, so the partner client sees the same
-    string in both listing and detail.
+    Field names: American English snake_case. Values use DealerMAX's Italian
+    catalogue vocabulary (`fuel_type: "Benzina"`, `segment: "SUV piccoli"`).
+    No enum normalization — labels are surfaced verbatim, exactly as the detail
+    endpoint does, so the partner client sees the same string in both listing
+    and detail.
     """
 
     brand: str

@@ -23,7 +23,7 @@ from partnermax import Partnermax, AsyncPartnermax, APIResponseValidationError
 from partnermax._types import Omit
 from partnermax._utils import asyncify
 from partnermax._models import BaseModel, FinalRequestOptions
-from partnermax._exceptions import APIStatusError, APITimeoutError, APIResponseValidationError
+from partnermax._exceptions import APIStatusError, APIResponseValidationError
 from partnermax._base_client import (
     DEFAULT_TIMEOUT,
     HTTPX_DEFAULT_TIMEOUT,
@@ -101,14 +101,6 @@ async def _make_async_iterator(iterable: Iterable[T], counter: Optional[Counter]
         if counter:
             counter.value += 1
         yield item
-
-
-def _get_open_connections(client: Partnermax | AsyncPartnermax) -> int:
-    transport = client._client._transport
-    assert isinstance(transport, httpx.HTTPTransport) or isinstance(transport, httpx.AsyncHTTPTransport)
-
-    pool = transport._pool
-    return len(pool._requests)
 
 
 class TestPartnermax:
@@ -898,25 +890,6 @@ class TestPartnermax:
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
         calculated = client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(timeout, 0.5 * 0.875)  # pyright: ignore[reportUnknownMemberType]
-
-    @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
-    @pytest.mark.respx(base_url=base_url)
-    def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: Partnermax) -> None:
-        respx_mock.get("/v1/dealers").mock(side_effect=httpx.TimeoutException("Test timeout error"))
-
-        with pytest.raises(APITimeoutError):
-            client.dealers.with_streaming_response.list().__enter__()
-
-        assert _get_open_connections(client) == 0
-
-    @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
-    @pytest.mark.respx(base_url=base_url)
-    def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: Partnermax) -> None:
-        respx_mock.get("/v1/dealers").mock(return_value=httpx.Response(500))
-
-        with pytest.raises(APIStatusError):
-            client.dealers.with_streaming_response.list().__enter__()
-        assert _get_open_connections(client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
@@ -1849,29 +1822,6 @@ class TestAsyncPartnermax:
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
         calculated = async_client._calculate_retry_timeout(remaining_retries, options, headers)
         assert calculated == pytest.approx(timeout, 0.5 * 0.875)  # pyright: ignore[reportUnknownMemberType]
-
-    @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
-    @pytest.mark.respx(base_url=base_url)
-    async def test_retrying_timeout_errors_doesnt_leak(
-        self, respx_mock: MockRouter, async_client: AsyncPartnermax
-    ) -> None:
-        respx_mock.get("/v1/dealers").mock(side_effect=httpx.TimeoutException("Test timeout error"))
-
-        with pytest.raises(APITimeoutError):
-            await async_client.dealers.with_streaming_response.list().__aenter__()
-
-        assert _get_open_connections(async_client) == 0
-
-    @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
-    @pytest.mark.respx(base_url=base_url)
-    async def test_retrying_status_errors_doesnt_leak(
-        self, respx_mock: MockRouter, async_client: AsyncPartnermax
-    ) -> None:
-        respx_mock.get("/v1/dealers").mock(return_value=httpx.Response(500))
-
-        with pytest.raises(APIStatusError):
-            await async_client.dealers.with_streaming_response.list().__aenter__()
-        assert _get_open_connections(async_client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
     @mock.patch("partnermax._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)

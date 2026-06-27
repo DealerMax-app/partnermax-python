@@ -12,8 +12,6 @@ from tests.utils import assert_matches_type
 from partnermax.types import DealerDetail, DealerSummary
 from partnermax.pagination import SyncCursorPage, AsyncCursorPage
 
-# pyright: reportDeprecated=false
-
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
@@ -23,20 +21,17 @@ class TestDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_retrieve(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.retrieve(
-                "dealer_id",
-            )
-
+        dealer = client.dealers.retrieve(
+            "dealer_id",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_retrieve(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = client.dealers.with_raw_response.retrieve(
-                "dealer_id",
-            )
+        response = client.dealers.with_raw_response.retrieve(
+            "dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -46,64 +41,57 @@ class TestDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_retrieve(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with client.dealers.with_streaming_response.retrieve(
-                "dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        with client.dealers.with_streaming_response.retrieve(
+            "dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = response.parse()
-                assert_matches_type(DealerDetail, dealer, path=["response"])
+            dealer = response.parse()
+            assert_matches_type(DealerDetail, dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_path_params_retrieve(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                client.dealers.with_raw_response.retrieve(
-                    "",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            client.dealers.with_raw_response.retrieve(
+                "",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.update(
-                dealer_id="dealer_id",
-            )
-
+        dealer = client.dealers.update(
+            dealer_id="dealer_id",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update_with_all_params(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.update(
-                dealer_id="dealer_id",
-                address="xx",
-                business_name="xx",
-                city="xx",
-                contact_email="dev@stainless.com",
-                contact_phone="xxxxx",
-                metadata={"foo": "string"},
-                postal_code="21029",
-                province_code="SE",
-                status="active",
-                idempotency_key="Idempotency-Key",
-            )
-
+        dealer = client.dealers.update(
+            dealer_id="dealer_id",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            metadata={"foo": "string"},
+            postal_code="21029",
+            province_code="SE",
+            status="active",
+            idempotency_key="Idempotency-Key",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_update(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = client.dealers.with_raw_response.update(
-                dealer_id="dealer_id",
-            )
+        response = client.dealers.with_raw_response.update(
+            dealer_id="dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -113,52 +101,45 @@ class TestDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_update(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with client.dealers.with_streaming_response.update(
-                dealer_id="dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        with client.dealers.with_streaming_response.update(
+            dealer_id="dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = response.parse()
-                assert_matches_type(DealerDetail, dealer, path=["response"])
+            dealer = response.parse()
+            assert_matches_type(DealerDetail, dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_path_params_update(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                client.dealers.with_raw_response.update(
-                    dealer_id="",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            client.dealers.with_raw_response.update(
+                dealer_id="",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.list()
-
+        dealer = client.dealers.list()
         assert_matches_type(SyncCursorPage[DealerSummary], dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list_with_all_params(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.list(
-                cursor="cursor",
-                limit=1,
-                status="active",
-            )
-
+        dealer = client.dealers.list(
+            cursor="cursor",
+            limit=1,
+            status="active",
+        )
         assert_matches_type(SyncCursorPage[DealerSummary], dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_list(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = client.dealers.with_raw_response.list()
+        response = client.dealers.with_raw_response.list()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -168,33 +149,29 @@ class TestDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_list(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with client.dealers.with_streaming_response.list() as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        with client.dealers.with_streaming_response.list() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = response.parse()
-                assert_matches_type(SyncCursorPage[DealerSummary], dealer, path=["response"])
+            dealer = response.parse()
+            assert_matches_type(SyncCursorPage[DealerSummary], dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_delete(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = client.dealers.delete(
-                "dealer_id",
-            )
-
+        dealer = client.dealers.delete(
+            "dealer_id",
+        )
         assert dealer is None
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_delete(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = client.dealers.with_raw_response.delete(
-                "dealer_id",
-            )
+        response = client.dealers.with_raw_response.delete(
+            "dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -204,26 +181,24 @@ class TestDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_delete(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with client.dealers.with_streaming_response.delete(
-                "dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        with client.dealers.with_streaming_response.delete(
+            "dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = response.parse()
-                assert dealer is None
+            dealer = response.parse()
+            assert dealer is None
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_path_params_delete(self, client: Partnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                client.dealers.with_raw_response.delete(
-                    "",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            client.dealers.with_raw_response.delete(
+                "",
+            )
 
 
 class TestAsyncDealers:
@@ -234,20 +209,17 @@ class TestAsyncDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.retrieve(
-                "dealer_id",
-            )
-
+        dealer = await async_client.dealers.retrieve(
+            "dealer_id",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = await async_client.dealers.with_raw_response.retrieve(
-                "dealer_id",
-            )
+        response = await async_client.dealers.with_raw_response.retrieve(
+            "dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -257,64 +229,57 @@ class TestAsyncDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            async with async_client.dealers.with_streaming_response.retrieve(
-                "dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        async with async_client.dealers.with_streaming_response.retrieve(
+            "dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = await response.parse()
-                assert_matches_type(DealerDetail, dealer, path=["response"])
+            dealer = await response.parse()
+            assert_matches_type(DealerDetail, dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_path_params_retrieve(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                await async_client.dealers.with_raw_response.retrieve(
-                    "",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.retrieve(
+                "",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.update(
-                dealer_id="dealer_id",
-            )
-
+        dealer = await async_client.dealers.update(
+            dealer_id="dealer_id",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.update(
-                dealer_id="dealer_id",
-                address="xx",
-                business_name="xx",
-                city="xx",
-                contact_email="dev@stainless.com",
-                contact_phone="xxxxx",
-                metadata={"foo": "string"},
-                postal_code="21029",
-                province_code="SE",
-                status="active",
-                idempotency_key="Idempotency-Key",
-            )
-
+        dealer = await async_client.dealers.update(
+            dealer_id="dealer_id",
+            address="xx",
+            business_name="xx",
+            city="xx",
+            contact_email="dev@stainless.com",
+            contact_phone="xxxxx",
+            metadata={"foo": "string"},
+            postal_code="21029",
+            province_code="SE",
+            status="active",
+            idempotency_key="Idempotency-Key",
+        )
         assert_matches_type(DealerDetail, dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = await async_client.dealers.with_raw_response.update(
-                dealer_id="dealer_id",
-            )
+        response = await async_client.dealers.with_raw_response.update(
+            dealer_id="dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -324,52 +289,45 @@ class TestAsyncDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            async with async_client.dealers.with_streaming_response.update(
-                dealer_id="dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        async with async_client.dealers.with_streaming_response.update(
+            dealer_id="dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = await response.parse()
-                assert_matches_type(DealerDetail, dealer, path=["response"])
+            dealer = await response.parse()
+            assert_matches_type(DealerDetail, dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_path_params_update(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                await async_client.dealers.with_raw_response.update(
-                    dealer_id="",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.update(
+                dealer_id="",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.list()
-
+        dealer = await async_client.dealers.list()
         assert_matches_type(AsyncCursorPage[DealerSummary], dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.list(
-                cursor="cursor",
-                limit=1,
-                status="active",
-            )
-
+        dealer = await async_client.dealers.list(
+            cursor="cursor",
+            limit=1,
+            status="active",
+        )
         assert_matches_type(AsyncCursorPage[DealerSummary], dealer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = await async_client.dealers.with_raw_response.list()
+        response = await async_client.dealers.with_raw_response.list()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -379,33 +337,29 @@ class TestAsyncDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            async with async_client.dealers.with_streaming_response.list() as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        async with async_client.dealers.with_streaming_response.list() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = await response.parse()
-                assert_matches_type(AsyncCursorPage[DealerSummary], dealer, path=["response"])
+            dealer = await response.parse()
+            assert_matches_type(AsyncCursorPage[DealerSummary], dealer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            dealer = await async_client.dealers.delete(
-                "dealer_id",
-            )
-
+        dealer = await async_client.dealers.delete(
+            "dealer_id",
+        )
         assert dealer is None
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            response = await async_client.dealers.with_raw_response.delete(
-                "dealer_id",
-            )
+        response = await async_client.dealers.with_raw_response.delete(
+            "dealer_id",
+        )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -415,23 +369,21 @@ class TestAsyncDealers:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            async with async_client.dealers.with_streaming_response.delete(
-                "dealer_id",
-            ) as response:
-                assert not response.is_closed
-                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        async with async_client.dealers.with_streaming_response.delete(
+            "dealer_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
-                dealer = await response.parse()
-                assert dealer is None
+            dealer = await response.parse()
+            assert dealer is None
 
         assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_path_params_delete(self, async_client: AsyncPartnermax) -> None:
-        with pytest.warns(DeprecationWarning):
-            with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
-                await async_client.dealers.with_raw_response.delete(
-                    "",
-                )
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.delete(
+                "",
+            )

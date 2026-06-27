@@ -9,9 +9,10 @@ import pytest
 
 from partnermax import Partnermax, AsyncPartnermax
 from tests.utils import assert_matches_type
+from partnermax.pagination import SyncCursorPage, AsyncCursorPage
 from partnermax.types.dealers import (
-    VehicleList,
     VehicleDetail,
+    VehicleSummary,
     BulkCreateVehiclesResponse,
 )
 
@@ -252,7 +253,7 @@ class TestVehicles:
         vehicle = client.dealers.vehicles.list(
             dealer_id="dealer_id",
         )
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(SyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -265,7 +266,7 @@ class TestVehicles:
             is_visible=True,
             limit=1,
         )
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(SyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -277,7 +278,7 @@ class TestVehicles:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         vehicle = response.parse()
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(SyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -289,7 +290,7 @@ class TestVehicles:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             vehicle = response.parse()
-            assert_matches_type(VehicleList, vehicle, path=["response"])
+            assert_matches_type(SyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -698,7 +699,7 @@ class TestAsyncVehicles:
         vehicle = await async_client.dealers.vehicles.list(
             dealer_id="dealer_id",
         )
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(AsyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -711,7 +712,7 @@ class TestAsyncVehicles:
             is_visible=True,
             limit=1,
         )
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(AsyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -723,7 +724,7 @@ class TestAsyncVehicles:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         vehicle = await response.parse()
-        assert_matches_type(VehicleList, vehicle, path=["response"])
+        assert_matches_type(AsyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -735,7 +736,7 @@ class TestAsyncVehicles:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             vehicle = await response.parse()
-            assert_matches_type(VehicleList, vehicle, path=["response"])
+            assert_matches_type(AsyncCursorPage[VehicleSummary], vehicle, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

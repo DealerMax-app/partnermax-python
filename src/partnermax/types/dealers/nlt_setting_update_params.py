@@ -20,8 +20,8 @@ class NltSettingUpdateParams(TypedDict, total=False):
     No strict-ascending validation: the final EUR amount depends on the offer's list
     price (`tier.percent_of_list / 100 * listino_imponibile + tier.fixed_eur`), so a
     tier that looks larger by % can produce a smaller EUR on cheap vehicles. Label
-    semantics (low/medium/high) are advisory — apimax/DealerMAX UI treats the 3
-    positions as opaque slots ordered by intent.
+    semantics (low/medium/high) are advisory — DealerMAX UI treats the 3 positions
+    as opaque slots ordered by intent.
     """
 
     currency: Literal["EUR"]

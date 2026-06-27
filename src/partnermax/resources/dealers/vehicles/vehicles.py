@@ -24,7 +24,8 @@ from ...._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...._base_client import make_request_options
+from ....pagination import SyncCursorPage, AsyncCursorPage
+from ...._base_client import AsyncPaginator, make_request_options
 from ....types.dealers import (
     vehicle_bulk_params,
     vehicle_list_params,
@@ -32,8 +33,8 @@ from ....types.dealers import (
     vehicle_update_params,
     vehicle_retrieve_params,
 )
-from ....types.dealers.vehicle_list import VehicleList
 from ....types.dealers.vehicle_detail import VehicleDetail
+from ....types.dealers.vehicle_summary import VehicleSummary
 from ....types.dealers.bulk_create_vehicles_response import BulkCreateVehiclesResponse
 
 __all__ = ["VehiclesResource", "AsyncVehiclesResource"]
@@ -104,25 +105,25 @@ class VehiclesResource(SyncAPIResource):
         """
         Provision a new used vehicle in a dealer's stock.
 
-        Writes are atomic across `azlease_usatoin` and `azlease_usatoauto` using a
-        `SAVEPOINT` so a UNIQUE plate violation rolls back cleanly. On success the
-        AI-content worker (:mod:`azurenet-engine.app.jobs.usato_ai_content_worker`)
-        picks up the new row within 60 seconds and generates the SEO body + pgvector
-        embedding — at which point the vehicle becomes discoverable on the cross-network
+        The write is atomic: a plate conflict or catalogue-code error leaves no partial
+        stock record behind. On success the asynchronous AI-content worker picks up the
+        new vehicle within 60 seconds and generates the SEO body plus semantic
+        embedding; at that point the vehicle becomes discoverable on the cross-network
         MCP / Custom GPT / NLWeb surfaces. The response returns immediately (no
         synchronous wait on the worker).
 
         Args:
           certified_km: Certified odometer reading at intake, in kilometres.
 
-          motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in
-              `mnet_dettagli_usato` at submission time; otherwise the call returns 422
-              `motornet_code_not_in_catalogue`. The partner is expected to source this from
-              its own DMS; partnermax does not expose a plate→code lookup.
+          motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
+              used-vehicle catalogue at submission time; otherwise the call returns 422
+              `motornet_code_not_in_catalogue`. Partners may send a code from their own
+              Motornet agreement or use the paid control-plane targa/VIN resolver before
+              creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
-              active vehicles (`visibile=true AND venduto_il IS NULL`); reusable once the
-              previous holder sells/hides the row.
+              active vehicles; reusable once the previous holder withdraws the vehicle from
+              sale.
 
           registration_year: Year of first registration. Upper bound is current year + 1.
 
@@ -131,13 +132,12 @@ class VehiclesResource(SyncAPIResource):
 
           description: Partner-supplied long description. Surfaced on the dealer site detail page.
 
-          is_for_sale: Maps to `azlease_usatoauto.is_vendita_enabled`. When false the row is in stock
-              but not offered for sale.
+          is_for_sale: When false the vehicle remains in stock but is not offered for sale.
 
           is_visible: Soft-publish flag. When false the row exists in stock but is excluded from
-              consumer-facing AI surfaces. Maps to `azlease_usatoin.visibile`.
+              consumer-facing AI surfaces.
 
-          notes: Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style.
+          notes: Free-form short notes for partner-facing vehicle detail views.
 
           registration_month: Month of registration (1–12).
 
@@ -263,9 +263,9 @@ class VehiclesResource(SyncAPIResource):
         """
         Partial update of a vehicle.
 
-        Splits the inbound body across the two physical tables (`azlease_usatoauto` and
-        `azlease_usatoin`) and emits at most one UPDATE per table inside a single
-        transaction. Fields not present in the body are not touched.
+        Applies the transmitted fields inside a single transaction. Fields not present
+        in the body are not touched; explicit `null` clears only fields that are
+        nullable in the public contract.
 
         Args:
           extra_headers: Send extra headers
@@ -322,7 +322,7 @@ class VehiclesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> VehicleList:
+    ) -> SyncCursorPage[VehicleSummary]:
         """
         List vehicles in a dealer's stock owned by the calling partner.
 
@@ -349,8 +349,9 @@ class VehiclesResource(SyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        return self._get(
+        return self._get_api_list(
             path_template("/v1/dealers/{dealer_id}/vehicles", dealer_id=dealer_id),
+            page=SyncCursorPage[VehicleSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -367,7 +368,7 @@ class VehiclesResource(SyncAPIResource):
                     vehicle_list_params.VehicleListParams,
                 ),
             ),
-            cast_to=VehicleList,
+            model=VehicleSummary,
         )
 
     def delete(
@@ -385,18 +386,15 @@ class VehiclesResource(SyncAPIResource):
         """
         Withdraw a vehicle from sale without deleting the row.
 
-        Sets `azlease_usatoin.visibile = FALSE` and stamps `venduto_il = now()`. The
-        plate becomes reusable on the network the moment this returns (the
-        active-uniqueness check excludes rows where `visibile = FALSE` OR
-        `venduto_il IS NOT NULL`).
+        Marks the vehicle as no longer for sale. The plate becomes reusable on the
+        network the moment this returns.
 
         Soft-delete is the canonical "remove this vehicle from sale" surface. The
         AI-citation consumers (MCP `_tool_search_vehicles`, Custom GPT
-        `search_vehicles_network`, NLWeb `/ask`) each filter their own queries on
-        `i.visibile = TRUE AND i.venduto_il IS NULL` — the shared `v_apimax_listing`
-        view itself does not impose that filter, every consumer adds it. The result on
-        the partner side is the same: a soft-deleted vehicle disappears from every AI
-        surface within the next index cycle.
+        `search_vehicles_network`, NLWeb `/ask`) each filter their own
+        public-availability state. The result on the partner side is the same: a
+        soft-deleted vehicle disappears from every AI surface within the next index
+        cycle.
 
         Returns `409 vehicle_already_deleted` if the row is already soft- deleted — same
         idempotency pattern as the dealers DELETE endpoint.
@@ -551,25 +549,25 @@ class AsyncVehiclesResource(AsyncAPIResource):
         """
         Provision a new used vehicle in a dealer's stock.
 
-        Writes are atomic across `azlease_usatoin` and `azlease_usatoauto` using a
-        `SAVEPOINT` so a UNIQUE plate violation rolls back cleanly. On success the
-        AI-content worker (:mod:`azurenet-engine.app.jobs.usato_ai_content_worker`)
-        picks up the new row within 60 seconds and generates the SEO body + pgvector
-        embedding — at which point the vehicle becomes discoverable on the cross-network
+        The write is atomic: a plate conflict or catalogue-code error leaves no partial
+        stock record behind. On success the asynchronous AI-content worker picks up the
+        new vehicle within 60 seconds and generates the SEO body plus semantic
+        embedding; at that point the vehicle becomes discoverable on the cross-network
         MCP / Custom GPT / NLWeb surfaces. The response returns immediately (no
         synchronous wait on the worker).
 
         Args:
           certified_km: Certified odometer reading at intake, in kilometres.
 
-          motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in
-              `mnet_dettagli_usato` at submission time; otherwise the call returns 422
-              `motornet_code_not_in_catalogue`. The partner is expected to source this from
-              its own DMS; partnermax does not expose a plate→code lookup.
+          motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
+              used-vehicle catalogue at submission time; otherwise the call returns 422
+              `motornet_code_not_in_catalogue`. Partners may send a code from their own
+              Motornet agreement or use the paid control-plane targa/VIN resolver before
+              creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
-              active vehicles (`visibile=true AND venduto_il IS NULL`); reusable once the
-              previous holder sells/hides the row.
+              active vehicles; reusable once the previous holder withdraws the vehicle from
+              sale.
 
           registration_year: Year of first registration. Upper bound is current year + 1.
 
@@ -578,13 +576,12 @@ class AsyncVehiclesResource(AsyncAPIResource):
 
           description: Partner-supplied long description. Surfaced on the dealer site detail page.
 
-          is_for_sale: Maps to `azlease_usatoauto.is_vendita_enabled`. When false the row is in stock
-              but not offered for sale.
+          is_for_sale: When false the vehicle remains in stock but is not offered for sale.
 
           is_visible: Soft-publish flag. When false the row exists in stock but is excluded from
-              consumer-facing AI surfaces. Maps to `azlease_usatoin.visibile`.
+              consumer-facing AI surfaces.
 
-          notes: Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style.
+          notes: Free-form short notes for partner-facing vehicle detail views.
 
           registration_month: Month of registration (1–12).
 
@@ -710,9 +707,9 @@ class AsyncVehiclesResource(AsyncAPIResource):
         """
         Partial update of a vehicle.
 
-        Splits the inbound body across the two physical tables (`azlease_usatoauto` and
-        `azlease_usatoin`) and emits at most one UPDATE per table inside a single
-        transaction. Fields not present in the body are not touched.
+        Applies the transmitted fields inside a single transaction. Fields not present
+        in the body are not touched; explicit `null` clears only fields that are
+        nullable in the public contract.
 
         Args:
           extra_headers: Send extra headers
@@ -754,7 +751,7 @@ class AsyncVehiclesResource(AsyncAPIResource):
             cast_to=VehicleDetail,
         )
 
-    async def list(
+    def list(
         self,
         dealer_id: str,
         *,
@@ -769,7 +766,7 @@ class AsyncVehiclesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> VehicleList:
+    ) -> AsyncPaginator[VehicleSummary, AsyncCursorPage[VehicleSummary]]:
         """
         List vehicles in a dealer's stock owned by the calling partner.
 
@@ -796,14 +793,15 @@ class AsyncVehiclesResource(AsyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        return await self._get(
+        return self._get_api_list(
             path_template("/v1/dealers/{dealer_id}/vehicles", dealer_id=dealer_id),
+            page=AsyncCursorPage[VehicleSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
+                query=maybe_transform(
                     {
                         "cursor": cursor,
                         "include_deleted": include_deleted,
@@ -814,7 +812,7 @@ class AsyncVehiclesResource(AsyncAPIResource):
                     vehicle_list_params.VehicleListParams,
                 ),
             ),
-            cast_to=VehicleList,
+            model=VehicleSummary,
         )
 
     async def delete(
@@ -832,18 +830,15 @@ class AsyncVehiclesResource(AsyncAPIResource):
         """
         Withdraw a vehicle from sale without deleting the row.
 
-        Sets `azlease_usatoin.visibile = FALSE` and stamps `venduto_il = now()`. The
-        plate becomes reusable on the network the moment this returns (the
-        active-uniqueness check excludes rows where `visibile = FALSE` OR
-        `venduto_il IS NOT NULL`).
+        Marks the vehicle as no longer for sale. The plate becomes reusable on the
+        network the moment this returns.
 
         Soft-delete is the canonical "remove this vehicle from sale" surface. The
         AI-citation consumers (MCP `_tool_search_vehicles`, Custom GPT
-        `search_vehicles_network`, NLWeb `/ask`) each filter their own queries on
-        `i.visibile = TRUE AND i.venduto_il IS NULL` — the shared `v_apimax_listing`
-        view itself does not impose that filter, every consumer adds it. The result on
-        the partner side is the same: a soft-deleted vehicle disappears from every AI
-        surface within the next index cycle.
+        `search_vehicles_network`, NLWeb `/ask`) each filter their own
+        public-availability state. The result on the partner side is the same: a
+        soft-deleted vehicle disappears from every AI surface within the next index
+        cycle.
 
         Returns `409 vehicle_already_deleted` if the row is already soft- deleted — same
         idempotency pattern as the dealers DELETE endpoint.

@@ -10,15 +10,10 @@ __all__ = ["DownPaymentTiersParam", "High", "Low", "Medium"]
 class High(TypedDict, total=False):
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to
-    a deal is `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number
-    (UI-friendly: write `12.5`, not `0.125`); the router persists
-    `pct = percent_of_list / 100` to stay byte-compatible with the
-    DealerMAX UI calculator.
+    (UI-friendly: write `12.5`, not `0.125`). The final EUR applied to
+    a deal is computed from the offer's IVA-excluded list price plus the
+    flat component.
     """
 
     fixed_eur: Required[int]
@@ -37,15 +32,10 @@ class High(TypedDict, total=False):
 class Low(TypedDict, total=False):
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to
-    a deal is `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number
-    (UI-friendly: write `12.5`, not `0.125`); the router persists
-    `pct = percent_of_list / 100` to stay byte-compatible with the
-    DealerMAX UI calculator.
+    (UI-friendly: write `12.5`, not `0.125`). The final EUR applied to
+    a deal is computed from the offer's IVA-excluded list price plus the
+    flat component.
     """
 
     fixed_eur: Required[int]
@@ -64,15 +54,10 @@ class Low(TypedDict, total=False):
 class Medium(TypedDict, total=False):
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to
-    a deal is `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number
-    (UI-friendly: write `12.5`, not `0.125`); the router persists
-    `pct = percent_of_list / 100` to stay byte-compatible with the
-    DealerMAX UI calculator.
+    (UI-friendly: write `12.5`, not `0.125`). The final EUR applied to
+    a deal is computed from the offer's IVA-excluded list price plus the
+    flat component.
     """
 
     fixed_eur: Required[int]
@@ -95,45 +80,30 @@ class DownPaymentTiersParam(TypedDict, total=False):
     the offer's list price (`tier.percent_of_list / 100 *
     listino_imponibile + tier.fixed_eur`), so a tier that looks
     larger by % can produce a smaller EUR on cheap vehicles. Label
-    semantics (low/medium/high) are advisory — apimax/DealerMAX UI
+    semantics (low/medium/high) are advisory — DealerMAX UI
     treats the 3 positions as opaque slots ordered by intent.
     """
 
     high: Required[High]
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to a deal is
-    `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number (UI-friendly: write
-    `12.5`, not `0.125`); the router persists `pct = percent_of_list / 100` to stay
-    byte-compatible with the DealerMAX UI calculator.
+    `12.5`, not `0.125`). The final EUR applied to a deal is computed from the
+    offer's IVA-excluded list price plus the flat component.
     """
 
     low: Required[Low]
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to a deal is
-    `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number (UI-friendly: write
-    `12.5`, not `0.125`); the router persists `pct = percent_of_list / 100` to stay
-    byte-compatible with the DealerMAX UI calculator.
+    `12.5`, not `0.125`). The final EUR applied to a deal is computed from the
+    offer's IVA-excluded list price plus the flat component.
     """
 
     medium: Required[Medium]
     """One down-payment tier — percent of list price + flat EUR.
 
-    apimax: `dealer_public.nlt_anticipi_config` is a JSONB list of three
-    `{"pct": <0..1>, "eur": <int>}` entries. The final EUR applied to a deal is
-    `listino_imponibile * pct + eur` (see
-    `apimax/app/services/nlt/calculator.py::calcola_anticipo_eur`).
-
     Partnermax API exposes `percent_of_list` as a 0–100 number (UI-friendly: write
-    `12.5`, not `0.125`); the router persists `pct = percent_of_list / 100` to stay
-    byte-compatible with the DealerMAX UI calculator.
+    `12.5`, not `0.125`). The final EUR applied to a deal is computed from the
+    offer's IVA-excluded list price plus the flat component.
     """

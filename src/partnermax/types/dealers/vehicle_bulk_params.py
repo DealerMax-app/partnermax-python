@@ -27,10 +27,8 @@ class Vehicle(TypedDict, total=False):
 
     The partner sends a small, vehicle-specific payload. All technical specs
     (brand, model, trim, fuel type, displacement, dimensions, CO2, etc.) are
-    derived server-side from `mnet_dettagli` via the `motornet_code` join —
-    the partner never types them. This is the same canonical pattern used by
-    NLT offers and matches the platform rule
-    `feedback_motornet_authoritative`.
+    derived server-side from DealerMAX's licensed Motornet-backed catalogue —
+    the partner never types them.
 
     Fields immutable after creation: `motornet_code`, `plate`, `vin`. Other
     fields may be updated via PATCH.
@@ -42,17 +40,17 @@ class Vehicle(TypedDict, total=False):
     motornet_code: Required[str]
     """Motornet UNI code identifying the exact vehicle configuration.
 
-    Must exist in `mnet_dettagli_usato` at submission time; otherwise the call
-    returns 422 `motornet_code_not_in_catalogue`. The partner is expected to source
-    this from its own DMS; partnermax does not expose a plate→code lookup.
+    Must exist in the used-vehicle catalogue at submission time; otherwise the call
+    returns 422 `motornet_code_not_in_catalogue`. Partners may send a code from
+    their own Motornet agreement or use the paid control-plane targa/VIN resolver
+    before creating the vehicle.
     """
 
     plate: Required[str]
     """Italian licence plate.
 
-    Uppercased server-side. UNIQUE across the network for active vehicles
-    (`visibile=true AND venduto_il IS NULL`); reusable once the previous holder
-    sells/hides the row.
+    Uppercased server-side. UNIQUE across the network for active vehicles; reusable
+    once the previous holder withdraws the vehicle from sale.
     """
 
     registration_year: Required[int]
@@ -77,20 +75,17 @@ class Vehicle(TypedDict, total=False):
     extended_warranty_months: Optional[int]
 
     is_for_sale: bool
-    """Maps to `azlease_usatoauto.is_vendita_enabled`.
-
-    When false the row is in stock but not offered for sale.
-    """
+    """When false the vehicle remains in stock but is not offered for sale."""
 
     is_visible: bool
     """Soft-publish flag.
 
     When false the row exists in stock but is excluded from consumer-facing AI
-    surfaces. Maps to `azlease_usatoin.visibile`.
+    surfaces.
     """
 
     notes: Optional[str]
-    """Free-form short notes; surfaced as `mnet_dettagli.precisazioni`-style."""
+    """Free-form short notes for partner-facing vehicle detail views."""
 
     registration_month: Optional[int]
     """Month of registration (1–12)."""

@@ -7,7 +7,7 @@ from typing import Optional
 import httpx
 
 from ...._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from ...._utils import path_template, maybe_transform, async_maybe_transform
+from ...._utils import path_template, maybe_transform
 from ...._compat import cached_property
 from ...._resource import SyncAPIResource, AsyncAPIResource
 from ...._response import (
@@ -16,9 +16,10 @@ from ...._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...._base_client import make_request_options
+from ....pagination import SyncCursorPage, AsyncCursorPage
+from ...._base_client import AsyncPaginator, make_request_options
 from ....types.dealers.nlt import offer_list_params
-from ....types.dealers.nlt.offer_list_response import OfferListResponse
+from ....types.dealers.nlt.nlt_offer_summary import NltOfferSummary
 from ....types.dealers.nlt.offer_retrieve_response import OfferRetrieveResponse
 
 __all__ = ["OffersResource", "AsyncOffersResource"]
@@ -101,21 +102,14 @@ class OffersResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> OfferListResponse:
-        """Listing of NLT offers with monthly canon repriced for this dealer.
+    ) -> SyncCursorPage[NltOfferSummary]:
+        """
+        Listing of NLT offers with monthly canon repriced for this dealer.
 
-        Strategy:
-
-        1.
-
-        Resolve + ACL the dealer.
-        2. Pull at most `limit + 1` offers from the catalog after the cursor. The extra
-           row lets us know if there's a next page without a second COUNT(\\**) query.
-        3. Apply text/enum filters server-side via SQL where possible (brand, segment,
-           fuel) and the numeric `canone_max_eur` filter in Python after the pricing
-           pass (the DB has no "displayed canon" column; we synthesize it per dealer).
-        4. For each surviving offer, price the (duration, km) cells the caller filtered
-           to (if specified) or all 18, pick the cheapest cell as the headline.
+        The response is cursor-paginated and dealer-aware: filters are applied to the
+        shared NLT catalogue, then each returned offer is repriced with the dealer's
+        configured mark-up, down-payment tiers, duration, and yearly-km filters. The
+        headline canon is the cheapest eligible priced cell.
 
         Args:
           vehicle_type: Macro discriminator: 'auto' (passenger vehicles) or 'vcom' (light commercial ≤35
@@ -132,8 +126,9 @@ class OffersResource(SyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        return self._get(
+        return self._get_api_list(
             path_template("/v1/dealers/{dealer_id}/nlt/offers", dealer_id=dealer_id),
+            page=SyncCursorPage[NltOfferSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -154,7 +149,7 @@ class OffersResource(SyncAPIResource):
                     offer_list_params.OfferListParams,
                 ),
             ),
-            cast_to=OfferListResponse,
+            model=NltOfferSummary,
         )
 
 
@@ -216,7 +211,7 @@ class AsyncOffersResource(AsyncAPIResource):
             cast_to=OfferRetrieveResponse,
         )
 
-    async def list(
+    def list(
         self,
         dealer_id: str,
         *,
@@ -235,21 +230,14 @@ class AsyncOffersResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> OfferListResponse:
-        """Listing of NLT offers with monthly canon repriced for this dealer.
+    ) -> AsyncPaginator[NltOfferSummary, AsyncCursorPage[NltOfferSummary]]:
+        """
+        Listing of NLT offers with monthly canon repriced for this dealer.
 
-        Strategy:
-
-        1.
-
-        Resolve + ACL the dealer.
-        2. Pull at most `limit + 1` offers from the catalog after the cursor. The extra
-           row lets us know if there's a next page without a second COUNT(\\**) query.
-        3. Apply text/enum filters server-side via SQL where possible (brand, segment,
-           fuel) and the numeric `canone_max_eur` filter in Python after the pricing
-           pass (the DB has no "displayed canon" column; we synthesize it per dealer).
-        4. For each surviving offer, price the (duration, km) cells the caller filtered
-           to (if specified) or all 18, pick the cheapest cell as the headline.
+        The response is cursor-paginated and dealer-aware: filters are applied to the
+        shared NLT catalogue, then each returned offer is repriced with the dealer's
+        configured mark-up, down-payment tiers, duration, and yearly-km filters. The
+        headline canon is the cheapest eligible priced cell.
 
         Args:
           vehicle_type: Macro discriminator: 'auto' (passenger vehicles) or 'vcom' (light commercial ≤35
@@ -266,14 +254,15 @@ class AsyncOffersResource(AsyncAPIResource):
         """
         if not dealer_id:
             raise ValueError(f"Expected a non-empty value for `dealer_id` but received {dealer_id!r}")
-        return await self._get(
+        return self._get_api_list(
             path_template("/v1/dealers/{dealer_id}/nlt/offers", dealer_id=dealer_id),
+            page=AsyncCursorPage[NltOfferSummary],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=await async_maybe_transform(
+                query=maybe_transform(
                     {
                         "brand": brand,
                         "canone_max_eur": canone_max_eur,
@@ -288,7 +277,7 @@ class AsyncOffersResource(AsyncAPIResource):
                     offer_list_params.OfferListParams,
                 ),
             ),
-            cast_to=OfferListResponse,
+            model=NltOfferSummary,
         )
 
 

@@ -12,8 +12,9 @@ class VehicleSummary(BaseModel):
     """Compact vehicle payload for list endpoints.
 
     Catalogue fields (`brand`, `model`, `trim`, `fuel_type`) are derived from
-    `mnet_dettagli` at read time. Italian raw labels are surfaced verbatim —
-    same convention as NLT (`apimax`-aligned).
+    DealerMAX's licensed Motornet-backed catalogue at read time. Italian raw
+    labels are surfaced verbatim so partner clients see the same vocabulary as
+    consumer-facing DealerMAX surfaces.
     """
 
     certified_km: int

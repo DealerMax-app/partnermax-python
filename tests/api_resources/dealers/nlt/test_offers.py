@@ -9,7 +9,8 @@ import pytest
 
 from partnermax import Partnermax, AsyncPartnermax
 from tests.utils import assert_matches_type
-from partnermax.types.dealers.nlt import OfferListResponse, OfferRetrieveResponse
+from partnermax.pagination import SyncCursorPage, AsyncCursorPage
+from partnermax.types.dealers.nlt import NltOfferSummary, OfferRetrieveResponse
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -75,7 +76,7 @@ class TestOffers:
         offer = client.dealers.nlt.offers.list(
             dealer_id="dealer_id",
         )
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(SyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -92,7 +93,7 @@ class TestOffers:
             segment="segment",
             vehicle_type="vcom",
         )
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(SyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -104,7 +105,7 @@ class TestOffers:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         offer = response.parse()
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(SyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -116,7 +117,7 @@ class TestOffers:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             offer = response.parse()
-            assert_matches_type(OfferListResponse, offer, path=["response"])
+            assert_matches_type(SyncCursorPage[NltOfferSummary], offer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -192,7 +193,7 @@ class TestAsyncOffers:
         offer = await async_client.dealers.nlt.offers.list(
             dealer_id="dealer_id",
         )
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(AsyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -209,7 +210,7 @@ class TestAsyncOffers:
             segment="segment",
             vehicle_type="vcom",
         )
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(AsyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -221,7 +222,7 @@ class TestAsyncOffers:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         offer = await response.parse()
-        assert_matches_type(OfferListResponse, offer, path=["response"])
+        assert_matches_type(AsyncCursorPage[NltOfferSummary], offer, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -233,7 +234,7 @@ class TestAsyncOffers:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             offer = await response.parse()
-            assert_matches_type(OfferListResponse, offer, path=["response"])
+            assert_matches_type(AsyncCursorPage[NltOfferSummary], offer, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 

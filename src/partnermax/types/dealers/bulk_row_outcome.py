@@ -43,18 +43,14 @@ class BulkRowOutcome(BaseModel):
 
     - **Partner-supplied** — what the partner posted (`plate`, `description`,
       `sale_price_eur`, etc.).
-    - **Catalogue-derived** — `technical_details` is the flat `mnet_dettagli_usato`
-      dict (Italian column keys: `cilindrata`, `kw`, `hp`, `lunghezza`,
-      `consumo_medio`, `emissioni_co2`, etc.). Same shape conventions as
-      `NltOfferDetail` per `feedback_partnermax_field_naming_us_english`.
+    - **Catalogue-derived** — `technical_details` is a flat dictionary of
+      Motornet-backed technical attributes using Italian domain labels such as
+      `cilindrata`, `kw`, `hp`, `lunghezza`, `consumo_medio`, and `emissioni_co2`.
     - **AI-derived** — `ai_content` carries the editorial output the cross-network
       consumers display (descriptions, highlights, FAQ, SEO meta). `null` until the
       worker has processed the vehicle.
 
-    Fields the partner does NOT see through this surface (because they are
-    dealer-internal margin/operations data the partner does not own):
-    `cost_price_eur`, `inspection_expiry_date`, `road_tax_expiry_date`,
-    `previous_owner_count`, `previous_ownership_transfer_date`, `last_service_*`.
-    These exist in the underlying DB tables for the DealerMAX dashboard but are
-    intentionally not exposed via the SDK.
+    Dealer-internal margin and operations data remains outside this SDK surface;
+    partners receive only the inventory, commercial, catalogue, media, and
+    AI-derived fields needed to publish the vehicle.
     """

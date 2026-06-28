@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Dict, Union, Optional
 from typing_extensions import Literal
 
 import httpx
 
-from ...types import dealer_list_params, dealer_update_params
+from ...types import dealer_list_params, dealer_create_params, dealer_update_params
 from .nlt.nlt import (
     NltResource,
     AsyncNltResource,
@@ -46,6 +46,7 @@ from .vehicles.vehicles import (
 )
 from ...types.dealer_detail import DealerDetail
 from ...types.dealer_summary import DealerSummary
+from ...types.partner_dealer_response import PartnerDealerResponse
 
 __all__ = ["DealersResource", "AsyncDealersResource"]
 
@@ -87,6 +88,60 @@ class DealersResource(SyncAPIResource):
         For more information, see https://www.github.com/DealerMax-app/partnermax-python#with_streaming_response
         """
         return DealersResourceWithStreamingResponse(self)
+
+    def create(
+        self,
+        *,
+        external_dealer_id: str,
+        activate: bool | Omit = omit,
+        metadata: Dict[str, Union[str, float, bool, None]] | Omit = omit,
+        idempotency_key: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Create a partner-owned opaque dealer reference.
+
+        SDK users call
+        `client.dealers.create(...)`; the generated client sends this request to the
+        core-owned `/api/partner/dealers` route.
+
+        Args:
+          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
+              NLT SDK calls.
+
+          activate: When true, the dealer can immediately receive vehicle/NLT operations. When
+              false, create the registry row but keep it suspended until activated.
+
+          metadata: Optional scalar partner-side correlation metadata.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
+        return self._post(
+            "/api/partner/dealers",
+            body=maybe_transform(
+                {
+                    "external_dealer_id": external_dealer_id,
+                    "activate": activate,
+                    "metadata": metadata,
+                },
+                dealer_create_params.DealerCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
 
     def retrieve(
         self,
@@ -301,6 +356,60 @@ class AsyncDealersResource(AsyncAPIResource):
         """
         return AsyncDealersResourceWithStreamingResponse(self)
 
+    async def create(
+        self,
+        *,
+        external_dealer_id: str,
+        activate: bool | Omit = omit,
+        metadata: Dict[str, Union[str, float, bool, None]] | Omit = omit,
+        idempotency_key: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Create a partner-owned opaque dealer reference.
+
+        SDK users call
+        `client.dealers.create(...)`; the generated client sends this request to the
+        core-owned `/api/partner/dealers` route.
+
+        Args:
+          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
+              NLT SDK calls.
+
+          activate: When true, the dealer can immediately receive vehicle/NLT operations. When
+              false, create the registry row but keep it suspended until activated.
+
+          metadata: Optional scalar partner-side correlation metadata.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
+        return await self._post(
+            "/api/partner/dealers",
+            body=await async_maybe_transform(
+                {
+                    "external_dealer_id": external_dealer_id,
+                    "activate": activate,
+                    "metadata": metadata,
+                },
+                dealer_create_params.DealerCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
+
     async def retrieve(
         self,
         dealer_id: str,
@@ -480,6 +589,9 @@ class DealersResourceWithRawResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
+        self.create = to_raw_response_wrapper(
+            dealers.create,
+        )
         self.retrieve = to_raw_response_wrapper(
             dealers.retrieve,
         )
@@ -514,6 +626,9 @@ class AsyncDealersResourceWithRawResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
+        self.create = async_to_raw_response_wrapper(
+            dealers.create,
+        )
         self.retrieve = async_to_raw_response_wrapper(
             dealers.retrieve,
         )
@@ -548,6 +663,9 @@ class DealersResourceWithStreamingResponse:
     def __init__(self, dealers: DealersResource) -> None:
         self._dealers = dealers
 
+        self.create = to_streamed_response_wrapper(
+            dealers.create,
+        )
         self.retrieve = to_streamed_response_wrapper(
             dealers.retrieve,
         )
@@ -582,6 +700,9 @@ class AsyncDealersResourceWithStreamingResponse:
     def __init__(self, dealers: AsyncDealersResource) -> None:
         self._dealers = dealers
 
+        self.create = async_to_streamed_response_wrapper(
+            dealers.create,
+        )
         self.retrieve = async_to_streamed_response_wrapper(
             dealers.retrieve,
         )

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.2 (2026-06-28)
+
+Full Changelog: [v0.12.1...v0.12.2](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.1...v0.12.2)
+
+### Bug Fixes
+
+* expose dealer create in SDK ([db51aff](https://github.com/DealerMax-app/partnermax-python/commit/db51aff9ba28664a037bcbfc6ba0a0d9d486e49d))
+
 ## 0.12.1 (2026-06-28)
 
 Full Changelog: [v0.12.0...v0.12.1](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.0...v0.12.1)

@@ -9,7 +9,11 @@ import pytest
 
 from partnermax import Partnermax, AsyncPartnermax
 from tests.utils import assert_matches_type
-from partnermax.types import DealerDetail, DealerSummary
+from partnermax.types import (
+    DealerDetail,
+    DealerSummary,
+    PartnerDealerResponse,
+)
 from partnermax.pagination import SyncCursorPage, AsyncCursorPage
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -17,6 +21,51 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 class TestDealers:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_create(self, client: Partnermax) -> None:
+        dealer = client.dealers.create(
+            external_dealer_id="x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_create_with_all_params(self, client: Partnermax) -> None:
+        dealer = client.dealers.create(
+            external_dealer_id="x",
+            activate=True,
+            metadata={"foo": "string"},
+            idempotency_key="Idempotency-Key",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_create(self, client: Partnermax) -> None:
+        response = client.dealers.with_raw_response.create(
+            external_dealer_id="x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_create(self, client: Partnermax) -> None:
+        with client.dealers.with_streaming_response.create(
+            external_dealer_id="x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -205,6 +254,51 @@ class TestAsyncDealers:
     parametrize = pytest.mark.parametrize(
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_create(self, async_client: AsyncPartnermax) -> None:
+        dealer = await async_client.dealers.create(
+            external_dealer_id="x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_create_with_all_params(self, async_client: AsyncPartnermax) -> None:
+        dealer = await async_client.dealers.create(
+            external_dealer_id="x",
+            activate=True,
+            metadata={"foo": "string"},
+            idempotency_key="Idempotency-Key",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_create(self, async_client: AsyncPartnermax) -> None:
+        response = await async_client.dealers.with_raw_response.create(
+            external_dealer_id="x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = await response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_create(self, async_client: AsyncPartnermax) -> None:
+        async with async_client.dealers.with_streaming_response.create(
+            external_dealer_id="x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = await response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize

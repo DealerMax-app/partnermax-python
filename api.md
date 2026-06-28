@@ -17,11 +17,12 @@ Methods:
 Types:
 
 ```python
-from partnermax.types import DealerDetail, DealerSummary
+from partnermax.types import DealerDetail, DealerSummary, PartnerDealerResponse
 ```
 
 Methods:
 
+- <code title="post /api/partner/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">create</a>(\*\*<a href="src/partnermax/types/dealer_create_params.py">params</a>) -> <a href="./src/partnermax/types/partner_dealer_response.py">PartnerDealerResponse</a></code>
 - <code title="get /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">retrieve</a>(dealer_id) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
 - <code title="patch /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">update</a>(dealer_id, \*\*<a href="src/partnermax/types/dealer_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
 - <code title="get /v1/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">list</a>(\*\*<a href="src/partnermax/types/dealer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_summary.py">SyncCursorPage[DealerSummary]</a></code>

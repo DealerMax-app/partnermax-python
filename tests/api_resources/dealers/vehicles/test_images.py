@@ -23,7 +23,7 @@ class TestImages:
         image = client.dealers.vehicles.images.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         )
         assert_matches_type(VehicleImage, image, path=["response"])
 
@@ -33,7 +33,7 @@ class TestImages:
         response = client.dealers.vehicles.images.with_raw_response.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         )
 
         assert response.is_closed is True
@@ -47,7 +47,7 @@ class TestImages:
         with client.dealers.vehicles.images.with_streaming_response.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -64,14 +64,14 @@ class TestImages:
             client.dealers.vehicles.images.with_raw_response.create(
                 vehicle_id="vehicle_id",
                 dealer_id="",
-                file="file",
+                file=b"Example data",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `vehicle_id` but received ''"):
             client.dealers.vehicles.images.with_raw_response.create(
                 vehicle_id="",
                 dealer_id="dealer_id",
-                file="file",
+                file=b"Example data",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -202,7 +202,7 @@ class TestAsyncImages:
         image = await async_client.dealers.vehicles.images.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         )
         assert_matches_type(VehicleImage, image, path=["response"])
 
@@ -212,7 +212,7 @@ class TestAsyncImages:
         response = await async_client.dealers.vehicles.images.with_raw_response.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         )
 
         assert response.is_closed is True
@@ -226,7 +226,7 @@ class TestAsyncImages:
         async with async_client.dealers.vehicles.images.with_streaming_response.create(
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
-            file="file",
+            file=b"Example data",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -243,14 +243,14 @@ class TestAsyncImages:
             await async_client.dealers.vehicles.images.with_raw_response.create(
                 vehicle_id="vehicle_id",
                 dealer_id="",
-                file="file",
+                file=b"Example data",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `vehicle_id` but received ''"):
             await async_client.dealers.vehicles.images.with_raw_response.create(
                 vehicle_id="",
                 dealer_id="dealer_id",
-                file="file",
+                file=b"Example data",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")

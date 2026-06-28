@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.1 (2026-06-28)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.0...v0.12.1)
+
+### Bug Fixes
+
+* regenerate SDK from openapi 1.5.10 upload schema ([05c5f4e](https://github.com/DealerMax-app/partnermax-python/commit/05c5f4e18c753cbed8f1de91918301aa161778b9))
+
 ## 0.12.0 (2026-06-28)
 
 Full Changelog: [v0.11.1...v0.12.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.11.1...v0.12.0)

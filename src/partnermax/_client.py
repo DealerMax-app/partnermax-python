@@ -54,8 +54,8 @@ __all__ = [
 ]
 
 ENVIRONMENTS: Dict[str, str] = {
-    "production": "https://developers.dealermax.app",
-    "sandbox": "https://developers.dealermax.app",
+    "production": "https://api.dealermax.app",
+    "sandbox": "https://api.dealermax.app",
 }
 
 

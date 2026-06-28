@@ -722,7 +722,7 @@ class TestPartnermax:
             client = Partnermax(
                 base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
             )
-            assert str(client.base_url).startswith("https://developers.dealermax.app")
+            assert str(client.base_url).startswith("https://api.dealermax.app")
 
             client.close()
 
@@ -1651,7 +1651,7 @@ class TestAsyncPartnermax:
             client = AsyncPartnermax(
                 base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
             )
-            assert str(client.base_url).startswith("https://developers.dealermax.app")
+            assert str(client.base_url).startswith("https://api.dealermax.app")
 
             await client.close()
 

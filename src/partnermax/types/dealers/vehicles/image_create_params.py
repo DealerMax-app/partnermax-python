@@ -4,13 +4,15 @@ from __future__ import annotations
 
 from typing_extensions import Required, TypedDict
 
+from ...._types import FileTypes
+
 __all__ = ["ImageCreateParams"]
 
 
 class ImageCreateParams(TypedDict, total=False):
     dealer_id: Required[str]
 
-    file: Required[str]
+    file: Required[FileTypes]
     """The photo file.
 
     JPEG, PNG, or WebP, up to 15 MB. WebP is converted to PNG server-side.

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Optional
-from typing_extensions import Required, Annotated, TypedDict
+from typing import List, Union, Optional
+from datetime import date
+from typing_extensions import Literal, Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
@@ -33,26 +34,34 @@ class VehicleCreateParams(TypedDict, total=False):
     registration_year: Required[int]
     """Year of first registration. Upper bound is current year + 1."""
 
-    sale_price_eur: Required[float]
-    """Public sale price in EUR.
-
-    Surfaced on MCP / Custom GPT / NLWeb and on the dealer's site JSON-LD
-    `Offer.price`.
-    """
-
     alloy_wheel_size: Optional[int]
+
+    base_color: Optional[str]
+
+    co2_emissions_g_km_override: Optional[float]
 
     color: Optional[str]
 
+    cost_price_eur: Optional[float]
+
+    damage_repaired: Optional[bool]
+    """Tri-state repaired-damage declaration: true=yes, false=no, null=unknown."""
+
     description: str
     """Partner-supplied long description. Surfaced on the dealer site detail page."""
+
+    double_keys_available: bool
+
+    enabled_channels: List[Literal["rewind", "nos"]]
+    """Publication channels enabled for this vehicle. Default is ['rewind']."""
 
     extended_warranty_enabled: bool
 
     extended_warranty_months: Optional[int]
 
-    is_for_sale: bool
-    """When false the vehicle remains in stock but is not offered for sale."""
+    fuel_type_override: Optional[str]
+
+    inspection_due_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
 
     is_visible: bool
     """Soft-publish flag.
@@ -61,11 +70,41 @@ class VehicleCreateParams(TypedDict, total=False):
     surfaces.
     """
 
+    last_inspection_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    last_inspection_km: Optional[int]
+
+    last_service_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    last_service_km: Optional[int]
+
+    last_service_notes: Optional[str]
+
     notes: Optional[str]
     """Free-form short notes for partner-facing vehicle detail views."""
 
+    ownership_transfer_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    power_kw_override: Optional[int]
+
+    previous_owner_count: Optional[int]
+
+    property_tax_due_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
     registration_month: Optional[int]
     """Month of registration (1–12)."""
+
+    sale_price_eur: Optional[float]
+    """Public REWIND sale price in EUR.
+
+    Required when enabled_channels contains 'rewind'; optional/0 for NOS-only
+    vehicles.
+    """
+
+    service_history_available: bool
+    """Dealer-declared certified service-history availability."""
+
+    trim_alias: Optional[str]
 
     vat_displayed: bool
     """
@@ -73,9 +112,16 @@ class VehicleCreateParams(TypedDict, total=False):
     (B2C).
     """
 
-    vehicle_damaged: bool
+    vehicle_damaged: Optional[bool]
+    """Tri-state damage declaration: true=yes, false=no, null=unknown."""
 
     vin: Optional[str]
     """ISO 3779 vehicle identification number. Optional but strongly recommended."""
+
+    wltp_consumption_combined_l_100km: Optional[float]
+
+    wltp_consumption_extraurban_l_100km: Optional[float]
+
+    wltp_consumption_urban_l_100km: Optional[float]
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]

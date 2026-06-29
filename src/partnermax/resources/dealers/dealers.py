@@ -52,7 +52,9 @@ __all__ = ["DealersResource", "AsyncDealersResource"]
 
 
 class DealersResource(SyncAPIResource):
-    """Provision, update, deactivate, and list dealers owned by the calling partner."""
+    """
+    Register, update, deactivate, and list dealer references registered for the calling partner.
+    """
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResource:
@@ -64,9 +66,9 @@ class DealersResource(SyncAPIResource):
 
     @cached_property
     def vehicles(self) -> VehiclesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResource(self._client)
 
@@ -103,15 +105,15 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PartnerDealerResponse:
-        """Create a partner-owned opaque dealer reference.
+        """Register an opaque dealer reference for this partner.
 
         SDK users call
         `client.dealers.create(...)`; the generated client sends this request to the
         core-owned `/api/partner/dealers` route.
 
         Args:
-          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
-              NLT SDK calls.
+          external_dealer_id: Partner-supplied opaque dealer id. This becomes the dealer_id used by vehicle
+              and NLT SDK calls.
 
           activate: When true, the dealer can immediately receive vehicle/NLT operations. When
               false, create the registry row but keep it suspended until activated.
@@ -249,7 +251,7 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SyncCursorPage[DealerSummary]:
-        """List dealers owned by the calling partner.
+        """List dealer references registered for the calling partner.
 
         Cursor-paginated.
 
@@ -319,7 +321,9 @@ class DealersResource(SyncAPIResource):
 
 
 class AsyncDealersResource(AsyncAPIResource):
-    """Provision, update, deactivate, and list dealers owned by the calling partner."""
+    """
+    Register, update, deactivate, and list dealer references registered for the calling partner.
+    """
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResource:
@@ -331,9 +335,9 @@ class AsyncDealersResource(AsyncAPIResource):
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResource(self._client)
 
@@ -370,15 +374,15 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PartnerDealerResponse:
-        """Create a partner-owned opaque dealer reference.
+        """Register an opaque dealer reference for this partner.
 
         SDK users call
         `client.dealers.create(...)`; the generated client sends this request to the
         core-owned `/api/partner/dealers` route.
 
         Args:
-          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
-              NLT SDK calls.
+          external_dealer_id: Partner-supplied opaque dealer id. This becomes the dealer_id used by vehicle
+              and NLT SDK calls.
 
           activate: When true, the dealer can immediately receive vehicle/NLT operations. When
               false, create the registry row but keep it suspended until activated.
@@ -516,7 +520,7 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AsyncPaginator[DealerSummary, AsyncCursorPage[DealerSummary]]:
-        """List dealers owned by the calling partner.
+        """List dealer references registered for the calling partner.
 
         Cursor-paginated.
 
@@ -615,9 +619,9 @@ class DealersResourceWithRawResponse:
 
     @cached_property
     def vehicles(self) -> VehiclesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResourceWithRawResponse(self._dealers.vehicles)
 
@@ -652,9 +656,9 @@ class AsyncDealersResourceWithRawResponse:
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResourceWithRawResponse(self._dealers.vehicles)
 
@@ -689,9 +693,9 @@ class DealersResourceWithStreamingResponse:
 
     @cached_property
     def vehicles(self) -> VehiclesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResourceWithStreamingResponse(self._dealers.vehicles)
 
@@ -726,8 +730,8 @@ class AsyncDealersResourceWithStreamingResponse:
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResourceWithStreamingResponse(self._dealers.vehicles)

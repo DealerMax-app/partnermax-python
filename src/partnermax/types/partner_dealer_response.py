@@ -18,7 +18,7 @@ class PartnerDealerResponse(BaseModel):
     created_at: datetime
 
     dealer_id: str
-    """The partner-owned external dealer id."""
+    """The partner-supplied external dealer id."""
 
     partner_id: str
 

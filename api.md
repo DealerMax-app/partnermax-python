@@ -93,3 +93,17 @@ Methods:
 - <code title="post /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/images">client.dealers.vehicles.images.<a href="./src/partnermax/resources/dealers/vehicles/images.py">create</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicles/image_create_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicles/vehicle_image.py">VehicleImage</a></code>
 - <code title="get /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/images">client.dealers.vehicles.images.<a href="./src/partnermax/resources/dealers/vehicles/images.py">list</a>(vehicle_id, \*, dealer_id) -> <a href="./src/partnermax/types/dealers/vehicles/vehicle_image_list.py">VehicleImageList</a></code>
 - <code title="delete /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/images/{image_id}">client.dealers.vehicles.images.<a href="./src/partnermax/resources/dealers/vehicles/images.py">delete</a>(image_id, \*, dealer_id, vehicle_id) -> None</code>
+
+### Accessories
+
+Types:
+
+```python
+from partnermax.types.dealers.vehicles import VehicleAccessoriesCatalog, VehicleAccessoryItem
+```
+
+Methods:
+
+- <code title="put /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/accessories">client.dealers.vehicles.accessories.<a href="./src/partnermax/resources/dealers/vehicles/accessories.py">update</a>(vehicle_id, \*, dealer_id, \*\*<a href="src/partnermax/types/dealers/vehicles/accessory_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealers/vehicles/vehicle_accessories_catalog.py">VehicleAccessoriesCatalog</a></code>
+- <code title="post /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/accessories/catalog/refresh">client.dealers.vehicles.accessories.<a href="./src/partnermax/resources/dealers/vehicles/accessories.py">refresh_catalog</a>(vehicle_id, \*, dealer_id) -> <a href="./src/partnermax/types/dealers/vehicles/vehicle_accessories_catalog.py">VehicleAccessoriesCatalog</a></code>
+- <code title="get /v1/dealers/{dealer_id}/vehicles/{vehicle_id}/accessories/catalog">client.dealers.vehicles.accessories.<a href="./src/partnermax/resources/dealers/vehicles/accessories.py">retrieve_catalog</a>(vehicle_id, \*, dealer_id) -> <a href="./src/partnermax/types/dealers/vehicles/vehicle_accessories_catalog.py">VehicleAccessoriesCatalog</a></code>

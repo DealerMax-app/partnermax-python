@@ -1,7 +1,8 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Dict, List, Optional
-from datetime import datetime
+from datetime import date, datetime
+from typing_extensions import Literal
 
 from ..._models import BaseModel
 from .ai_content import AIContent
@@ -27,9 +28,9 @@ class VehicleDetail(BaseModel):
       cross-network consumers display (descriptions, highlights, FAQ,
       SEO meta). ``null`` until the worker has processed the vehicle.
 
-    Dealer-internal margin and operations data remains outside this SDK
-    surface; partners receive only the inventory, commercial, catalogue, media,
-    and AI-derived fields needed to publish the vehicle.
+    Dealer-entered inventory, commercial, condition, service-history, catalogue,
+    media, and AI-derived fields are available through the SDK so partners can
+    keep the same stock record DealerMax shows.
     """
 
     certified_km: int
@@ -40,9 +41,9 @@ class VehicleDetail(BaseModel):
 
     description: str
 
-    extended_warranty_enabled: bool
+    enabled_channels: List[Literal["rewind", "nos"]]
 
-    is_for_sale: bool
+    extended_warranty_enabled: bool
 
     is_visible: bool
 
@@ -60,8 +61,6 @@ class VehicleDetail(BaseModel):
 
     vat_displayed: bool
 
-    vehicle_damaged: bool
-
     vehicle_id: str
 
     ai_content: Optional[AIContent] = None
@@ -71,15 +70,37 @@ class VehicleDetail(BaseModel):
     seconds). Populated for the same consumer-AI surfaces (MCP, Custom GPT, NLWeb).
     """
 
+    ai_short: Optional[str] = None
+
+    ai_tagline: Optional[str] = None
+
     alloy_wheel_size: Optional[int] = None
+
+    base_color: Optional[str] = None
 
     brand: Optional[str] = None
 
+    co2_emissions_g_km_override: Optional[float] = None
+
     color: Optional[str] = None
+
+    cost_price_eur: Optional[float] = None
+
+    cover_image_url: Optional[str] = None
+
+    damage_repaired: Optional[bool] = None
+
+    deleted_at: Optional[datetime] = None
+
+    double_keys_available: Optional[bool] = None
 
     extended_warranty_months: Optional[int] = None
 
     fuel_type: Optional[str] = None
+
+    fuel_type_override: Optional[str] = None
+
+    image_count: Optional[int] = None
 
     image_urls: Optional[List[str]] = None
     """Vehicle photos in display order.
@@ -88,11 +109,33 @@ class VehicleDetail(BaseModel):
     endpoint).
     """
 
+    inspection_due_date: Optional[date] = None
+
+    last_inspection_date: Optional[date] = None
+
+    last_inspection_km: Optional[int] = None
+
+    last_service_date: Optional[date] = None
+
+    last_service_km: Optional[int] = None
+
+    last_service_notes: Optional[str] = None
+
     model: Optional[str] = None
 
     notes: Optional[str] = None
 
+    ownership_transfer_date: Optional[date] = None
+
+    power_kw_override: Optional[int] = None
+
+    previous_owner_count: Optional[int] = None
+
+    property_tax_due_date: Optional[date] = None
+
     registration_month: Optional[int] = None
+
+    service_history_available: Optional[bool] = None
 
     technical_details: Optional[Dict[str, object]] = None
     """Flat dictionary of Motornet-backed technical attributes for this
@@ -104,4 +147,14 @@ class VehicleDetail(BaseModel):
 
     trim: Optional[str] = None
 
+    trim_alias: Optional[str] = None
+
+    vehicle_damaged: Optional[bool] = None
+
     vin: Optional[str] = None
+
+    wltp_consumption_combined_l_100km: Optional[float] = None
+
+    wltp_consumption_extraurban_l_100km: Optional[float] = None
+
+    wltp_consumption_urban_l_100km: Optional[float] = None

@@ -9,6 +9,7 @@ import pytest
 
 from partnermax import Partnermax, AsyncPartnermax
 from tests.utils import assert_matches_type
+from partnermax._utils import parse_date
 from partnermax.pagination import SyncCursorPage, AsyncCursorPage
 from partnermax.types.dealers import (
     VehicleDetail,
@@ -31,7 +32,6 @@ class TestVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
 
@@ -44,19 +44,40 @@ class TestVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
             alloy_wheel_size=13,
+            base_color="base_color",
+            co2_emissions_g_km_override=0,
             color="color",
+            cost_price_eur=0,
+            damage_repaired=True,
             description="description",
+            double_keys_available=True,
+            enabled_channels=["rewind"],
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            is_for_sale=True,
+            fuel_type_override="fuel_type_override",
+            inspection_due_date=parse_date("2019-12-27"),
             is_visible=True,
+            last_inspection_date=parse_date("2019-12-27"),
+            last_inspection_km=0,
+            last_service_date=parse_date("2019-12-27"),
+            last_service_km=0,
+            last_service_notes="last_service_notes",
             notes="notes",
+            ownership_transfer_date=parse_date("2019-12-27"),
+            power_kw_override=1,
+            previous_owner_count=0,
+            property_tax_due_date=parse_date("2019-12-27"),
             registration_month=1,
+            sale_price_eur=0,
+            service_history_available=True,
+            trim_alias="trim_alias",
             vat_displayed=True,
             vehicle_damaged=True,
             vin="PTNLCJPPNYGP316PJ",
+            wltp_consumption_combined_l_100km=0,
+            wltp_consumption_extraurban_l_100km=0,
+            wltp_consumption_urban_l_100km=0,
             idempotency_key="Idempotency-Key",
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
@@ -70,7 +91,6 @@ class TestVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         )
 
         assert response.is_closed is True
@@ -87,7 +107,6 @@ class TestVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -107,7 +126,6 @@ class TestVehicles:
                 motornet_code="xxxx",
                 plate="26F1KLZN",
                 registration_year=1960,
-                sale_price_eur=100,
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -188,18 +206,41 @@ class TestVehicles:
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
             alloy_wheel_size=13,
+            base_color="base_color",
             certified_km=0,
+            co2_emissions_g_km_override=0,
             color="color",
+            cost_price_eur=0,
+            damage_repaired=True,
             description="description",
+            double_keys_available=True,
+            enabled_channels=["rewind"],
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            is_for_sale=True,
+            fuel_type_override="fuel_type_override",
+            inspection_due_date=parse_date("2019-12-27"),
             is_visible=True,
+            last_inspection_date=parse_date("2019-12-27"),
+            last_inspection_km=0,
+            last_service_date=parse_date("2019-12-27"),
+            last_service_km=0,
+            last_service_notes="last_service_notes",
             notes="notes",
+            ownership_transfer_date=parse_date("2019-12-27"),
+            power_kw_override=1,
+            previous_owner_count=0,
+            property_tax_due_date=parse_date("2019-12-27"),
             registration_month=1,
-            sale_price_eur=100,
+            registration_year=1960,
+            sale_price_eur=0,
+            service_history_available=True,
+            trim_alias="trim_alias",
             vat_displayed=True,
             vehicle_damaged=True,
+            vin="PTNLCJPPNYGP316PJ",
+            wltp_consumption_combined_l_100km=0,
+            wltp_consumption_extraurban_l_100km=0,
+            wltp_consumption_urban_l_100km=0,
             idempotency_key="Idempotency-Key",
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
@@ -261,8 +302,8 @@ class TestVehicles:
         vehicle = client.dealers.vehicles.list(
             dealer_id="dealer_id",
             cursor="cursor",
+            enabled_channel="rewind",
             include_deleted=True,
-            is_for_sale=True,
             is_visible=True,
             limit=1,
         )
@@ -365,7 +406,6 @@ class TestVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         )
@@ -382,19 +422,40 @@ class TestVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                     "alloy_wheel_size": 13,
+                    "base_color": "base_color",
+                    "co2_emissions_g_km_override": 0,
                     "color": "color",
+                    "cost_price_eur": 0,
+                    "damage_repaired": True,
                     "description": "description",
+                    "double_keys_available": True,
+                    "enabled_channels": ["rewind"],
                     "extended_warranty_enabled": True,
                     "extended_warranty_months": 1,
-                    "is_for_sale": True,
+                    "fuel_type_override": "fuel_type_override",
+                    "inspection_due_date": parse_date("2019-12-27"),
                     "is_visible": True,
+                    "last_inspection_date": parse_date("2019-12-27"),
+                    "last_inspection_km": 0,
+                    "last_service_date": parse_date("2019-12-27"),
+                    "last_service_km": 0,
+                    "last_service_notes": "last_service_notes",
                     "notes": "notes",
+                    "ownership_transfer_date": parse_date("2019-12-27"),
+                    "power_kw_override": 1,
+                    "previous_owner_count": 0,
+                    "property_tax_due_date": parse_date("2019-12-27"),
                     "registration_month": 1,
+                    "sale_price_eur": 0,
+                    "service_history_available": True,
+                    "trim_alias": "trim_alias",
                     "vat_displayed": True,
                     "vehicle_damaged": True,
                     "vin": "PTNLCJPPNYGP316PJ",
+                    "wltp_consumption_combined_l_100km": 0,
+                    "wltp_consumption_extraurban_l_100km": 0,
+                    "wltp_consumption_urban_l_100km": 0,
                 }
             ],
             idempotency_key="Idempotency-Key",
@@ -412,7 +473,6 @@ class TestVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         )
@@ -433,7 +493,6 @@ class TestVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         ) as response:
@@ -457,7 +516,6 @@ class TestVehicles:
                         "motornet_code": "xxxx",
                         "plate": "26F1KLZN",
                         "registration_year": 1960,
-                        "sale_price_eur": 100,
                     }
                 ],
             )
@@ -477,7 +535,6 @@ class TestAsyncVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
 
@@ -490,19 +547,40 @@ class TestAsyncVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
             alloy_wheel_size=13,
+            base_color="base_color",
+            co2_emissions_g_km_override=0,
             color="color",
+            cost_price_eur=0,
+            damage_repaired=True,
             description="description",
+            double_keys_available=True,
+            enabled_channels=["rewind"],
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            is_for_sale=True,
+            fuel_type_override="fuel_type_override",
+            inspection_due_date=parse_date("2019-12-27"),
             is_visible=True,
+            last_inspection_date=parse_date("2019-12-27"),
+            last_inspection_km=0,
+            last_service_date=parse_date("2019-12-27"),
+            last_service_km=0,
+            last_service_notes="last_service_notes",
             notes="notes",
+            ownership_transfer_date=parse_date("2019-12-27"),
+            power_kw_override=1,
+            previous_owner_count=0,
+            property_tax_due_date=parse_date("2019-12-27"),
             registration_month=1,
+            sale_price_eur=0,
+            service_history_available=True,
+            trim_alias="trim_alias",
             vat_displayed=True,
             vehicle_damaged=True,
             vin="PTNLCJPPNYGP316PJ",
+            wltp_consumption_combined_l_100km=0,
+            wltp_consumption_extraurban_l_100km=0,
+            wltp_consumption_urban_l_100km=0,
             idempotency_key="Idempotency-Key",
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
@@ -516,7 +594,6 @@ class TestAsyncVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         )
 
         assert response.is_closed is True
@@ -533,7 +610,6 @@ class TestAsyncVehicles:
             motornet_code="xxxx",
             plate="26F1KLZN",
             registration_year=1960,
-            sale_price_eur=100,
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -553,7 +629,6 @@ class TestAsyncVehicles:
                 motornet_code="xxxx",
                 plate="26F1KLZN",
                 registration_year=1960,
-                sale_price_eur=100,
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -634,18 +709,41 @@ class TestAsyncVehicles:
             vehicle_id="vehicle_id",
             dealer_id="dealer_id",
             alloy_wheel_size=13,
+            base_color="base_color",
             certified_km=0,
+            co2_emissions_g_km_override=0,
             color="color",
+            cost_price_eur=0,
+            damage_repaired=True,
             description="description",
+            double_keys_available=True,
+            enabled_channels=["rewind"],
             extended_warranty_enabled=True,
             extended_warranty_months=1,
-            is_for_sale=True,
+            fuel_type_override="fuel_type_override",
+            inspection_due_date=parse_date("2019-12-27"),
             is_visible=True,
+            last_inspection_date=parse_date("2019-12-27"),
+            last_inspection_km=0,
+            last_service_date=parse_date("2019-12-27"),
+            last_service_km=0,
+            last_service_notes="last_service_notes",
             notes="notes",
+            ownership_transfer_date=parse_date("2019-12-27"),
+            power_kw_override=1,
+            previous_owner_count=0,
+            property_tax_due_date=parse_date("2019-12-27"),
             registration_month=1,
-            sale_price_eur=100,
+            registration_year=1960,
+            sale_price_eur=0,
+            service_history_available=True,
+            trim_alias="trim_alias",
             vat_displayed=True,
             vehicle_damaged=True,
+            vin="PTNLCJPPNYGP316PJ",
+            wltp_consumption_combined_l_100km=0,
+            wltp_consumption_extraurban_l_100km=0,
+            wltp_consumption_urban_l_100km=0,
             idempotency_key="Idempotency-Key",
         )
         assert_matches_type(VehicleDetail, vehicle, path=["response"])
@@ -707,8 +805,8 @@ class TestAsyncVehicles:
         vehicle = await async_client.dealers.vehicles.list(
             dealer_id="dealer_id",
             cursor="cursor",
+            enabled_channel="rewind",
             include_deleted=True,
-            is_for_sale=True,
             is_visible=True,
             limit=1,
         )
@@ -811,7 +909,6 @@ class TestAsyncVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         )
@@ -828,19 +925,40 @@ class TestAsyncVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                     "alloy_wheel_size": 13,
+                    "base_color": "base_color",
+                    "co2_emissions_g_km_override": 0,
                     "color": "color",
+                    "cost_price_eur": 0,
+                    "damage_repaired": True,
                     "description": "description",
+                    "double_keys_available": True,
+                    "enabled_channels": ["rewind"],
                     "extended_warranty_enabled": True,
                     "extended_warranty_months": 1,
-                    "is_for_sale": True,
+                    "fuel_type_override": "fuel_type_override",
+                    "inspection_due_date": parse_date("2019-12-27"),
                     "is_visible": True,
+                    "last_inspection_date": parse_date("2019-12-27"),
+                    "last_inspection_km": 0,
+                    "last_service_date": parse_date("2019-12-27"),
+                    "last_service_km": 0,
+                    "last_service_notes": "last_service_notes",
                     "notes": "notes",
+                    "ownership_transfer_date": parse_date("2019-12-27"),
+                    "power_kw_override": 1,
+                    "previous_owner_count": 0,
+                    "property_tax_due_date": parse_date("2019-12-27"),
                     "registration_month": 1,
+                    "sale_price_eur": 0,
+                    "service_history_available": True,
+                    "trim_alias": "trim_alias",
                     "vat_displayed": True,
                     "vehicle_damaged": True,
                     "vin": "PTNLCJPPNYGP316PJ",
+                    "wltp_consumption_combined_l_100km": 0,
+                    "wltp_consumption_extraurban_l_100km": 0,
+                    "wltp_consumption_urban_l_100km": 0,
                 }
             ],
             idempotency_key="Idempotency-Key",
@@ -858,7 +976,6 @@ class TestAsyncVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         )
@@ -879,7 +996,6 @@ class TestAsyncVehicles:
                     "motornet_code": "xxxx",
                     "plate": "26F1KLZN",
                     "registration_year": 1960,
-                    "sale_price_eur": 100,
                 }
             ],
         ) as response:
@@ -903,7 +1019,6 @@ class TestAsyncVehicles:
                         "motornet_code": "xxxx",
                         "plate": "26F1KLZN",
                         "registration_year": 1960,
-                        "sale_price_eur": 100,
                     }
                 ],
             )

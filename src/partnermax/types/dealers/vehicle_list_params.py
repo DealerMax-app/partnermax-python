@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 
 __all__ = ["VehicleListParams"]
 
@@ -11,14 +11,14 @@ __all__ = ["VehicleListParams"]
 class VehicleListParams(TypedDict, total=False):
     cursor: Optional[str]
 
+    enabled_channel: Optional[Literal["rewind", "nos"]]
+    """Filter vehicles enabled on one publication channel: rewind or nos."""
+
     include_deleted: bool
     """If true, soft-deleted rows (`venduto_il` populated) are also returned.
 
     Default false — listings hide soft-deleted vehicles.
     """
-
-    is_for_sale: Optional[bool]
-    """Filter on the sale flag."""
 
     is_visible: Optional[bool]
     """Filter on the visibility flag."""

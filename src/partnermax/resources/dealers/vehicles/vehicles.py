@@ -157,8 +157,8 @@ class VehiclesResource(SyncAPIResource):
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
               DealerMAX auto/VCOM catalogue at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. Partners may send a code from their own
-              Motornet agreement or use the paid control-plane targa/VIN resolver before
-              creating the vehicle.
+              Motornet agreement or use the paid targa/VIN resolver on api.dealermax.app
+              before creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
               active vehicles; reusable once the previous holder withdraws the vehicle from
@@ -703,8 +703,8 @@ class AsyncVehiclesResource(AsyncAPIResource):
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
               DealerMAX auto/VCOM catalogue at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. Partners may send a code from their own
-              Motornet agreement or use the paid control-plane targa/VIN resolver before
-              creating the vehicle.
+              Motornet agreement or use the paid targa/VIN resolver on api.dealermax.app
+              before creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
               active vehicles; reusable once the previous holder withdraws the vehicle from

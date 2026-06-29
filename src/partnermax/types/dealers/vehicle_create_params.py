@@ -20,8 +20,8 @@ class VehicleCreateParams(TypedDict, total=False):
 
     Must exist in the DealerMAX auto/VCOM catalogue at submission time; otherwise
     the call returns 422 `motornet_code_not_in_catalogue`. Partners may send a code
-    from their own Motornet agreement or use the paid control-plane targa/VIN
-    resolver before creating the vehicle.
+    from their own Motornet agreement or use the paid targa/VIN resolver on
+    api.dealermax.app before creating the vehicle.
     """
 
     plate: Required[str]

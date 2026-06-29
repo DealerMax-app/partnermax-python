@@ -27,6 +27,9 @@ Methods:
 - <code title="patch /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">update</a>(dealer_id, \*\*<a href="src/partnermax/types/dealer_update_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_detail.py">DealerDetail</a></code>
 - <code title="get /v1/dealers">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">list</a>(\*\*<a href="src/partnermax/types/dealer_list_params.py">params</a>) -> <a href="./src/partnermax/types/dealer_summary.py">SyncCursorPage[DealerSummary]</a></code>
 - <code title="delete /v1/dealers/{dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">delete</a>(dealer_id) -> None</code>
+- <code title="post /api/partner/dealers/{external_dealer_id}/activate">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">activate_reference</a>(external_dealer_id) -> <a href="./src/partnermax/types/partner_dealer_response.py">PartnerDealerResponse</a></code>
+- <code title="delete /api/partner/dealers/{external_dealer_id}">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">revoke_reference</a>(external_dealer_id) -> None</code>
+- <code title="post /api/partner/dealers/{external_dealer_id}/suspend">client.dealers.<a href="./src/partnermax/resources/dealers/dealers.py">suspend_reference</a>(external_dealer_id) -> <a href="./src/partnermax/types/partner_dealer_response.py">PartnerDealerResponse</a></code>
 
 ## NltSettings
 

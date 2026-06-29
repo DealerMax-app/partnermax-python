@@ -13,4 +13,4 @@ class DealerListParams(TypedDict, total=False):
 
     limit: int
 
-    status: Literal["active", "inactive", "all"]
+    status: Literal["active", "inactive", "deleted", "all"]

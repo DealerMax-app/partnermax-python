@@ -1,7 +1,8 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
+from typing_extensions import Literal
 
 from ..._models import BaseModel
 
@@ -23,9 +24,11 @@ class VehicleSummary(BaseModel):
 
     dealer_id: str
 
-    is_for_sale: bool
+    enabled_channels: List[Literal["rewind", "nos"]]
 
     is_visible: bool
+
+    last_modified_at: datetime
 
     motornet_code: str
 
@@ -35,14 +38,36 @@ class VehicleSummary(BaseModel):
 
     sale_price_eur: float
 
+    vat_displayed: bool
+
     vehicle_id: str
+
+    ai_short: Optional[str] = None
+
+    ai_tagline: Optional[str] = None
 
     brand: Optional[str] = None
 
     color: Optional[str] = None
 
+    cost_price_eur: Optional[float] = None
+
+    cover_image_url: Optional[str] = None
+
+    damage_repaired: Optional[bool] = None
+
+    deleted_at: Optional[datetime] = None
+
     fuel_type: Optional[str] = None
+
+    image_count: Optional[int] = None
 
     model: Optional[str] = None
 
+    registration_month: Optional[int] = None
+
     trim: Optional[str] = None
+
+    trim_alias: Optional[str] = None
+
+    vehicle_damaged: Optional[bool] = None

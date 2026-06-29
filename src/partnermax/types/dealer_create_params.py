@@ -12,7 +12,7 @@ __all__ = ["DealerCreateParams"]
 
 class DealerCreateParams(TypedDict, total=False):
     external_dealer_id: Required[str]
-    """Partner-owned opaque dealer id.
+    """Partner-supplied opaque dealer id.
 
     This becomes the dealer_id used by vehicle and NLT SDK calls.
     """

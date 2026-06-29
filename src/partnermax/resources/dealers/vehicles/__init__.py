@@ -16,6 +16,14 @@ from .vehicles import (
     VehiclesResourceWithStreamingResponse,
     AsyncVehiclesResourceWithStreamingResponse,
 )
+from .accessories import (
+    AccessoriesResource,
+    AsyncAccessoriesResource,
+    AccessoriesResourceWithRawResponse,
+    AsyncAccessoriesResourceWithRawResponse,
+    AccessoriesResourceWithStreamingResponse,
+    AsyncAccessoriesResourceWithStreamingResponse,
+)
 
 __all__ = [
     "ImagesResource",
@@ -24,6 +32,12 @@ __all__ = [
     "AsyncImagesResourceWithRawResponse",
     "ImagesResourceWithStreamingResponse",
     "AsyncImagesResourceWithStreamingResponse",
+    "AccessoriesResource",
+    "AsyncAccessoriesResource",
+    "AccessoriesResourceWithRawResponse",
+    "AsyncAccessoriesResourceWithRawResponse",
+    "AccessoriesResourceWithStreamingResponse",
+    "AsyncAccessoriesResourceWithStreamingResponse",
     "VehiclesResource",
     "AsyncVehiclesResource",
     "VehiclesResourceWithRawResponse",

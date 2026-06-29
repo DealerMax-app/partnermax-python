@@ -249,6 +249,132 @@ class TestDealers:
                 "",
             )
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_activate_reference(self, client: Partnermax) -> None:
+        dealer = client.dealers.activate_reference(
+            "x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_activate_reference(self, client: Partnermax) -> None:
+        response = client.dealers.with_raw_response.activate_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_activate_reference(self, client: Partnermax) -> None:
+        with client.dealers.with_streaming_response.activate_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_activate_reference(self, client: Partnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            client.dealers.with_raw_response.activate_reference(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_revoke_reference(self, client: Partnermax) -> None:
+        dealer = client.dealers.revoke_reference(
+            "x",
+        )
+        assert dealer is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_revoke_reference(self, client: Partnermax) -> None:
+        response = client.dealers.with_raw_response.revoke_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = response.parse()
+        assert dealer is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_revoke_reference(self, client: Partnermax) -> None:
+        with client.dealers.with_streaming_response.revoke_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = response.parse()
+            assert dealer is None
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_revoke_reference(self, client: Partnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            client.dealers.with_raw_response.revoke_reference(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_suspend_reference(self, client: Partnermax) -> None:
+        dealer = client.dealers.suspend_reference(
+            "x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_suspend_reference(self, client: Partnermax) -> None:
+        response = client.dealers.with_raw_response.suspend_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_suspend_reference(self, client: Partnermax) -> None:
+        with client.dealers.with_streaming_response.suspend_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_suspend_reference(self, client: Partnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            client.dealers.with_raw_response.suspend_reference(
+                "",
+            )
+
 
 class TestAsyncDealers:
     parametrize = pytest.mark.parametrize(
@@ -479,5 +605,131 @@ class TestAsyncDealers:
     async def test_path_params_delete(self, async_client: AsyncPartnermax) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `dealer_id` but received ''"):
             await async_client.dealers.with_raw_response.delete(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_activate_reference(self, async_client: AsyncPartnermax) -> None:
+        dealer = await async_client.dealers.activate_reference(
+            "x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_activate_reference(self, async_client: AsyncPartnermax) -> None:
+        response = await async_client.dealers.with_raw_response.activate_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = await response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_activate_reference(self, async_client: AsyncPartnermax) -> None:
+        async with async_client.dealers.with_streaming_response.activate_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = await response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_activate_reference(self, async_client: AsyncPartnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.activate_reference(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_revoke_reference(self, async_client: AsyncPartnermax) -> None:
+        dealer = await async_client.dealers.revoke_reference(
+            "x",
+        )
+        assert dealer is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_revoke_reference(self, async_client: AsyncPartnermax) -> None:
+        response = await async_client.dealers.with_raw_response.revoke_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = await response.parse()
+        assert dealer is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_revoke_reference(self, async_client: AsyncPartnermax) -> None:
+        async with async_client.dealers.with_streaming_response.revoke_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = await response.parse()
+            assert dealer is None
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_revoke_reference(self, async_client: AsyncPartnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.revoke_reference(
+                "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_suspend_reference(self, async_client: AsyncPartnermax) -> None:
+        dealer = await async_client.dealers.suspend_reference(
+            "x",
+        )
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_suspend_reference(self, async_client: AsyncPartnermax) -> None:
+        response = await async_client.dealers.with_raw_response.suspend_reference(
+            "x",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        dealer = await response.parse()
+        assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_suspend_reference(self, async_client: AsyncPartnermax) -> None:
+        async with async_client.dealers.with_streaming_response.suspend_reference(
+            "x",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            dealer = await response.parse()
+            assert_matches_type(PartnerDealerResponse, dealer, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_suspend_reference(self, async_client: AsyncPartnermax) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `external_dealer_id` but received ''"):
+            await async_client.dealers.with_raw_response.suspend_reference(
                 "",
             )

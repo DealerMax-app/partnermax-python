@@ -12,7 +12,7 @@ __all__ = ["DealerCreateParams"]
 
 class DealerCreateParams(TypedDict, total=False):
     external_dealer_id: Required[str]
-    """Partner-owned opaque dealer id.
+    """Partner-supplied opaque dealer id.
 
     This becomes the dealer_id used by vehicle and NLT SDK calls.
     """
@@ -20,7 +20,7 @@ class DealerCreateParams(TypedDict, total=False):
     activate: bool
     """When true, the dealer can immediately receive vehicle/NLT operations.
 
-    When false, create the registry row but keep it suspended until activated.
+    When false, create the registry row but keep it inactive until activated.
     """
 
     metadata: Dict[str, Union[str, float, bool, None]]

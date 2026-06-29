@@ -52,7 +52,9 @@ __all__ = ["DealersResource", "AsyncDealersResource"]
 
 
 class DealersResource(SyncAPIResource):
-    """Provision, update, deactivate, and list dealers owned by the calling partner."""
+    """
+    Register, update, deactivate, and list dealer references registered for the calling partner.
+    """
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResource:
@@ -64,9 +66,9 @@ class DealersResource(SyncAPIResource):
 
     @cached_property
     def vehicles(self) -> VehiclesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResource(self._client)
 
@@ -103,18 +105,18 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PartnerDealerResponse:
-        """Create a partner-owned opaque dealer reference.
+        """Register an opaque dealer reference for this partner.
 
         SDK users call
-        `client.dealers.create(...)`; the generated client sends this request to the
-        core-owned `/api/partner/dealers` route.
+        `client.dealers.create(...)`; the generated client sends this request to
+        `/api/partner/dealers` on the public PartnerMAX API host.
 
         Args:
-          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
-              NLT SDK calls.
+          external_dealer_id: Partner-supplied opaque dealer id. This becomes the dealer_id used by vehicle
+              and NLT SDK calls.
 
           activate: When true, the dealer can immediately receive vehicle/NLT operations. When
-              false, create the registry row but keep it suspended until activated.
+              false, create the registry row but keep it inactive until activated.
 
           metadata: Optional scalar partner-side correlation metadata.
 
@@ -241,7 +243,7 @@ class DealersResource(SyncAPIResource):
         *,
         cursor: Optional[str] | Omit = omit,
         limit: int | Omit = omit,
-        status: Literal["active", "inactive", "all"] | Omit = omit,
+        status: Literal["active", "inactive", "deleted", "all"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -249,7 +251,7 @@ class DealersResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SyncCursorPage[DealerSummary]:
-        """List dealers owned by the calling partner.
+        """List dealer references registered for the calling partner.
 
         Cursor-paginated.
 
@@ -317,9 +319,120 @@ class DealersResource(SyncAPIResource):
             cast_to=NoneType,
         )
 
+    def activate_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Reactivate a non-terminal opaque dealer reference.
+
+        SDK users can also call
+        `PATCH /v1/dealers/{dealer_id}` with `status=active`; this registry endpoint is
+        exposed for integrations that manage the `/api/partner` lifecycle directly.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        return self._post(
+            path_template("/api/partner/dealers/{external_dealer_id}/activate", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
+
+    def revoke_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> None:
+        """Terminally revoke an opaque dealer reference.
+
+        This is equivalent to deleting the
+        dealer through `/v1/dealers/{dealer_id}` from the partner's perspective: the
+        public status becomes `deleted` and reactivation requires DealerMAX support.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        extra_headers = {"Accept": "*/*", **(extra_headers or {})}
+        return self._delete(
+            path_template("/api/partner/dealers/{external_dealer_id}", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=NoneType,
+        )
+
+    def suspend_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Temporarily deactivate an opaque dealer reference.
+
+        SDK users can also call
+        `PATCH /v1/dealers/{dealer_id}` with `status=inactive`; both routes map the
+        public status to `inactive`.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        return self._post(
+            path_template("/api/partner/dealers/{external_dealer_id}/suspend", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
+
 
 class AsyncDealersResource(AsyncAPIResource):
-    """Provision, update, deactivate, and list dealers owned by the calling partner."""
+    """
+    Register, update, deactivate, and list dealer references registered for the calling partner.
+    """
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResource:
@@ -331,9 +444,9 @@ class AsyncDealersResource(AsyncAPIResource):
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResource(self._client)
 
@@ -370,18 +483,18 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> PartnerDealerResponse:
-        """Create a partner-owned opaque dealer reference.
+        """Register an opaque dealer reference for this partner.
 
         SDK users call
-        `client.dealers.create(...)`; the generated client sends this request to the
-        core-owned `/api/partner/dealers` route.
+        `client.dealers.create(...)`; the generated client sends this request to
+        `/api/partner/dealers` on the public PartnerMAX API host.
 
         Args:
-          external_dealer_id: Partner-owned opaque dealer id. This becomes the dealer_id used by vehicle and
-              NLT SDK calls.
+          external_dealer_id: Partner-supplied opaque dealer id. This becomes the dealer_id used by vehicle
+              and NLT SDK calls.
 
           activate: When true, the dealer can immediately receive vehicle/NLT operations. When
-              false, create the registry row but keep it suspended until activated.
+              false, create the registry row but keep it inactive until activated.
 
           metadata: Optional scalar partner-side correlation metadata.
 
@@ -508,7 +621,7 @@ class AsyncDealersResource(AsyncAPIResource):
         *,
         cursor: Optional[str] | Omit = omit,
         limit: int | Omit = omit,
-        status: Literal["active", "inactive", "all"] | Omit = omit,
+        status: Literal["active", "inactive", "deleted", "all"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -516,7 +629,7 @@ class AsyncDealersResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AsyncPaginator[DealerSummary, AsyncCursorPage[DealerSummary]]:
-        """List dealers owned by the calling partner.
+        """List dealer references registered for the calling partner.
 
         Cursor-paginated.
 
@@ -584,6 +697,115 @@ class AsyncDealersResource(AsyncAPIResource):
             cast_to=NoneType,
         )
 
+    async def activate_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Reactivate a non-terminal opaque dealer reference.
+
+        SDK users can also call
+        `PATCH /v1/dealers/{dealer_id}` with `status=active`; this registry endpoint is
+        exposed for integrations that manage the `/api/partner` lifecycle directly.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        return await self._post(
+            path_template("/api/partner/dealers/{external_dealer_id}/activate", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
+
+    async def revoke_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> None:
+        """Terminally revoke an opaque dealer reference.
+
+        This is equivalent to deleting the
+        dealer through `/v1/dealers/{dealer_id}` from the partner's perspective: the
+        public status becomes `deleted` and reactivation requires DealerMAX support.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        extra_headers = {"Accept": "*/*", **(extra_headers or {})}
+        return await self._delete(
+            path_template("/api/partner/dealers/{external_dealer_id}", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=NoneType,
+        )
+
+    async def suspend_reference(
+        self,
+        external_dealer_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> PartnerDealerResponse:
+        """Temporarily deactivate an opaque dealer reference.
+
+        SDK users can also call
+        `PATCH /v1/dealers/{dealer_id}` with `status=inactive`; both routes map the
+        public status to `inactive`.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not external_dealer_id:
+            raise ValueError(f"Expected a non-empty value for `external_dealer_id` but received {external_dealer_id!r}")
+        return await self._post(
+            path_template("/api/partner/dealers/{external_dealer_id}/suspend", external_dealer_id=external_dealer_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=PartnerDealerResponse,
+        )
+
 
 class DealersResourceWithRawResponse:
     def __init__(self, dealers: DealersResource) -> None:
@@ -604,6 +826,15 @@ class DealersResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             dealers.delete,
         )
+        self.activate_reference = to_raw_response_wrapper(
+            dealers.activate_reference,
+        )
+        self.revoke_reference = to_raw_response_wrapper(
+            dealers.revoke_reference,
+        )
+        self.suspend_reference = to_raw_response_wrapper(
+            dealers.suspend_reference,
+        )
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResourceWithRawResponse:
@@ -615,9 +846,9 @@ class DealersResourceWithRawResponse:
 
     @cached_property
     def vehicles(self) -> VehiclesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResourceWithRawResponse(self._dealers.vehicles)
 
@@ -641,6 +872,15 @@ class AsyncDealersResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             dealers.delete,
         )
+        self.activate_reference = async_to_raw_response_wrapper(
+            dealers.activate_reference,
+        )
+        self.revoke_reference = async_to_raw_response_wrapper(
+            dealers.revoke_reference,
+        )
+        self.suspend_reference = async_to_raw_response_wrapper(
+            dealers.suspend_reference,
+        )
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResourceWithRawResponse:
@@ -652,9 +892,9 @@ class AsyncDealersResourceWithRawResponse:
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResourceWithRawResponse(self._dealers.vehicles)
 
@@ -678,6 +918,15 @@ class DealersResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             dealers.delete,
         )
+        self.activate_reference = to_streamed_response_wrapper(
+            dealers.activate_reference,
+        )
+        self.revoke_reference = to_streamed_response_wrapper(
+            dealers.revoke_reference,
+        )
+        self.suspend_reference = to_streamed_response_wrapper(
+            dealers.suspend_reference,
+        )
 
     @cached_property
     def nlt_settings(self) -> NltSettingsResourceWithStreamingResponse:
@@ -689,9 +938,9 @@ class DealersResourceWithStreamingResponse:
 
     @cached_property
     def vehicles(self) -> VehiclesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return VehiclesResourceWithStreamingResponse(self._dealers.vehicles)
 
@@ -715,6 +964,15 @@ class AsyncDealersResourceWithStreamingResponse:
         self.delete = async_to_streamed_response_wrapper(
             dealers.delete,
         )
+        self.activate_reference = async_to_streamed_response_wrapper(
+            dealers.activate_reference,
+        )
+        self.revoke_reference = async_to_streamed_response_wrapper(
+            dealers.revoke_reference,
+        )
+        self.suspend_reference = async_to_streamed_response_wrapper(
+            dealers.suspend_reference,
+        )
 
     @cached_property
     def nlt_settings(self) -> AsyncNltSettingsResourceWithStreamingResponse:
@@ -726,8 +984,8 @@ class AsyncDealersResourceWithStreamingResponse:
 
     @cached_property
     def vehicles(self) -> AsyncVehiclesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncVehiclesResourceWithStreamingResponse(self._dealers.vehicles)

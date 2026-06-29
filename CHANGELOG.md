@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.0 (2026-06-29)
+
+Full Changelog: [v0.12.2...v0.13.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.2...v0.13.0)
+
+### Features
+
+* regenerate PartnerMAX SDKs for v1.5.13 ([5e87e7f](https://github.com/DealerMax-app/partnermax-python/commit/5e87e7fe81516ea14f146a3096452c95e62816a8))
+* regenerate SDK for vehicle contract 1.5.12 ([0bb2c08](https://github.com/DealerMax-app/partnermax-python/commit/0bb2c082e28eee883c826f124d691b1b08593556))
+
 ## 0.12.2 (2026-06-28)
 
 Full Changelog: [v0.12.1...v0.12.2](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.1...v0.12.2)

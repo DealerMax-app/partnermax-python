@@ -163,7 +163,9 @@ class Partnermax(SyncAPIClient):
 
     @cached_property
     def dealers(self) -> DealersResource:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import DealersResource
 
         return DealersResource(self)
@@ -420,7 +422,9 @@ class AsyncPartnermax(AsyncAPIClient):
 
     @cached_property
     def dealers(self) -> AsyncDealersResource:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import AsyncDealersResource
 
         return AsyncDealersResource(self)
@@ -591,7 +595,9 @@ class PartnermaxWithRawResponse:
 
     @cached_property
     def dealers(self) -> dealers.DealersResourceWithRawResponse:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import DealersResourceWithRawResponse
 
         return DealersResourceWithRawResponse(self._client.dealers)
@@ -615,7 +621,9 @@ class AsyncPartnermaxWithRawResponse:
 
     @cached_property
     def dealers(self) -> dealers.AsyncDealersResourceWithRawResponse:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import AsyncDealersResourceWithRawResponse
 
         return AsyncDealersResourceWithRawResponse(self._client.dealers)
@@ -639,7 +647,9 @@ class PartnermaxWithStreamedResponse:
 
     @cached_property
     def dealers(self) -> dealers.DealersResourceWithStreamingResponse:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import DealersResourceWithStreamingResponse
 
         return DealersResourceWithStreamingResponse(self._client.dealers)
@@ -663,7 +673,9 @@ class AsyncPartnermaxWithStreamedResponse:
 
     @cached_property
     def dealers(self) -> dealers.AsyncDealersResourceWithStreamingResponse:
-        """Provision, update, deactivate, and list dealers owned by the calling partner."""
+        """
+        Register, update, deactivate, and list dealer references registered for the calling partner.
+        """
         from .resources.dealers import AsyncDealersResourceWithStreamingResponse
 
         return AsyncDealersResourceWithStreamingResponse(self._client.dealers)

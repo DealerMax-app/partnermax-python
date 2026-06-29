@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import List, Union, Iterable, Optional
+from datetime import date
+from typing_extensions import Literal
 
 import httpx
 
@@ -17,6 +19,14 @@ from .images import (
 from ...._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
 from ...._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
 from ...._compat import cached_property
+from .accessories import (
+    AccessoriesResource,
+    AsyncAccessoriesResource,
+    AccessoriesResourceWithRawResponse,
+    AsyncAccessoriesResourceWithRawResponse,
+    AccessoriesResourceWithStreamingResponse,
+    AsyncAccessoriesResourceWithStreamingResponse,
+)
 from ...._resource import SyncAPIResource, AsyncAPIResource
 from ...._response import (
     to_raw_response_wrapper,
@@ -41,18 +51,26 @@ __all__ = ["VehiclesResource", "AsyncVehiclesResource"]
 
 
 class VehiclesResource(SyncAPIResource):
-    """Used-vehicle stock management for partner-owned dealers.
+    """Used-vehicle stock management for dealers registered under a partner.
 
-    The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+    Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
     """
 
     @cached_property
     def images(self) -> ImagesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return ImagesResource(self._client)
+
+    @cached_property
+    def accessories(self) -> AccessoriesResource:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AccessoriesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> VehiclesResourceWithRawResponse:
@@ -81,19 +99,40 @@ class VehiclesResource(SyncAPIResource):
         motornet_code: str,
         plate: str,
         registration_year: int,
-        sale_price_eur: float,
         alloy_wheel_size: Optional[int] | Omit = omit,
+        base_color: Optional[str] | Omit = omit,
+        co2_emissions_g_km_override: Optional[float] | Omit = omit,
         color: Optional[str] | Omit = omit,
+        cost_price_eur: Optional[float] | Omit = omit,
+        damage_repaired: Optional[bool] | Omit = omit,
         description: str | Omit = omit,
+        double_keys_available: bool | Omit = omit,
+        enabled_channels: List[Literal["rewind", "nos"]] | Omit = omit,
         extended_warranty_enabled: bool | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        is_for_sale: bool | Omit = omit,
+        fuel_type_override: Optional[str] | Omit = omit,
+        inspection_due_date: Union[str, date, None] | Omit = omit,
         is_visible: bool | Omit = omit,
+        last_inspection_date: Union[str, date, None] | Omit = omit,
+        last_inspection_km: Optional[int] | Omit = omit,
+        last_service_date: Union[str, date, None] | Omit = omit,
+        last_service_km: Optional[int] | Omit = omit,
+        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
+        ownership_transfer_date: Union[str, date, None] | Omit = omit,
+        power_kw_override: Optional[int] | Omit = omit,
+        previous_owner_count: Optional[int] | Omit = omit,
+        property_tax_due_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
+        sale_price_eur: Optional[float] | Omit = omit,
+        service_history_available: bool | Omit = omit,
+        trim_alias: Optional[str] | Omit = omit,
         vat_displayed: bool | Omit = omit,
-        vehicle_damaged: bool | Omit = omit,
+        vehicle_damaged: Optional[bool] | Omit = omit,
         vin: Optional[str] | Omit = omit,
+        wltp_consumption_combined_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_extraurban_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_urban_l_100km: Optional[float] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -118,8 +157,8 @@ class VehiclesResource(SyncAPIResource):
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
               DealerMAX auto/VCOM catalogue at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. Partners may send a code from their own
-              Motornet agreement or use the paid control-plane targa/VIN resolver before
-              creating the vehicle.
+              Motornet agreement or use the paid targa/VIN resolver on api.dealermax.app
+              before creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
               active vehicles; reusable once the previous holder withdraws the vehicle from
@@ -127,12 +166,11 @@ class VehiclesResource(SyncAPIResource):
 
           registration_year: Year of first registration. Upper bound is current year + 1.
 
-          sale_price_eur: Public sale price in EUR. Surfaced on MCP / Custom GPT / NLWeb and on the
-              dealer's site JSON-LD `Offer.price`.
+          damage_repaired: Tri-state repaired-damage declaration: true=yes, false=no, null=unknown.
 
           description: Partner-supplied long description. Surfaced on the dealer site detail page.
 
-          is_for_sale: When false the vehicle remains in stock but is not offered for sale.
+          enabled_channels: Publication channels enabled for this vehicle. Default is ['rewind'].
 
           is_visible: Soft-publish flag. When false the row exists in stock but is excluded from
               consumer-facing AI surfaces.
@@ -141,8 +179,15 @@ class VehiclesResource(SyncAPIResource):
 
           registration_month: Month of registration (1–12).
 
+          sale_price_eur: Public REWIND sale price in EUR. Required when enabled_channels contains
+              'rewind'; optional/0 for NOS-only vehicles.
+
+          service_history_available: Dealer-declared certified service-history availability.
+
           vat_displayed: If true the public price is displayed VAT-exposed (B2B); otherwise VAT-inclusive
               (B2C).
+
+          vehicle_damaged: Tri-state damage declaration: true=yes, false=no, null=unknown.
 
           vin: ISO 3779 vehicle identification number. Optional but strongly recommended.
 
@@ -165,19 +210,40 @@ class VehiclesResource(SyncAPIResource):
                     "motornet_code": motornet_code,
                     "plate": plate,
                     "registration_year": registration_year,
-                    "sale_price_eur": sale_price_eur,
                     "alloy_wheel_size": alloy_wheel_size,
+                    "base_color": base_color,
+                    "co2_emissions_g_km_override": co2_emissions_g_km_override,
                     "color": color,
+                    "cost_price_eur": cost_price_eur,
+                    "damage_repaired": damage_repaired,
                     "description": description,
+                    "double_keys_available": double_keys_available,
+                    "enabled_channels": enabled_channels,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "is_for_sale": is_for_sale,
+                    "fuel_type_override": fuel_type_override,
+                    "inspection_due_date": inspection_due_date,
                     "is_visible": is_visible,
+                    "last_inspection_date": last_inspection_date,
+                    "last_inspection_km": last_inspection_km,
+                    "last_service_date": last_service_date,
+                    "last_service_km": last_service_km,
+                    "last_service_notes": last_service_notes,
                     "notes": notes,
+                    "ownership_transfer_date": ownership_transfer_date,
+                    "power_kw_override": power_kw_override,
+                    "previous_owner_count": previous_owner_count,
+                    "property_tax_due_date": property_tax_due_date,
                     "registration_month": registration_month,
+                    "sale_price_eur": sale_price_eur,
+                    "service_history_available": service_history_available,
+                    "trim_alias": trim_alias,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
                     "vin": vin,
+                    "wltp_consumption_combined_l_100km": wltp_consumption_combined_l_100km,
+                    "wltp_consumption_extraurban_l_100km": wltp_consumption_extraurban_l_100km,
+                    "wltp_consumption_urban_l_100km": wltp_consumption_urban_l_100km,
                 },
                 vehicle_create_params.VehicleCreateParams,
             ),
@@ -240,18 +306,41 @@ class VehiclesResource(SyncAPIResource):
         *,
         dealer_id: str,
         alloy_wheel_size: Optional[int] | Omit = omit,
+        base_color: Optional[str] | Omit = omit,
         certified_km: Optional[int] | Omit = omit,
+        co2_emissions_g_km_override: Optional[float] | Omit = omit,
         color: Optional[str] | Omit = omit,
+        cost_price_eur: Optional[float] | Omit = omit,
+        damage_repaired: Optional[bool] | Omit = omit,
         description: Optional[str] | Omit = omit,
+        double_keys_available: Optional[bool] | Omit = omit,
+        enabled_channels: Optional[List[Literal["rewind", "nos"]]] | Omit = omit,
         extended_warranty_enabled: Optional[bool] | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        is_for_sale: Optional[bool] | Omit = omit,
+        fuel_type_override: Optional[str] | Omit = omit,
+        inspection_due_date: Union[str, date, None] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
+        last_inspection_date: Union[str, date, None] | Omit = omit,
+        last_inspection_km: Optional[int] | Omit = omit,
+        last_service_date: Union[str, date, None] | Omit = omit,
+        last_service_km: Optional[int] | Omit = omit,
+        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
+        ownership_transfer_date: Union[str, date, None] | Omit = omit,
+        power_kw_override: Optional[int] | Omit = omit,
+        previous_owner_count: Optional[int] | Omit = omit,
+        property_tax_due_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
+        registration_year: Optional[int] | Omit = omit,
         sale_price_eur: Optional[float] | Omit = omit,
+        service_history_available: Optional[bool] | Omit = omit,
+        trim_alias: Optional[str] | Omit = omit,
         vat_displayed: Optional[bool] | Omit = omit,
         vehicle_damaged: Optional[bool] | Omit = omit,
+        vin: Optional[str] | Omit = omit,
+        wltp_consumption_combined_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_extraurban_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_urban_l_100km: Optional[float] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -286,18 +375,41 @@ class VehiclesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "alloy_wheel_size": alloy_wheel_size,
+                    "base_color": base_color,
                     "certified_km": certified_km,
+                    "co2_emissions_g_km_override": co2_emissions_g_km_override,
                     "color": color,
+                    "cost_price_eur": cost_price_eur,
+                    "damage_repaired": damage_repaired,
                     "description": description,
+                    "double_keys_available": double_keys_available,
+                    "enabled_channels": enabled_channels,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "is_for_sale": is_for_sale,
+                    "fuel_type_override": fuel_type_override,
+                    "inspection_due_date": inspection_due_date,
                     "is_visible": is_visible,
+                    "last_inspection_date": last_inspection_date,
+                    "last_inspection_km": last_inspection_km,
+                    "last_service_date": last_service_date,
+                    "last_service_km": last_service_km,
+                    "last_service_notes": last_service_notes,
                     "notes": notes,
+                    "ownership_transfer_date": ownership_transfer_date,
+                    "power_kw_override": power_kw_override,
+                    "previous_owner_count": previous_owner_count,
+                    "property_tax_due_date": property_tax_due_date,
                     "registration_month": registration_month,
+                    "registration_year": registration_year,
                     "sale_price_eur": sale_price_eur,
+                    "service_history_available": service_history_available,
+                    "trim_alias": trim_alias,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
+                    "vin": vin,
+                    "wltp_consumption_combined_l_100km": wltp_consumption_combined_l_100km,
+                    "wltp_consumption_extraurban_l_100km": wltp_consumption_extraurban_l_100km,
+                    "wltp_consumption_urban_l_100km": wltp_consumption_urban_l_100km,
                 },
                 vehicle_update_params.VehicleUpdateParams,
             ),
@@ -312,8 +424,8 @@ class VehiclesResource(SyncAPIResource):
         dealer_id: str,
         *,
         cursor: Optional[str] | Omit = omit,
+        enabled_channel: Optional[Literal["rewind", "nos"]] | Omit = omit,
         include_deleted: bool | Omit = omit,
-        is_for_sale: Optional[bool] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -324,7 +436,7 @@ class VehiclesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SyncCursorPage[VehicleSummary]:
         """
-        List vehicles in a dealer's stock owned by the calling partner.
+        List vehicles in the resolved dealer's stock for the calling partner.
 
         Cursor pagination is opaque base64url over the last vehicle UUID. Default sort
         is `i.data_inserimento ASC` so freshly provisioned vehicles surface at the tail.
@@ -332,10 +444,10 @@ class VehiclesResource(SyncAPIResource):
         this preserves the soft-delete semantic across the API contract.
 
         Args:
+          enabled_channel: Filter vehicles enabled on one publication channel: rewind or nos.
+
           include_deleted: If true, soft-deleted rows (`venduto_il` populated) are also returned. Default
               false — listings hide soft-deleted vehicles.
-
-          is_for_sale: Filter on the sale flag.
 
           is_visible: Filter on the visibility flag.
 
@@ -360,8 +472,8 @@ class VehiclesResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "enabled_channel": enabled_channel,
                         "include_deleted": include_deleted,
-                        "is_for_sale": is_for_sale,
                         "is_visible": is_visible,
                         "limit": limit,
                     },
@@ -485,18 +597,26 @@ class VehiclesResource(SyncAPIResource):
 
 
 class AsyncVehiclesResource(AsyncAPIResource):
-    """Used-vehicle stock management for partner-owned dealers.
+    """Used-vehicle stock management for dealers registered under a partner.
 
-    The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+    Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
     """
 
     @cached_property
     def images(self) -> AsyncImagesResource:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncImagesResource(self._client)
+
+    @cached_property
+    def accessories(self) -> AsyncAccessoriesResource:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncAccessoriesResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncVehiclesResourceWithRawResponse:
@@ -525,19 +645,40 @@ class AsyncVehiclesResource(AsyncAPIResource):
         motornet_code: str,
         plate: str,
         registration_year: int,
-        sale_price_eur: float,
         alloy_wheel_size: Optional[int] | Omit = omit,
+        base_color: Optional[str] | Omit = omit,
+        co2_emissions_g_km_override: Optional[float] | Omit = omit,
         color: Optional[str] | Omit = omit,
+        cost_price_eur: Optional[float] | Omit = omit,
+        damage_repaired: Optional[bool] | Omit = omit,
         description: str | Omit = omit,
+        double_keys_available: bool | Omit = omit,
+        enabled_channels: List[Literal["rewind", "nos"]] | Omit = omit,
         extended_warranty_enabled: bool | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        is_for_sale: bool | Omit = omit,
+        fuel_type_override: Optional[str] | Omit = omit,
+        inspection_due_date: Union[str, date, None] | Omit = omit,
         is_visible: bool | Omit = omit,
+        last_inspection_date: Union[str, date, None] | Omit = omit,
+        last_inspection_km: Optional[int] | Omit = omit,
+        last_service_date: Union[str, date, None] | Omit = omit,
+        last_service_km: Optional[int] | Omit = omit,
+        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
+        ownership_transfer_date: Union[str, date, None] | Omit = omit,
+        power_kw_override: Optional[int] | Omit = omit,
+        previous_owner_count: Optional[int] | Omit = omit,
+        property_tax_due_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
+        sale_price_eur: Optional[float] | Omit = omit,
+        service_history_available: bool | Omit = omit,
+        trim_alias: Optional[str] | Omit = omit,
         vat_displayed: bool | Omit = omit,
-        vehicle_damaged: bool | Omit = omit,
+        vehicle_damaged: Optional[bool] | Omit = omit,
         vin: Optional[str] | Omit = omit,
+        wltp_consumption_combined_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_extraurban_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_urban_l_100km: Optional[float] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -562,8 +703,8 @@ class AsyncVehiclesResource(AsyncAPIResource):
           motornet_code: Motornet UNI code identifying the exact vehicle configuration. Must exist in the
               DealerMAX auto/VCOM catalogue at submission time; otherwise the call returns 422
               `motornet_code_not_in_catalogue`. Partners may send a code from their own
-              Motornet agreement or use the paid control-plane targa/VIN resolver before
-              creating the vehicle.
+              Motornet agreement or use the paid targa/VIN resolver on api.dealermax.app
+              before creating the vehicle.
 
           plate: Italian licence plate. Uppercased server-side. UNIQUE across the network for
               active vehicles; reusable once the previous holder withdraws the vehicle from
@@ -571,12 +712,11 @@ class AsyncVehiclesResource(AsyncAPIResource):
 
           registration_year: Year of first registration. Upper bound is current year + 1.
 
-          sale_price_eur: Public sale price in EUR. Surfaced on MCP / Custom GPT / NLWeb and on the
-              dealer's site JSON-LD `Offer.price`.
+          damage_repaired: Tri-state repaired-damage declaration: true=yes, false=no, null=unknown.
 
           description: Partner-supplied long description. Surfaced on the dealer site detail page.
 
-          is_for_sale: When false the vehicle remains in stock but is not offered for sale.
+          enabled_channels: Publication channels enabled for this vehicle. Default is ['rewind'].
 
           is_visible: Soft-publish flag. When false the row exists in stock but is excluded from
               consumer-facing AI surfaces.
@@ -585,8 +725,15 @@ class AsyncVehiclesResource(AsyncAPIResource):
 
           registration_month: Month of registration (1–12).
 
+          sale_price_eur: Public REWIND sale price in EUR. Required when enabled_channels contains
+              'rewind'; optional/0 for NOS-only vehicles.
+
+          service_history_available: Dealer-declared certified service-history availability.
+
           vat_displayed: If true the public price is displayed VAT-exposed (B2B); otherwise VAT-inclusive
               (B2C).
+
+          vehicle_damaged: Tri-state damage declaration: true=yes, false=no, null=unknown.
 
           vin: ISO 3779 vehicle identification number. Optional but strongly recommended.
 
@@ -609,19 +756,40 @@ class AsyncVehiclesResource(AsyncAPIResource):
                     "motornet_code": motornet_code,
                     "plate": plate,
                     "registration_year": registration_year,
-                    "sale_price_eur": sale_price_eur,
                     "alloy_wheel_size": alloy_wheel_size,
+                    "base_color": base_color,
+                    "co2_emissions_g_km_override": co2_emissions_g_km_override,
                     "color": color,
+                    "cost_price_eur": cost_price_eur,
+                    "damage_repaired": damage_repaired,
                     "description": description,
+                    "double_keys_available": double_keys_available,
+                    "enabled_channels": enabled_channels,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "is_for_sale": is_for_sale,
+                    "fuel_type_override": fuel_type_override,
+                    "inspection_due_date": inspection_due_date,
                     "is_visible": is_visible,
+                    "last_inspection_date": last_inspection_date,
+                    "last_inspection_km": last_inspection_km,
+                    "last_service_date": last_service_date,
+                    "last_service_km": last_service_km,
+                    "last_service_notes": last_service_notes,
                     "notes": notes,
+                    "ownership_transfer_date": ownership_transfer_date,
+                    "power_kw_override": power_kw_override,
+                    "previous_owner_count": previous_owner_count,
+                    "property_tax_due_date": property_tax_due_date,
                     "registration_month": registration_month,
+                    "sale_price_eur": sale_price_eur,
+                    "service_history_available": service_history_available,
+                    "trim_alias": trim_alias,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
                     "vin": vin,
+                    "wltp_consumption_combined_l_100km": wltp_consumption_combined_l_100km,
+                    "wltp_consumption_extraurban_l_100km": wltp_consumption_extraurban_l_100km,
+                    "wltp_consumption_urban_l_100km": wltp_consumption_urban_l_100km,
                 },
                 vehicle_create_params.VehicleCreateParams,
             ),
@@ -684,18 +852,41 @@ class AsyncVehiclesResource(AsyncAPIResource):
         *,
         dealer_id: str,
         alloy_wheel_size: Optional[int] | Omit = omit,
+        base_color: Optional[str] | Omit = omit,
         certified_km: Optional[int] | Omit = omit,
+        co2_emissions_g_km_override: Optional[float] | Omit = omit,
         color: Optional[str] | Omit = omit,
+        cost_price_eur: Optional[float] | Omit = omit,
+        damage_repaired: Optional[bool] | Omit = omit,
         description: Optional[str] | Omit = omit,
+        double_keys_available: Optional[bool] | Omit = omit,
+        enabled_channels: Optional[List[Literal["rewind", "nos"]]] | Omit = omit,
         extended_warranty_enabled: Optional[bool] | Omit = omit,
         extended_warranty_months: Optional[int] | Omit = omit,
-        is_for_sale: Optional[bool] | Omit = omit,
+        fuel_type_override: Optional[str] | Omit = omit,
+        inspection_due_date: Union[str, date, None] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
+        last_inspection_date: Union[str, date, None] | Omit = omit,
+        last_inspection_km: Optional[int] | Omit = omit,
+        last_service_date: Union[str, date, None] | Omit = omit,
+        last_service_km: Optional[int] | Omit = omit,
+        last_service_notes: Optional[str] | Omit = omit,
         notes: Optional[str] | Omit = omit,
+        ownership_transfer_date: Union[str, date, None] | Omit = omit,
+        power_kw_override: Optional[int] | Omit = omit,
+        previous_owner_count: Optional[int] | Omit = omit,
+        property_tax_due_date: Union[str, date, None] | Omit = omit,
         registration_month: Optional[int] | Omit = omit,
+        registration_year: Optional[int] | Omit = omit,
         sale_price_eur: Optional[float] | Omit = omit,
+        service_history_available: Optional[bool] | Omit = omit,
+        trim_alias: Optional[str] | Omit = omit,
         vat_displayed: Optional[bool] | Omit = omit,
         vehicle_damaged: Optional[bool] | Omit = omit,
+        vin: Optional[str] | Omit = omit,
+        wltp_consumption_combined_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_extraurban_l_100km: Optional[float] | Omit = omit,
+        wltp_consumption_urban_l_100km: Optional[float] | Omit = omit,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -730,18 +921,41 @@ class AsyncVehiclesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "alloy_wheel_size": alloy_wheel_size,
+                    "base_color": base_color,
                     "certified_km": certified_km,
+                    "co2_emissions_g_km_override": co2_emissions_g_km_override,
                     "color": color,
+                    "cost_price_eur": cost_price_eur,
+                    "damage_repaired": damage_repaired,
                     "description": description,
+                    "double_keys_available": double_keys_available,
+                    "enabled_channels": enabled_channels,
                     "extended_warranty_enabled": extended_warranty_enabled,
                     "extended_warranty_months": extended_warranty_months,
-                    "is_for_sale": is_for_sale,
+                    "fuel_type_override": fuel_type_override,
+                    "inspection_due_date": inspection_due_date,
                     "is_visible": is_visible,
+                    "last_inspection_date": last_inspection_date,
+                    "last_inspection_km": last_inspection_km,
+                    "last_service_date": last_service_date,
+                    "last_service_km": last_service_km,
+                    "last_service_notes": last_service_notes,
                     "notes": notes,
+                    "ownership_transfer_date": ownership_transfer_date,
+                    "power_kw_override": power_kw_override,
+                    "previous_owner_count": previous_owner_count,
+                    "property_tax_due_date": property_tax_due_date,
                     "registration_month": registration_month,
+                    "registration_year": registration_year,
                     "sale_price_eur": sale_price_eur,
+                    "service_history_available": service_history_available,
+                    "trim_alias": trim_alias,
                     "vat_displayed": vat_displayed,
                     "vehicle_damaged": vehicle_damaged,
+                    "vin": vin,
+                    "wltp_consumption_combined_l_100km": wltp_consumption_combined_l_100km,
+                    "wltp_consumption_extraurban_l_100km": wltp_consumption_extraurban_l_100km,
+                    "wltp_consumption_urban_l_100km": wltp_consumption_urban_l_100km,
                 },
                 vehicle_update_params.VehicleUpdateParams,
             ),
@@ -756,8 +970,8 @@ class AsyncVehiclesResource(AsyncAPIResource):
         dealer_id: str,
         *,
         cursor: Optional[str] | Omit = omit,
+        enabled_channel: Optional[Literal["rewind", "nos"]] | Omit = omit,
         include_deleted: bool | Omit = omit,
-        is_for_sale: Optional[bool] | Omit = omit,
         is_visible: Optional[bool] | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -768,7 +982,7 @@ class AsyncVehiclesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AsyncPaginator[VehicleSummary, AsyncCursorPage[VehicleSummary]]:
         """
-        List vehicles in a dealer's stock owned by the calling partner.
+        List vehicles in the resolved dealer's stock for the calling partner.
 
         Cursor pagination is opaque base64url over the last vehicle UUID. Default sort
         is `i.data_inserimento ASC` so freshly provisioned vehicles surface at the tail.
@@ -776,10 +990,10 @@ class AsyncVehiclesResource(AsyncAPIResource):
         this preserves the soft-delete semantic across the API contract.
 
         Args:
+          enabled_channel: Filter vehicles enabled on one publication channel: rewind or nos.
+
           include_deleted: If true, soft-deleted rows (`venduto_il` populated) are also returned. Default
               false — listings hide soft-deleted vehicles.
-
-          is_for_sale: Filter on the sale flag.
 
           is_visible: Filter on the visibility flag.
 
@@ -804,8 +1018,8 @@ class AsyncVehiclesResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "enabled_channel": enabled_channel,
                         "include_deleted": include_deleted,
-                        "is_for_sale": is_for_sale,
                         "is_visible": is_visible,
                         "limit": limit,
                     },
@@ -953,11 +1167,19 @@ class VehiclesResourceWithRawResponse:
 
     @cached_property
     def images(self) -> ImagesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return ImagesResourceWithRawResponse(self._vehicles.images)
+
+    @cached_property
+    def accessories(self) -> AccessoriesResourceWithRawResponse:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AccessoriesResourceWithRawResponse(self._vehicles.accessories)
 
 
 class AsyncVehiclesResourceWithRawResponse:
@@ -985,11 +1207,19 @@ class AsyncVehiclesResourceWithRawResponse:
 
     @cached_property
     def images(self) -> AsyncImagesResourceWithRawResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncImagesResourceWithRawResponse(self._vehicles.images)
+
+    @cached_property
+    def accessories(self) -> AsyncAccessoriesResourceWithRawResponse:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncAccessoriesResourceWithRawResponse(self._vehicles.accessories)
 
 
 class VehiclesResourceWithStreamingResponse:
@@ -1017,11 +1247,19 @@ class VehiclesResourceWithStreamingResponse:
 
     @cached_property
     def images(self) -> ImagesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return ImagesResourceWithStreamingResponse(self._vehicles.images)
+
+    @cached_property
+    def accessories(self) -> AccessoriesResourceWithStreamingResponse:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AccessoriesResourceWithStreamingResponse(self._vehicles.accessories)
 
 
 class AsyncVehiclesResourceWithStreamingResponse:
@@ -1049,8 +1287,16 @@ class AsyncVehiclesResourceWithStreamingResponse:
 
     @cached_property
     def images(self) -> AsyncImagesResourceWithStreamingResponse:
-        """Used-vehicle stock management for partner-owned dealers.
+        """Used-vehicle stock management for dealers registered under a partner.
 
-        The partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
         """
         return AsyncImagesResourceWithStreamingResponse(self._vehicles.images)
+
+    @cached_property
+    def accessories(self) -> AsyncAccessoriesResourceWithStreamingResponse:
+        """Used-vehicle stock management for dealers registered under a partner.
+
+        Every vehicle request is scoped by dealer_id; the partner uploads each used vehicle by its canonical Motornet UNI code; DealerMAX joins the partner-provided pricing and stock metadata with the catalog master so the resulting listing is immediately indexed by the AI surfaces (MCP server, ChatGPT Custom GPT, NLWeb /ask, and the SEO/JSON-LD layer).
+        """
+        return AsyncAccessoriesResourceWithStreamingResponse(self._vehicles.accessories)

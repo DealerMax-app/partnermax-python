@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
-from typing_extensions import Required, Annotated, TypedDict
+from typing import List, Union, Iterable, Optional
+from datetime import date
+from typing_extensions import Literal, Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
@@ -30,8 +31,8 @@ class Vehicle(TypedDict, total=False):
     derived server-side from DealerMAX's licensed Motornet-backed catalogue —
     the partner never types them.
 
-    Fields immutable after creation: `motornet_code`, `plate`, `vin`. Other
-    fields may be updated via PATCH.
+    Fields immutable after creation: `motornet_code`, `plate`. The VIN and
+    other dealer-entered fields may be corrected via PATCH.
     """
 
     certified_km: Required[int]
@@ -42,8 +43,8 @@ class Vehicle(TypedDict, total=False):
 
     Must exist in the DealerMAX auto/VCOM catalogue at submission time; otherwise
     the call returns 422 `motornet_code_not_in_catalogue`. Partners may send a code
-    from their own Motornet agreement or use the paid control-plane targa/VIN
-    resolver before creating the vehicle.
+    from their own Motornet agreement or use the paid targa/VIN resolver on
+    api.dealermax.app before creating the vehicle.
     """
 
     plate: Required[str]
@@ -56,26 +57,34 @@ class Vehicle(TypedDict, total=False):
     registration_year: Required[int]
     """Year of first registration. Upper bound is current year + 1."""
 
-    sale_price_eur: Required[float]
-    """Public sale price in EUR.
-
-    Surfaced on MCP / Custom GPT / NLWeb and on the dealer's site JSON-LD
-    `Offer.price`.
-    """
-
     alloy_wheel_size: Optional[int]
+
+    base_color: Optional[str]
+
+    co2_emissions_g_km_override: Optional[float]
 
     color: Optional[str]
 
+    cost_price_eur: Optional[float]
+
+    damage_repaired: Optional[bool]
+    """Tri-state repaired-damage declaration: true=yes, false=no, null=unknown."""
+
     description: str
     """Partner-supplied long description. Surfaced on the dealer site detail page."""
+
+    double_keys_available: bool
+
+    enabled_channels: List[Literal["rewind", "nos"]]
+    """Publication channels enabled for this vehicle. Default is ['rewind']."""
 
     extended_warranty_enabled: bool
 
     extended_warranty_months: Optional[int]
 
-    is_for_sale: bool
-    """When false the vehicle remains in stock but is not offered for sale."""
+    fuel_type_override: Optional[str]
+
+    inspection_due_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
 
     is_visible: bool
     """Soft-publish flag.
@@ -84,11 +93,41 @@ class Vehicle(TypedDict, total=False):
     surfaces.
     """
 
+    last_inspection_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    last_inspection_km: Optional[int]
+
+    last_service_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    last_service_km: Optional[int]
+
+    last_service_notes: Optional[str]
+
     notes: Optional[str]
     """Free-form short notes for partner-facing vehicle detail views."""
 
+    ownership_transfer_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
+    power_kw_override: Optional[int]
+
+    previous_owner_count: Optional[int]
+
+    property_tax_due_date: Annotated[Union[str, date, None], PropertyInfo(format="iso8601")]
+
     registration_month: Optional[int]
     """Month of registration (1–12)."""
+
+    sale_price_eur: Optional[float]
+    """Public REWIND sale price in EUR.
+
+    Required when enabled_channels contains 'rewind'; optional/0 for NOS-only
+    vehicles.
+    """
+
+    service_history_available: bool
+    """Dealer-declared certified service-history availability."""
+
+    trim_alias: Optional[str]
 
     vat_displayed: bool
     """
@@ -96,7 +135,14 @@ class Vehicle(TypedDict, total=False):
     (B2C).
     """
 
-    vehicle_damaged: bool
+    vehicle_damaged: Optional[bool]
+    """Tri-state damage declaration: true=yes, false=no, null=unknown."""
 
     vin: Optional[str]
     """ISO 3779 vehicle identification number. Optional but strongly recommended."""
+
+    wltp_consumption_combined_l_100km: Optional[float]
+
+    wltp_consumption_extraurban_l_100km: Optional[float]
+
+    wltp_consumption_urban_l_100km: Optional[float]

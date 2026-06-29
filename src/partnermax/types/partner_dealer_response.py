@@ -18,13 +18,18 @@ class PartnerDealerResponse(BaseModel):
     created_at: datetime
 
     dealer_id: str
-    """The partner-owned external dealer id."""
+    """The partner-supplied external dealer id."""
 
     partner_id: str
 
     public_surfaces_enabled: bool
 
-    status: Literal["active", "suspended", "revoked"]
+    status: Literal["active", "inactive", "deleted"]
+    """Public API status.
+
+    The backing registry may store internal states such as suspended/revoked, but
+    SDK responses expose inactive/deleted.
+    """
 
     updated_at: datetime
 

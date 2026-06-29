@@ -50,7 +50,7 @@ class BulkRowOutcome(BaseModel):
       consumers display (descriptions, highlights, FAQ, SEO meta). `null` until the
       worker has processed the vehicle.
 
-    Dealer-internal margin and operations data remains outside this SDK surface;
-    partners receive only the inventory, commercial, catalogue, media, and
-    AI-derived fields needed to publish the vehicle.
+    Dealer-entered inventory, commercial, condition, service-history, catalogue,
+    media, and AI-derived fields are available through the SDK so partners can keep
+    the same stock record DealerMax shows.
     """

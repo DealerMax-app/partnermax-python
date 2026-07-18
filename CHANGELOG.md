@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.14.0 (2026-07-18)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([4d0dd57](https://github.com/DealerMax-app/partnermax-python/commit/4d0dd57ac91993d736c458a2a065bdf93c8a9282))
+
+
+### Bug Fixes
+
+* **internal:** resolve build failures ([7a2aa55](https://github.com/DealerMax-app/partnermax-python/commit/7a2aa5543584d1bac58e057fe472cfcc0c6980bb))
+
 ## 0.13.0 (2026-06-29)
 
 Full Changelog: [v0.12.2...v0.13.0](https://github.com/DealerMax-app/partnermax-python/compare/v0.12.2...v0.13.0)
